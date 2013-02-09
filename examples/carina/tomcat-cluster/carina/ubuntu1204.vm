@@ -1,0 +1,32 @@
+NAME           = %NAME%
+CPU            = %CPU%
+VCPU           = %CPU%
+MEMORY         = %MEMORY%
+OS             = [
+  ARCH         = x86_64,
+  BOOT         = hd ]
+DISK           = [
+  IMAGE_ID     = %IMAGE_ID%,
+  TARGET       = vda,
+  DRIVER       = qcow2 ]
+NIC            = [
+  MODEL        = virtio,
+  NETWORK_ID   = %NETWORK_ID% ]
+GRAPHICS       = [
+  TYPE         = vnc,
+  LISTEN       = 0.0.0.0 ]
+CONTEXT        = [
+  ENVID=%ENVID%,
+  FILES="http://%CARINA_IP%/repo/%SERVICE_NAME%/context/authorized_keys http://%CARINA_IP%/repo/%SERVICE_NAME%/context/init.sh  http://%CARINA_IP%/repo/%SERVICE_NAME%/context/network.sh  http://%CARINA_IP%/repo/%SERVICE_NAME%/context/%APP_CONTEXT_SCRIPT%",
+  CARINA_IP=%CARINA_IP%,
+  SERVICE_NAME=%SERVICE_NAME%,
+  %APP_CONTEXT_VAR%,
+  VMID=$VMID,
+  SSH_PUBLIC_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0/FQ5kszgKcWvmKuMfhUA5IDCpBwCWaQP6pZBLuIUtRGbadjNtR1IyjquvR58FPX/qUuwlWLQWoLlHuZzB37BIOLPhXpi2J3j7zp2NMJz5FBYnSgTJvP51ahj8VA0TzSSwcHK+yBZbNoWn9B9bEQSwdnvPZlmd+ro/bBhMxFil7u/I+WxSE8J7PmkACdpJ17yqlEIPZWsW88dWP+xFuObyeRAalK2xizHgbQ8h6Bh+GxMy3zJgTuU9Pf5q6sqo0m+6yr7ppok7jBC8T64goKHjsZuNRK6OaDcg9NQD8t++Eda0iPaXyY8ew6gc8ZhhfxVXsKJJFgFs0mJdLCTnTXx service1@one",
+  DEFUSER=ubuntu,
+  HOSTNAME     = "$NAME",
+  ETH0_IP           = "$NIC[IP]",
+  ETH0_MASK      = "$NETWORK[NETMASK,     NETWORK_ID=%NETWORK_ID%]",
+  ETH0_GATEWAY      = "$NETWORK[GATEWAY,     NETWORK_ID=%NETWORK_ID%]",
+  ETH0_DNS  = "$NETWORK[DNS, NETWORK_ID=%NETWORK_ID%]"]
+
