@@ -1,0 +1,20 @@
+NAME    = "Internal"
+TYPE    = FIXED
+
+# bind interface to 'real' device 
+BRIDGE  = virbr0
+
+LEASES  = [IP=192.168.122.100]
+LEASES  = [IP=192.168.122.101]
+LEASES  = [IP=192.168.122.102]
+LEASES  = [IP=192.168.122.103]
+LEASES  = [IP=192.168.122.104]
+LEASES  = [IP=192.168.122.105]
+LEASES  = [IP=192.168.122.106]
+LEASES  = [IP=192.168.122.107]
+
+# Custom variables used during contextualization
+GATEWAY = 192.168.122.1
+DNS     = 192.168.122.1
+NETMASK = 255.255.255.0
+

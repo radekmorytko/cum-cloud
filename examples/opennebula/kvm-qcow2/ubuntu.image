@@ -1,0 +1,4 @@
+NAME          = "Ubuntu 12.04-R1 Contextualized"
+PATH          = /tmp/ubuntu-server-12-04-one-r1.qcow2
+TYPE          = OS
+
