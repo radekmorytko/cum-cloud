@@ -3,7 +3,8 @@ Introduction
 
 Directory contains configuration files that can be used to setup clustered application server environment. 
 
-Tomcat is used as an example application container running on Ubuntu 12.04. Apache with installed mod\_jk is used as a load balancing mechanism.
+Tomcat is used as an example application container running on Ubuntu 12.04. Apache with installed mod\_jk is used as a load balancing mechanism. Finally,
+mysql is used as a database.
 
 Prerequisites
 =============
@@ -39,7 +40,7 @@ Please remember to upload config.rb and ubuntu1204.vm template using oneenv --up
 Contextualization scripts
 ------------------------
 
- * tomcat-cluster.sh, balance-mod-jk.sh
+ * tomcat-cluster.sh, balance-mod-jk.sh, mysql.sh
    * should be place in service's providers contextualization directory
 
 Load balancer (master)
@@ -64,3 +65,8 @@ Tomcat (slave)
   * build with mvn package
   * war should be placed in carina's download directory
 
+MySQL (master only)
+--------------
+ * demoapp.sql
+  * creates sample database, table and inserts some data
+  * should be placed in carina's download directory

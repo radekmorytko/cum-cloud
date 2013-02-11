@@ -36,7 +36,7 @@ ENVIRONMENT = {
                 :app_url           => "http://%MASTER%:8080/gwt-petstore"
 	 },
 
-        'tomcat-cluster' => {
+        'tomcatcluster' => {
                 :type => "compute",
                 :endpoint => "mm01",
                 :description => "Load-balanced Tomcat cluster",
@@ -52,7 +52,32 @@ ENVIRONMENT = {
                 :slavedata         => "8080",
                 :adminuser         => "ubuntu",
                 :app_url           => "http://%MASTER%/demoapp"
-         }
+         },
 
+
+        'mysql' => {
+                :type => "compute",
+                :endpoint => "mm01",
+                :description => "MySQL instance",
+                :master_template   => "ubuntu1204-small",
+                :master_context_script =>  "mysql.sh",
+                :master_setup_time => 30,
+                :master_context_var => "\"SQL_SCRIPT=demoapp.sql, ROOT_PASSWORD=mysecretpassword\"",
+                :slave_template    => "ubuntu1204-small",
+                :slave_context_script => "mysql-slave.sh",
+		:slave_context_var => "\"SQL_SCRIPT=demoapp.sql, ROOT_PASSWORD=mysecretpassword\"",
+                :placement_policy  => "pack",
+                :num_slaves        => 0,
+                :slavedata         => "8080",
+                :adminuser         => "ubuntu",
+                :app_url           => "%MASTER%"
+         },
+
+	'demoapp' => {
+                :type => "group",
+                :description => "Demoapp consisting of mysql, load balancer and tomcat",
+                :members => [ 'mysql', 'tomcatcluster' ],
+                :dependencies => { 'tomcatcluster' => ['mysql'] }
+        },
 
 }

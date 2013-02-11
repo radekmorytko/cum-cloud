@@ -18,5 +18,9 @@ sed -ie s"/%AJP_PORT%/$AJP_PORT/" $SERVER_XML
 
 /etc/init.d/tomcat6 start
 
+if [ ! -z "$MYSQL_URL" ]; then
+	echo "Configuring connection to: $MYSQL_URL" >> /home/$DEFUSER/mysql.log
+fi
+
 wget http://$CARINA_IP/cgi-bin/updateappstatus.sh?service=$SERVICE_NAME\&vmid=$VMID\&envid=$ENVID\&status=SLAVE_"$SLAVE_ID"_INIT_DONE 2> /dev/null
 
