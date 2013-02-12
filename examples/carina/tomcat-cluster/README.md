@@ -42,6 +42,8 @@ Contextualization scripts
 
  * tomcat-cluster.sh, balance-mod-jk.sh, mysql.sh
    * should be place in service's providers contextualization directory
+ * init.sh, network.sh
+   * same as above, scripts are slightly modified to be compatible with OpenNebula 3.8 contextualization package
 
 Load balancer (master)
 ----------------------
