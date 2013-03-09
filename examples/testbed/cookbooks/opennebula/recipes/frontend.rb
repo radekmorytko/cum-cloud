@@ -43,11 +43,16 @@ package opennebula_pkg_name do
 	action :install
 end
 
+service "opennebula" do
+	action :start
+end
+
 # opennebula configuration
 cookbook_file "/etc/one/oned.conf" do
-	source "oned.conf"
-	owner "root"
-	group "root"
+  source "oned.conf"
+  owner "root"
+  group "root"
+  mode "0774"
 end
 
 # install openvz drivers

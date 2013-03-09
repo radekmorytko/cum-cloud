@@ -8,13 +8,9 @@ run_list(
 # 'recipe[chef-client]'
 )
 
-override_attributes({
+#override_attributes({
 #  :chef_client => {
 #    :interval => 10
 #  },
-  "authorization" => { 
-	"sudo" => { 
-		"users" => ["oneadmin"], 
-		"passwordless" => true,
-	} } 
-})
+#})
+

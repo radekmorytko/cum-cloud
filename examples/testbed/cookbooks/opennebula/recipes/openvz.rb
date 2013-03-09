@@ -12,9 +12,11 @@ include_recipe "opennebula::common"
 package "bridge-utils"
 
 # datastore directory
+one_username = node[:opennebula][:user]
+
 directory "/vz/one/datastore" do
-	owner "oneadmin"
-	group "oneadmin"
+	owner one_username
+	group one_username
 	mode 00755
 	recursive true
 	action :create

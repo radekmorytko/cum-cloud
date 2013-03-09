@@ -12,19 +12,23 @@ package "rubygems"
 package "unzip"
 
 # oneadmin user
-username = "oneadmin"
-user username do
+one_username = node[:opennebula][:user]
+one_password = node[:opennebula][:password]
+one_home = node[:opennebula][:home]
+
+user one_username do
 	uid 1001
-	password "$1$kT4MVlr0$TaA8mP96az6.7Eb7.7K3Y/"
-	home "/home/#{username}"
+	password one_password
+	home one_home
 	shell "/bin/bash"
 	supports :manage_home => true
 	action :create
 end
 
 # ssh keys
-execute "generate ssh skys for #{username}." do
-	user username
-	creates "/home/#{username}/.ssh/id_rsa.pub"
-	command "ssh-keygen -t rsa -q -f /home/#{username}/.ssh/id_rsa -P \"\""
+execute "generate ssh skys for #{one_username}." do
+	user one_username
+	creates "#{one_home}/.ssh/id_rsa.pub"
+	command "ssh-keygen -t rsa -q -f #{one_home}/.ssh/id_rsa -P \"\""
+	only_if { ::File.exists?("#{one_home}")}
 end
