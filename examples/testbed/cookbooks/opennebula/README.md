@@ -1,68 +1,53 @@
 opennebula Cookbook
 ===================
-TODO: Enter the cookbook description here.
-
-e.g.
-This cookbook makes your favorite breakfast sandwhich.
+Cookbook which aims to setup OpenNebula environment that consist of frontend node and backend node. The latter is configured to run OpenVZ. Please note that cookbook itself doesn't install OpenVZ.
 
 Requirements
 ------------
-TODO: List your cookbook requirements. Be sure to include any requirements this cookbook has on platforms, libraries, other cookbooks, packages, operating systems, etc.
 
-e.g.
-#### packages
-- `toaster` - opennebula needs toaster to brown your bagel.
+It is recommended to run cookbook together with recipes such as:
+- `apt`, to get the latest repository updadtes
+- `chef-client`, to run chef-client as a daemon
+- `hostname`, to set node's name to the one used by Chef
+- `sudo`, to get superuser privlidges for oneadmin user
 
 Attributes
 ----------
-TODO: List you cookbook attributes here.
 
-e.g.
-#### opennebula::default
-<table>
-  <tr>
-    <th>Key</th>
-    <th>Type</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td><tt>['opennebula']['bacon']</tt></td>
-    <td>Boolean</td>
-    <td>whether to include bacon</td>
-    <td><tt>true</tt></td>
-  </tr>
-</table>
+* general
+<pre>
+default[:opennebula][:user] = "oneadmin"
+default[:opennebula][:password] = "$1$kT4MVlr0$TaA8mP96az6.7Eb7.7K3Y/"
+default[:opennebula][:home] = "/home/oneadmin"
+</pre>
+* networking
+<pre>
+default[:opennebula][:openvz][:interface] = "eth0"
+default[:opennebula][:openvz][:bridge] = "virbr0"
+</pre>
+
+Note that password is 'shadowed' using command: <pre>openssl passwd -1 <password></pre>
 
 Usage
 -----
-#### opennebula::default
-TODO: Write usage instructions for each cookbook.
 
-e.g.
-Just include `opennebula` in your node's `run_list`:
+Exemplary frontend role:
+<pre>
+name "frontend"
 
-```json
-{
-  "name":"my_node",
-  "run_list": [
-    "recipe[opennebula]"
-  ]
-}
-```
+run_list(
+  'recipe[opennebula::frontend]',
+)
 
-Contributing
-------------
-TODO: (optional) If this is a public cookbook, detail the process for contributing. If this is a private cookbook, remove this section.
-
-e.g.
-1. Fork the repository on Github
-2. Create a named feature branch (like `add_component_x`)
-3. Write you change
-4. Write tests for your change (if applicable)
-5. Run the tests, ensuring they all pass
-6. Submit a Pull Request using Github
+override_attributes({
+  :opennebula => {
+    :home => "/var/lib/one"
+  }
+})
+</pre>
 
 License and Authors
 -------------------
-Authors: TODO: List authors
+
+Authors: Dariusz Chrząścik
+License: Apache License v2.

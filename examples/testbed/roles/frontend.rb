@@ -5,7 +5,7 @@ run_list(
 )
 
 override_attributes({
-  "opennebula" => {
-    "home" => "/var/lib/one"
+  :opennebula => {
+    :home => "/var/lib/one"
   }
 })

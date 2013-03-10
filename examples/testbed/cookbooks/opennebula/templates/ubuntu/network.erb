@@ -1,0 +1,12 @@
+# loopback network interface
+auto lo
+iface lo inet loopback
+
+# The primary network interface
+auto <%= @interface %>
+
+# bridge
+auto <%= @bridge %>
+iface <%= @bridge %> inet dhcp
+	bridge_ports <%= @interface %>
+

@@ -9,8 +9,6 @@
 
 include_recipe "opennebula::common"
 
-package "bridge-utils"
-
 # datastore directory
 one_username = node[:opennebula][:user]
 
@@ -29,3 +27,17 @@ end
 	end
 end
 
+# bridge
+package "bridge-utils"
+
+template "/etc/network/interfaces" do
+  source "network.erb"
+  variables(
+    :bridge => node[:opennebula][:openvz][:bridge],
+    :interface => node[:opennebula][:openvz][:interface]
+  )
+end
+
+service "networking" do
+	subscribes :restart, resources("template[/etc/network/interfaces]"), :immediately
+end
