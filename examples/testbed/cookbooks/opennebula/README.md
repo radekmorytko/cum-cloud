@@ -11,6 +11,8 @@ It is recommended to run cookbook together with recipes such as:
 - `hostname`, to set node's name to the one used by Chef
 - `sudo`, to get superuser privlidges for oneadmin user
 
+Note that it is recommended to use `hostname` which is present in cookbook directory, as it is modified version of community cookbook.
+
 Attributes
 ----------
 
