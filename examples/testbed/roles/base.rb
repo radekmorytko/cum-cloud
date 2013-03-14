@@ -1,16 +1,14 @@
 name "base"
 
-run_list(
-  'recipe[apt]',
-  'recipe[hostname]',
-  'recipe[sudo]',
-# production env. only: (run chef-client as a daemon)
-# 'recipe[chef-client]'
-)
+env_run_lists "prod" => ["recipe[chef-client]"],
+			  "_default" => ['recipe[apt]', 'recipe[hostname]', 'recipe[sudo]']
 
-#override_attributes({
-#  :chef_client => {
-#    :interval => 10
-#  },
-#})
-
+override_attributes( {
+    :authorization => {
+      :sudo => {
+        :users => [
+          "ubuntu"
+        ]
+      }
+   }
+} )

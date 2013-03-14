@@ -1,0 +1,7 @@
+{
+    "id": "service1",  
+    "password": "$1$kT4MVlr0$TaA8mP96az6.7Eb7.7K3Y/",
+    "zone": "flame",
+    "load_vm_info": "false",
+    "carina_port": 4678    
+}

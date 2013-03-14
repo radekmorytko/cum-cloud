@@ -26,45 +26,48 @@ package "ruby-password"
 package "ruby-sequel"
 package "ruby-sqlite3"
 
-# opennebula package, delivered as deb
-opennebula_pkg_name = 'Ubuntu-12.04-opennebula_3.6.0-1_amd64.deb'
+# opennebula package, delivered as a file
+opennebula_pkg_name = value_for_platform(
+  "ubuntu" => { "default" => 'Ubuntu-12.04-opennebula_3.6.0-1_amd64.deb' },
+  "centos" => { "default" => 'CentOS-6.2-opennebula-3.6.0-1.x86_64.rpm' }
+)
+
+package_provider = value_for_platform(
+  "ubuntu" => { "default" => Chef::Provider::Package::Dpkg },
+  "centos" => { "default" => Chef::Provider::Package::Yum }
+)
+
 opennebula_pkg_dst = "/var/chef/cache/#{opennebula_pkg_name}"
 
 cookbook_file opennebula_pkg_dst do
 	source opennebula_pkg_name
-	owner "root"
-	group "root"
 	mode "0444"
 end
 
 package opennebula_pkg_name do
-	provider Chef::Provider::Package::Dpkg
+	provider package_provider
 	source opennebula_pkg_dst
 	action :install
 end
 
 # opennebula configuration
-cookbook_file "/etc/one/oned.conf" do
-  source "oned.conf"
-  owner "root"
-  group "root"
+template "/etc/one/oned.conf" do
+  source "oned.conf.erb"
   mode "0774"
 end
 
 # install openvz drivers
-remote_file "/var/chef/cache/one-ovz.zip" do
-  source "https://github.com/dchrzascik/one-ovz-driver/archive/master.zip"
-  mode "0444"
-end
+one_username = node[:opennebula][:user]
 
-execute "unpack drivers" do
-	user "oneadmin"
-	command "unzip /var/chef/cache/one-ovz.zip -d /tmp"
-	not_if { ::File.exists?("/tmp/one-ovz-driver-master/")}
-end
-
-execute "install drivers" do
-	user "root"
-	command "cd /tmp/one-ovz-driver-master/ && rake install"
-	not_if { ::File.exists?("/var/lib/one/remotes/vmm/ovz")}
+opennebula_archive "one-ovz-driver" do
+	url "https://github.com/dchrzascik/one-ovz-driver/archive/master.zip"
+	type "zip"
+	owner "root"
+	group "root"
+	
+	cwd "/tmp/one-ovz-driver-master/" 
+	command "rake install"
+	creates "/var/lib/one/remotes/vmm/ovz"
+	
+	action :install
 end

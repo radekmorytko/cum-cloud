@@ -1,0 +1,38 @@
+ENDPOINT = {
+	'mm01' => {
+		:proxy   => '<%= @proxy %>',
+		:oneauth => "<%= @oneauth %>"
+		}
+	}
+
+TEMPLATE = {
+	'ubuntu1104-small' => {
+		:file       => "~/vm/ubuntu1104.vm",
+		:cpu        => 1,
+		:memory     => 512,
+		:network_id => { 'mm01' => 0 },
+		:image_id   => { 'mm01' => 1 }
+	},
+
+}
+
+ENVIRONMENT = {
+	'tomcat' => {
+        :type => "compute",
+        :endpoint => "mm01",
+        :description => "Load-balanced Tomcat cluster",
+        :master_template   => "ubuntu1104-small",
+        :master_context_script =>  "balance.sh",
+        :master_setup_time => 30,
+        :master_context_var => "BALANCE_PORT=8080",
+        :slave_template    => "ubuntu1104-small",
+        :slave_context_script => "tomcat.sh",
+        :slave_context_var => "APP_PACKAGE=gwt-petstore.war",
+        :placement_policy  => "pack",
+        :num_slaves        => 2,
+        :slavedata         => "8080",
+        :adminuser         => "ubuntu",
+        :app_url           => "http://%MASTER%:8080/gwt-petstore"
+    },
+
+}
