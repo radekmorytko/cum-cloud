@@ -37,6 +37,10 @@ module OpenNebula
                     :items => {
                         :type => :string
                     }
+                },
+                'appstage_id' => {
+                    :type => :integer,
+                    :required => false
                 }
             }
         }

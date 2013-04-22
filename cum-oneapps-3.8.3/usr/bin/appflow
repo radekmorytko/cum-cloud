@@ -205,8 +205,9 @@ def show_service(client, args, options)
 
                 puts str % ["ROLE STATE", Role.state_str(role['state'])]
                 puts str % ["PARENTS", role['parents'].join(', ')] if role['parents']
-                puts str % ["CARNIDALITY", role['cardinality']||1]
+                puts str % ["CARDINALITY", role['cardinality']||1]
                 puts str % ["VM TEMPLATE", role['vm_template']]
+                puts str % ["APPSTAGE ID", role['appstage_id']] if role['appstage_id']
 
                 puts "NODES INFORMATION"
                 NODE_TABLE.show(role['nodes'])

@@ -107,9 +107,7 @@ module OpenNebula
             return res if OpenNebula.is_error? res
 
             # Create context if it does not exist
-            if !template.has_elements?('/VMTEMPLATE/TEMPLATE/CONTEXT')
-                template.add_element('/VMTEMPLATE/TEMPLATE', 'CONTEXT'=>nil)
-            end
+            template.add_element('/VMTEMPLATE/TEMPLATE', 'CONTEXT'=>nil) unless template.has_elements?('/VMTEMPLATE/TEMPLATE/CONTEXT')
 
             # Encode the node
             node_string=node['node'].to_json

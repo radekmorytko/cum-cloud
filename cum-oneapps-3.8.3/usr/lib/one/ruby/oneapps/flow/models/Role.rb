@@ -139,13 +139,25 @@ module OpenNebula
                 vm_name = "#{@body['name']}_#{i}_(service_#{@service.id()})"
 
                 template_id = @body['vm_template']
+                body_json = @body.to_json
 
                 Log.debug LOG_COMP, "Role #{name} : Trying to instantiate template "\
-                    "#{template_id}, with name #{vm_name}", @service.id()
+                    "#{template_id}, with name #{vm_name}; body json: #{body_json}", @service.id()
 
-                template = OpenNebula::Template.new_with_id(template_id, @service.client)
+                if @body['appstage_id']
+                  Log.info LOG_COMP, "Deploying USING chef", @service.id()
+                  xml=OpenNebula::ChefDoc.build_xml(@body['appstage_id'])
+                  chef_doc=OpenNebula::ChefDoc.new(xml, @service.client)
+                  chef_doc.info
 
-                vm_id = template.instantiate(vm_name)
+                  res = chef_doc.instantiate(template_id)
+
+                  vm_id = res.id
+                else
+                  Log.info LOG_COMP, "Deploying WITHOUT chef", @service.id()
+                  template = OpenNebula::Template.new_with_id(template_id, @service.client)
+                  vm_id = template.instantiate(vm_name)
+                end
 
                 if OpenNebula.is_error?(vm_id)
                     msg = "Role #{name} : Instantiate failed for template #{template_id}; #{vm_id.message}"
