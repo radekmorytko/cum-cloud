@@ -1,0 +1,8 @@
+#!/bin/bash
+
+## prepare the node
+/usr/lib/one/ruby/oneapps/vm-coordinator/run.rb
+
+
+## start the rest server
+/usr/lib/one/ruby/oneapps/vm-coordinator/server.rb
