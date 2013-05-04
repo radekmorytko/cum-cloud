@@ -94,6 +94,8 @@ module OpenNebula
             @node
         end
 
+        CONTEXT_XPATH = '/VMTEMPLATE/TEMPLATE/CONTEXT'
+
         def instantiate(template, variables={})
             xml=OpenNebula::Template.build_xml(template.to_i)
             template=OpenNebula::Template.new(xml, @client)
@@ -107,28 +109,19 @@ module OpenNebula
             return res if OpenNebula.is_error? res
 
             # Create context if it does not exist
-            template.add_element('/VMTEMPLATE/TEMPLATE', 'CONTEXT'=>nil) unless template.has_elements?('/VMTEMPLATE/TEMPLATE/CONTEXT')
+            template.add_element('/VMTEMPLATE/TEMPLATE', 'CONTEXT'=>nil) unless template.has_elements?(CONTEXT_XPATH)
 
             # Encode the node
             node_string=node['node'].to_json
             node_base64=Base64.encode64(node_string).delete("\n")
 
-            template.add_element('/VMTEMPLATE/TEMPLATE/CONTEXT', 'NODE'=>
+            template.add_element(CONTEXT_XPATH, 'NODE' =>
                 node_base64)
 
-            if variables && !variables.empty?
-                hash=Hash.new
-                variables.each do |var|
-                    key, val=var.split('=')
-
-                    hash[key]=val
-                end
-
-                template.add_element('/VMTEMPLATE/TEMPLATE/CONTEXT', hash)
-            end
+            template.add_element(CONTEXT_XPATH, variables) unless variables.empty?
 
             if node['cookbooks']
-                template.add_element('/VMTEMPLATE/TEMPLATE/CONTEXT',
+                template.add_element(CONTEXT_XPATH,
                     'COOKBOOKS' => node['cookbooks'])
             end
 
@@ -139,11 +132,7 @@ module OpenNebula
 
             res=vm.allocate(t)
 
-            if OpenNebula.is_error? res
-                return res
-            else
-                vm
-            end
+            OpenNebula.is_error?(res) ? res : vm
         end
     end
 

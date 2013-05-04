@@ -150,7 +150,7 @@ module OpenNebula
                   chef_doc=OpenNebula::ChefDoc.new(xml, @service.client)
                   chef_doc.info
 
-                  res = chef_doc.instantiate(template_id)
+                  res = chef_doc.instantiate(template_id, 'SERVICE_ID' => @service.id)
 
                   vm_id = res.id
                 else
