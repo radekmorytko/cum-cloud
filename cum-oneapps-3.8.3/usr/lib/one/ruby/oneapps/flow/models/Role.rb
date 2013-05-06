@@ -133,42 +133,43 @@ module OpenNebula
         # were created, false and the error reason if there was a problem
         # creating the VMs
         def deploy
-            n_nodes = cardinality() - get_nodes.size
+            n_nodes = cardinality - get_nodes.size
 
             n_nodes.times { |i|
-                vm_name = "#{@body['name']}_#{i}_(service_#{@service.id()})"
+                vm_name = "#{@body['name']}_#{i}_(service_#{@service.id})"
 
                 template_id = @body['vm_template']
                 body_json = @body.to_json
 
                 Log.debug LOG_COMP, "Role #{name} : Trying to instantiate template "\
-                    "#{template_id}, with name #{vm_name}; body json: #{body_json}", @service.id()
+                    "#{template_id}, with name #{vm_name}; body json: #{body_json}", @service.id
 
                 if @body['appstage_id']
-                  Log.info LOG_COMP, "Deploying USING chef", @service.id()
+                  Log.info LOG_COMP, "Deploying USING chef", @service.id
+
                   xml=OpenNebula::ChefDoc.build_xml(@body['appstage_id'])
                   chef_doc=OpenNebula::ChefDoc.new(xml, @service.client)
                   chef_doc.info
 
-                  res = chef_doc.instantiate(template_id, 'SERVICE_ID' => @service.id)
+                  res = chef_doc.instantiate(template_id, prepare_vm_vars(i))
 
                   vm_id = res.id
                 else
-                  Log.info LOG_COMP, "Deploying WITHOUT chef", @service.id()
+                  Log.info LOG_COMP, "Deploying WITHOUT chef", @service.id
                   template = OpenNebula::Template.new_with_id(template_id, @service.client)
                   vm_id = template.instantiate(vm_name)
                 end
 
                 if OpenNebula.is_error?(vm_id)
                     msg = "Role #{name} : Instantiate failed for template #{template_id}; #{vm_id.message}"
-                    Log.error LOG_COMP, msg, @service.id()
+                    Log.error LOG_COMP, msg, @service.id
                     @service.log_error(msg)
 
                     return [false, "Error trying to instantiate the VM Template" \
                         " #{template_id} in Role #{self.name}: #{vm_id.message}"]
                 end
 
-                Log.debug LOG_COMP, "Role #{name} : Instantiate success, VM ID #{vm_id}", @service.id()
+                Log.debug LOG_COMP, "Role #{name} : Instantiate success, VM ID #{vm_id}", @service.id
 
                 # vm.info is not performed, this creates an empty VM xml
                 # containing only the ID
@@ -180,7 +181,7 @@ module OpenNebula
                 }
             }
 
-            return [true, nil]
+            [true, nil]
         end
 
         # Shutdown all the nodes in this role
@@ -278,5 +279,24 @@ module OpenNebula
 
             return [true, nil]
         end
+
+    private
+
+        def prepare_vm_vars(vm_no)
+          vm_role = @body['parents'] ? 'SLAVE' : 'MASTER'
+          Log.info LOG_COMP, "VM's role: #{vm_role}", @service.id
+
+          configuration = YAML.load_file(CONFIGURATION_FILE)
+
+          {
+              'SERVICE_ID' => @service.id,
+              'ROLE' => vm_role,
+              'REDIS_HOST' => configuration[:redis_host],
+              'REDIS_PORT' => configuration[:redis_port],
+              'VM_NAME' => "#{@body['name']}_#{vm_no}_(service_#{@service.id})"
+          }
+        end
+
+
     end
 end

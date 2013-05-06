@@ -1,8 +1,8 @@
 #!/bin/bash
 
 ## prepare the node
-/usr/lib/one/ruby/oneapps/vm-coordinator/run.rb
+/usr/lib/one/ruby/oneapps/vm_coordinator/run.rb
 
 
 ## start the rest server
-/usr/lib/one/ruby/oneapps/vm-coordinator/server.rb
+/usr/lib/one/ruby/oneapps/vm_coordinator/server.rb > /var/log/chef-sinatra.log 2>&1

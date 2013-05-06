@@ -40,7 +40,7 @@ class OneChef
     create_node_object_file(node_object_file, node_object_contents)
 
     command = "/usr/local/bin/chef-solo -c #{File.join('/', @conf_template.path, @conf_template.filename)} " <<
-              "-j #{node_object_file} 2>&1 >> /var/log/chef-system-out.log"
+              "-j #{node_object_file} >> /var/log/chef-system-out.log 2>&1"
 
     @@logger.debug("Running command: #{command}")
 

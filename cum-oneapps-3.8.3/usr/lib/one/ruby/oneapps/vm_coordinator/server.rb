@@ -8,12 +8,16 @@ require 'one_chef'
 require 'logger'
 require 'sinatra'
 
-logger = Logger.new(STDOUT)
+logger = Logger.new('/var/log/vm-coordinator-server.log')
 
 chef = OneChef.new
 coordinator = VMCoordinator.new(:chef => chef)
 
 logger.debug('Coordinator initialized')
+
+## sinatra part
+
+set :bind, '0.0.0.0'
 
 post '/action/run_chef' do
   logger.debug("Handling running chef")
