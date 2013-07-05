@@ -9,27 +9,19 @@
 include_recipe "opennebula::common"
 
 # depdendency for openvz-one
-package "rake"
+rake_pkg_name = value_for_platform(
+  "ubuntu" => { "default" => 'rake' },
+  "centos" => { "default" => 'rubygem-rake' }
+)
+package rake_pkg_name
 
 # depdencies for opennebula deb package
-package "apg"
 package "genisoimage"
-package "libmysqlclient18"
-package "libxmlrpc-c++4"
-package "libxmlrpc-core-c3"
-package "ruby-json"
-package "ruby-sinatra"
-package "thin1.8"
-package "lvm2"
-package "ruby-mysql"
-package "ruby-password"
-package "ruby-sequel"
-package "ruby-sqlite3"
 
 # opennebula package, delivered as a file
 opennebula_pkg_name = value_for_platform(
   "ubuntu" => { "default" => 'Ubuntu-12.04-opennebula_3.6.0-1_amd64.deb' },
-  "centos" => { "default" => 'CentOS-6.2-opennebula-3.6.0-1.x86_64.rpm' }
+  "centos" => { "default" => 'opennebula-3.8.3-1.x86_64.rpm' }
 )
 
 package_provider = value_for_platform(
@@ -37,17 +29,23 @@ package_provider = value_for_platform(
   "centos" => { "default" => Chef::Provider::Package::Yum }
 )
 
+
 opennebula_pkg_dst = "/var/chef/cache/#{opennebula_pkg_name}"
 
-cookbook_file opennebula_pkg_dst do
-	source opennebula_pkg_name
-	mode "0444"
-end
+File.exist?(opennebula_pkg_dst) do
+	cookbook_file opennebula_pkg_dst do
+	        source opennebula_pkg_name
+	        mode "0444"
+	end
 
-package opennebula_pkg_name do
-	provider package_provider
-	source opennebula_pkg_dst
-	action :install
+	package opennebula_pkg_name do
+        	provider package_provider
+	        source opennebula_pkg_dst
+        	action :install
+	end
+
+	# autostart opennebula
+	execute "chkconfig --add opennebula"
 end
 
 # opennebula configuration

@@ -26,6 +26,14 @@ user one_username do
 	action :create
 end
 
+directory "#{one_home}/.ssh" do
+  owner one_username
+  group one_username
+  mode 00644
+  recursive true
+  action :create
+end
+
 # ssh keys
 execute "generate ssh skys for #{one_username}" do
 	user one_username
