@@ -1,14 +1,5 @@
 name "base"
 
 env_run_lists "prod" => ["recipe[chef-client]"],
-			  "_default" => ['recipe[apt]', 'recipe[hostname]', 'recipe[sudo]']
+			  "_default" => ['recipe[yum]', 'recipe[hostname]']
 
-override_attributes( {
-    :authorization => {
-      :sudo => {
-        :users => [
-          "ubuntu"
-        ]
-      }
-   }
-} )
