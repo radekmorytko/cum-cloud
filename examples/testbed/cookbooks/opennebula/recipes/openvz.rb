@@ -12,7 +12,7 @@ include_recipe "opennebula::common"
 # datastore directory
 one_username = node[:opennebula][:user]
 
-directory "/vz/one/datastore" do
+directory "/vz/one/datastores" do
 	owner one_username
 	group one_username
 	mode 00755
@@ -30,13 +30,18 @@ end
 # bridge
 package "bridge-utils"
 
-bridge = node[:opennebula][:openvz][:bridge],
+bridge = node[:opennebula][:openvz][:bridge]
 interface = node[:opennebula][:openvz][:interface]
 
 interfaces = value_for_platform(
   "ubuntu" => { "default" => ['/etc/network/interfaces'] },
   "centos" => { "default" => ["/etc/sysconfig/network-scripts/ifcfg-#{bridge}", 
                               "/etc/sysconfig/network-scripts/ifcfg-#{interface}"] }
+)
+
+network_service = value_for_platform(
+  "ubuntu" => { "default" => "networking" },
+  "centos" => { "default" => "network" }
 )
 
 interfaces.each do |interface|
@@ -47,8 +52,13 @@ interfaces.each do |interface|
         :interface => node[:opennebula][:openvz][:interface]
       )
     end
-    
-    service "networking" do
+end
+
+# restart has to be triggered after all interfaces are set
+# otherwise they dependencies will lead to crash
+interfaces.each do |interface|
+    service network_service do
         subscribes :restart, resources("template[#{interface}]"), :immediately
     end
 end
+

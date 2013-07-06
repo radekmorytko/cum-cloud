@@ -27,17 +27,18 @@ user one_username do
 end
 
 directory "#{one_home}/.ssh" do
-  owner one_username
-  group one_username
-  mode 00644
-  recursive true
-  action :create
+	owner one_username
+	group one_username
+	mode 00700
+	recursive true
+	action :create
 end
 
 # ssh keys
 execute "generate ssh skys for #{one_username}" do
-	user one_username
 	creates "#{one_home}/.ssh/id_rsa.pub"
 	command "ssh-keygen -t rsa -q -f #{one_home}/.ssh/id_rsa -P \"\""
 	only_if { ::File.exists?("#{one_home}")}
 end
+
+execute "chown -R #{one_username}:#{one_username} #{one_home}/.ssh"
