@@ -5,5 +5,5 @@ default[:opennebula][:home] = "/home/oneadmin"
 default[:opennebula][:uid] = 1001
 
 # networking
-default[:opennebula][:openvz][:interface]='eth0'
-default[:opennebula][:openvz][:bridge]='virbr0'
+default[:opennebula][:openvz][:interface] = 'eth0'
+default[:opennebula][:openvz][:bridge] = 'virbr0'
