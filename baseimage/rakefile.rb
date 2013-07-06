@@ -1,6 +1,5 @@
 require 'rake'
 require 'rake/testtask'
-require 'rake/packagetask'
 
 task :default => :unit_tests
 
@@ -18,15 +17,3 @@ task :unit_tests do
     test(t, "test/**/*_test.rb")
   end
 end
-
-# pack cookbooks and send it (temporary solution)
-Rake::PackageTask.new("cookbooks", :noversion) do |p|
-  p.need_tar_gz = true
-  p.package_files.include("src/cookbooks/**/**")
-end
-
-task :cookbooks => [:package] do
-  print "Sending to remote host"
-  `scp pkg/cookbooks.tar.gz cdariusz@student.agh.edu.pl:~/public_html/pp`
-end
-
