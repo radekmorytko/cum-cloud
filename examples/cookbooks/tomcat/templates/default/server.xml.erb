@@ -15,26 +15,14 @@
   </GlobalNamingResources>
 
   <Service name="Catalina">
-    
-    <!--
-        <Connector port="8080" protocol="HTTP/1.1" 
-               connectionTimeout="20000" 
-               URIEncoding="UTF-8"
-               redirectPort="8443" />
-    -->
 
-    <!--
-        <Connector executor="tomcatThreadPool"
-               port="8080" protocol="HTTP/1.1" 
-               connectionTimeout="20000" 
-               redirectPort="8443" />
-    -->           
-
-    <!-- Define an AJP 1.3 Connector on port 8009 -->
-    <Connector port="<%=@ajp_port%>" protocol="AJP/1.3" redirectPort="8443" />
+    <Connector executor="tomcatThreadPool"
+           port="8080" protocol="HTTP/1.1"
+           connectionTimeout="20000"
+           redirectPort="8443" />
 
     <!-- You should set jvmRoute to support load-balancing via AJP ie : -->
-    <Engine name="Catalina" defaultHost="localhost" jvmRoute="<%=@jvm_route%>">         
+    <Engine name="Catalina" defaultHost="localhost">
 
       <Cluster className="org.apache.catalina.ha.tcp.SimpleTcpCluster"/>
 

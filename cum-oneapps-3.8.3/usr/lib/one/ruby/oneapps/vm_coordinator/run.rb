@@ -55,20 +55,15 @@ if role == :slave
 
   chef_node_object = {
       :name => 'node-loadbalancer',
-      :run_list => %w(recipe[apache_mod_jk]),
-      :mod_jk => {
-          :tomcat_workers => {
-              ENV['VM_NAME'] => {
-                  :port => 8009,
-                  :type => 'ajp13',
-                  :host => ENV['IP']
+      :run_list => %w(recipe[haproxy]),
+      :haproxy => {
+          :members => [
+              {
+                  "hostname" => ENV['VM_NAME'],
+                  "ipaddress" => ENV['IP']
               }
-          },
-          :loadbalancer => {
-              :added_workers => [ENV['VM_NAME']]
-          }
+          ]
       },
-
   }
 
   url = master_ip + ':4567/action/run_chef'
