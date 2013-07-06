@@ -10,6 +10,7 @@
 package "ruby"
 package "rubygems"
 package "unzip"
+package "screen"
 
 # oneadmin user
 one_username = node[:opennebula][:user]
