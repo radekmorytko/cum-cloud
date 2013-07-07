@@ -17,3 +17,14 @@ task :unit_tests do
     test(t, "test/**/*_test.rb")
   end
 end
+
+task :synch, :host, :path do |t, args|
+  args.with_defaults(:path => '/usr/lib/one/ruby/oneapps')
+
+  user = 'root'
+  host = args[:host]
+  path = args[:path]
+
+  puts `rsync -avz src/vm_coordinator #{user}@#{host}:#{path}`
+end
+

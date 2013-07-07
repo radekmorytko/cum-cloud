@@ -1,5 +1,9 @@
 #!/bin/bash
 
+## move cookbooks to chef directory
+mkdir -p /tmp/chef/
+cp -r /mnt/cookbooks /tmp/chef/
+
 ## prepare the node
 /usr/lib/one/ruby/oneapps/vm_coordinator/run.rb | tee /var/log/vm_coordinator-run.log
 

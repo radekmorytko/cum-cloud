@@ -33,7 +33,7 @@ class OneChef
     )
 
     prepare_configuration
-    prepare_cookbooks(args[:cookbooks_url]) if args[:cookbooks_url]
+    #prepare_cookbooks(args[:cookbooks_url]) if args[:cookbooks_url]
 
     node_object_file = args[:node_object][:file]
     node_object_contents = Base64::decode64(args[:node_object][:data])
@@ -54,10 +54,15 @@ class OneChef
 
   def prepare_cookbooks(cookbooks_url)
     @@logger.debug('Preparing cookbooks')
-    downloaded_file = download_cookbooks(cookbooks_url)
+   # downloaded_file = download_cookbooks(cookbooks_url)
+   # command = "tar xzf #{downloaded_file} -C #{@conf_template.cookbooks_path}"
+   # @@logger.debug("Extracting cookbooks by running command: #{command}")
+   # returned_val = system(command)
+
     command = "tar xzf #{downloaded_file} -C #{@conf_template.cookbooks_path}"
     @@logger.debug("Extracting cookbooks by running command: #{command}")
     returned_val = system(command)
+
     @@logger.debug("Returned val: #{returned_val}")
   end
 
