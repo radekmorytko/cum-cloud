@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require '../vm_coordinator'
+
+## prepare the node
+
+#/usr/lib/one/ruby/oneapps/vm_coordinator/run.rb | tee /var/log/vm_coordinator-run.log
+
+
+## start the rest server
+#/usr/lib/one/ruby/oneapps/vm_coordinator/server.rb > /var/log/chef-sinatra.log 2>&1

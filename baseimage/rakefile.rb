@@ -8,7 +8,7 @@ def test(t, files)
   t.verbose = true
   t.warning = true
   t.test_files = FileList.new(files)
-  t.libs = %W(../lib src/vm_coordinator)
+  t.libs = %W(../lib src/vm_coordinator src/vm_coordinator/conf)
 end
 
 task :unit_tests do
