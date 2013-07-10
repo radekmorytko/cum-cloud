@@ -4,18 +4,19 @@ require "test/unit"
 require 'mocha/setup'
 
 require 'models/chef_executor'
-load 'config/vm_coordinator.conf'
 
 class ChefExecutorTest < Test::Unit::TestCase
   TMP_DIR = 'tmp'
+  CHEF_EXECUTABLE = '/that/path/doesnt/exists'
+
+  def setup
+    @chef = ChefExecutor.new('chef.conf', CHEF_EXECUTABLE)
+    FileUtils.mkdir_p TMP_DIR
+  end
 
   def teardown
     FileUtils.remove_dir TMP_DIR, :true
-  end
-
-  def setup
-    @chef = ChefExecutor.new(:file => 'chef.conf')
-    FileUtils.mkdir_p TMP_DIR
+    FileUtils.remove "#{VM_COORDINATOR_LOG}/chef_executor.log", :force => :true
   end
 
   def test_if_chef_runs
@@ -24,7 +25,7 @@ class ChefExecutorTest < Test::Unit::TestCase
       :file => "#{TMP_DIR}/node.json",
       :data => node_data
     }
-    command_str = "/usr/bin/chef-solo -c chef.conf -j #{node_object[:file]} >> #{VM_COORDINATOR_LOG}/chef-executor.log 2>&1"
+    command_str = "#{CHEF_EXECUTABLE} -c chef.conf -j #{node_object[:file]} >> #{VM_COORDINATOR_LOG}/chef_executor.log 2>&1"
 
     executor = mock()
     executor.expects(:execute).with(command_str)

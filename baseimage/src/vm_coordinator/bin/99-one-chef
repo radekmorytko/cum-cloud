@@ -10,5 +10,12 @@ conf = ChefConfiguration.new
 conf.prepare
 
 # apply appstage configuration
-chef = ChefExecutor.new conf
-chef.run (:node_object => { :data => ENV['NODE'] })
+chef = ChefExecutor.new(conf.conf_template[:path], conf.chef_solo)
+
+if ENV.key? 'NODE'
+  chef.run (:node_object => { :data => ENV['NODE'] })
+else
+  puts "Environment variable NODE is not set"
+end
+
+

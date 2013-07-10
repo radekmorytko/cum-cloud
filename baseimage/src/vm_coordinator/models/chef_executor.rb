@@ -11,12 +11,7 @@ load 'config/vm_coordinator.conf'
 class ChefExecutor
 
   class Executor
-
-    def initialize
-      # note that log assumes that VM_COORDINATOR_LOG dir exists
-      # hence it has to be initialized lazily
-      @@logger = Logger.new("#{VM_COORDINATOR_LOG}/chef-executor.log")
-    end
+    @@logger = Logger.new("#{VM_COORDINATOR_LOG}/chef_executor.log")
 
     def execute(command)
       @@logger.debug("Running command: #{command}")
@@ -27,8 +22,11 @@ class ChefExecutor
     end
   end
 
-  def initialize(config)
+  # config: path to chef configuration
+  # chef_solo: path to executable chef-solo
+  def initialize(config, chef_solo)
     @config = config
+    @executable = chef_solo
   end
 
   def run(node_object = {}, executor = nil)
@@ -41,7 +39,7 @@ class ChefExecutor
     node_object_contents = Base64::decode64(node_object[:data])
     create_node_object_file(node_object_file, node_object_contents)
 
-    command = "#{chef_solo} -c #{@config[:file]} -j #{node_object_file} >> #{VM_COORDINATOR_LOG}/chef-executor.log 2>&1"
+    command = "#{@executable} -c #{@config} -j #{node_object_file} >> #{VM_COORDINATOR_LOG}/chef_executor.log 2>&1"
 
     executor.execute(command)
   end
@@ -51,16 +49,6 @@ class ChefExecutor
   def create_node_object_file(file, data)
     File.open(file, 'w') do |f|
       f.write(data)
-    end
-  end
-
-  # checks standard locations for path to chef-solo
-  def chef_solo
-    # TODO fix this issue in a different way
-    # TODO add exception if not found
-
-    %w(/usr/bin/chef-solo /usr/local/bin/chef-solo).each do |path|
-      return path if File.exists? path
     end
   end
 

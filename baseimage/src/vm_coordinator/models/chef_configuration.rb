@@ -3,16 +3,9 @@ $LOAD_PATH.unshift(File.dirname(File.expand_path('..', __FILE__)))
 load 'config/vm_coordinator.conf'
 
 class ChefConfiguration
+  @@logger = Logger.new("#{VM_COORDINATOR_LOG}/chef_configuration.log")
 
-  attr_writer :conf_template
-
-  def initialize(log_dir = nil)
-    log_dir ||= VM_COORDINATOR_LOG
-    FileUtils.mkdir_p(log_dir) unless File.exist?(log_dir)
-
-    # initialize logger lazily
-    @@logger = Logger.new("#{log_dir}/chef_configuration.log")
-  end
+  attr_accessor :conf_template
 
   def prepare(config = {})
     config ||= {}
@@ -30,6 +23,15 @@ class ChefConfiguration
     make_config_dirs
     move_cookbooks
     save_config_file
+  end
+
+  # checks standard locations for path to chef-solo
+  def chef_solo
+    %w(/usr/bin/chef-solo /usr/local/bin/chef-solo).each do |path|
+      return path if File.exists? path
+    end
+
+    raise RuntimeError, 'chef-solo cannot be found'
   end
 
   private

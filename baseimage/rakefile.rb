@@ -18,16 +18,6 @@ task :unit_tests do
   end
 end
 
-task :synch, :host, :path do |t, args|
-  args.with_defaults(:path => '/usr/lib/one/ruby/oneapps')
-
-  user = 'root'
-  host = args[:host]
-  path = args[:path]
-
-  puts `rsync -avz src/vm_coordinator #{user}@#{host}:#{path}`
-end
-
 task :package do
   PACKAGE_NAME='${PACKAGE_NAME:-vm_coordinator}'
   PACKAGE_TYPE='${PACKAGE_TYPE:-deb}'
@@ -35,9 +25,11 @@ task :package do
   VERSION='${VERSION:-3.8.3}'
   NAME="#{PACKAGE_NAME}_#{VERSION}.#{PACKAGE_TYPE}"
 
-  # cleanup
-  FileUtils.remove_dir 'pkg', true
-  FileUtils.mkdir_p('pkg/tmp')
+  # clean
+  FileUtils.remove_dir 'pkg'
+
+  # prepare absolute structure
+  FileUtils.mkdir_p('pkg/tmp/vm_coordinator')
   FileUtils.cp_r 'src/vm_coordinator', 'pkg/tmp'
 
   # create package
