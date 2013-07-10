@@ -1,8 +1,18 @@
 #!/bin/bash
 
-# postinstall script for debian linux family
-cat << EOF > /etc/rc2.d/S99vm_coordinator
+## substitute (if necessary) oneapps chef script
+ONE_DIR=/etc/one-context.d
+CHEF=$ONE_DIR/99-one-chef
+
+rm -rf $CHEF
+# ensure that directory exists
+mkdir -p $ONE_DIR
+ln -s /tmp/vm_coordinator/bin/99-one-chef $CHEF
+
+## postinstall script for debian linux family
+VM_COORDINATOR=/etc/rc2.d/S99vm_coordinator
+cat << EOF > $VM_COORDINATOR
 /tmp/vm_coordinator/controllers/vm_coordinator_server.rb
 EOF
 
-chmod +x /etc/rc2.d/S99vm_coordinator
+chmod +x $VM_COORDINATOR
