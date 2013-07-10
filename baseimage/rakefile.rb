@@ -41,6 +41,12 @@ task :package do
   FileUtils.cp_r 'src/vm_coordinator', 'pkg/tmp'
 
   # create package
-  puts %x{cd pkg && fpm -n #{PACKAGE_NAME} -t #{PACKAGE_TYPE} -s dir --vendor #{VENDOR} -v #{VERSION} -f -a all -p #{NAME} *}
+  cwd = File.dirname(File.expand_path(__FILE__))
+  cmd = "cd pkg && fpm -n #{PACKAGE_NAME} -t #{PACKAGE_TYPE} \
+         -s dir --vendor #{VENDOR} -v #{VERSION} -f -a all \
+         --after-install #{cwd}/src/package/postinstall \
+         --after-remove #{cwd}/src/package/postremove -p #{NAME} *"
+
+  puts %x{#{cmd}}
 end
 
