@@ -30,7 +30,7 @@ class ChefExecutor
   end
 
   def run(node_object = {}, executor = nil)
-    raise ArgumentError if node_object.nil? or !node_object.has_key?(:data) or !node_object.has_key?(:file)
+    raise ArgumentError if node_object.nil? or !node_object.has_key?(:data)
 
     node_object = DEFAULT_TEMPLATE_CONFIG.merge(node_object)
     executor ||= Executor.new

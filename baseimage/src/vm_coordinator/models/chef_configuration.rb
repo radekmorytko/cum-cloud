@@ -1,5 +1,6 @@
 $LOAD_PATH.unshift(File.dirname(File.expand_path('..', __FILE__)))
 
+require 'logger'
 load 'config/vm_coordinator.conf'
 
 class ChefConfiguration

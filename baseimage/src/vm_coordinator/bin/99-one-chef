@@ -13,7 +13,7 @@ conf.prepare
 chef = ChefExecutor.new(conf.conf_template[:path], conf.chef_solo)
 
 if ENV.key? 'NODE'
-  chef.run (:node_object => { :data => ENV['NODE'] })
+  chef.run ( :data => ENV['NODE'] )
 else
   puts "Environment variable NODE is not set"
 end
