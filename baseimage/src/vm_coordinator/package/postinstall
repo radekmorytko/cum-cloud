@@ -7,12 +7,12 @@ CHEF=$ONE_DIR/99-one-chef
 rm -rf $CHEF
 # ensure that directory exists
 mkdir -p $ONE_DIR
-ln -s /tmp/vm_coordinator/bin/99-one-chef $CHEF
+ln -s /opt/vm_coordinator/bin/99-one-chef $CHEF
 
 ## postinstall script for debian linux family
 VM_COORDINATOR=/etc/rc2.d/S99vm_coordinator
 cat << EOF > $VM_COORDINATOR
-/tmp/vm_coordinator/controllers/vm_coordinator_server.rb >> /tmp/vm_coordinator/logs/chef_sinatra.log 2>&1 &
+/opt/vm_coordinator/controllers/vm_coordinator_server.rb >> /opt/vm_coordinator/logs/chef_sinatra.log 2>&1 &
 EOF
 
 chmod +x $VM_COORDINATOR

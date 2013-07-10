@@ -2,7 +2,7 @@
 
 # postinstall script for debian linux family
 
-DIR='/tmp/vm_coordinator'
+DIR='/opt/vm_coordinator'
 
 rm -rf /etc/rc2.d/S99vm_coordinator
 rm -rf $DIR

@@ -29,8 +29,8 @@ task :package do
   FileUtils.remove_dir 'pkg'
 
   # prepare absolute structure
-  FileUtils.mkdir_p('pkg/tmp/vm_coordinator')
-  FileUtils.cp_r 'src/vm_coordinator', 'pkg/tmp'
+  FileUtils.mkdir_p('pkg/opt')
+  FileUtils.cp_r 'src/vm_coordinator', 'pkg/opt'
 
   # create package
   cwd = File.dirname(File.expand_path(__FILE__))
