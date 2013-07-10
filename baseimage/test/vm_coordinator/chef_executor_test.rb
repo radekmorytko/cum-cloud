@@ -24,7 +24,7 @@ class ChefExecutorTest < Test::Unit::TestCase
       :file => "#{TMP_DIR}/node.json",
       :data => node_data
     }
-    command_str = "/usr/bin/chef-solo -c chef.conf -j #{node_object[:file]} >> /var/log/chef-system-out.log 2>&1"
+    command_str = "/usr/bin/chef-solo -c chef.conf -j #{node_object[:file]} >> #{VM_COORDINATOR_LOG}/chef-executor.log 2>&1"
 
     executor = mock()
     executor.expects(:execute).with(command_str)

@@ -11,12 +11,11 @@ load 'config/vm_coordinator.conf'
 class ChefExecutor
 
   class Executor
-    def initialize(log_dir = nil)
-      log_dir ||= VM_COORDINATOR_LOG
-      FileUtils.mkdir_p(log_dir) unless File.exist?(log_dir)
 
-      # initialize logger lazily
-      @@logger = Logger.new("#{log_dir}/chef-executor.log")
+    def initialize
+      # note that log assumes that VM_COORDINATOR_LOG dir exists
+      # hence it has to be initialized lazily
+      @@logger = Logger.new("#{VM_COORDINATOR_LOG}/chef-executor.log")
     end
 
     def execute(command)
@@ -42,7 +41,7 @@ class ChefExecutor
     node_object_contents = Base64::decode64(node_object[:data])
     create_node_object_file(node_object_file, node_object_contents)
 
-    command = "#{chef_solo} -c #{@config[:file]} -j #{node_object_file} >> /var/log/chef-system-out.log 2>&1"
+    command = "#{chef_solo} -c #{@config[:file]} -j #{node_object_file} >> #{VM_COORDINATOR_LOG}/chef-executor.log 2>&1"
 
     executor.execute(command)
   end
