@@ -1,11 +1,14 @@
 #!/usr/bin/env ruby
 
-require '../vm_coordinator'
+$LOAD_PATH.unshift(File.dirname(File.expand_path('..', __FILE__)))
 
-## prepare the node
+require 'models/chef_configuration'
+require 'models/chef_executor'
 
-#/usr/lib/one/ruby/oneapps/vm_coordinator/run.rb | tee /var/log/vm_coordinator-run.log
+# prepare the node
+conf = ChefConfiguration.new
+conf.prepare
 
-
-## start the rest server
-#/usr/lib/one/ruby/oneapps/vm_coordinator/server.rb > /var/log/chef-sinatra.log 2>&1
+# apply appstage configuration
+chef = ChefExecutor.new conf
+chef.run (:node_object => { :data => ENV['NODE'] })

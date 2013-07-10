@@ -1,8 +1,10 @@
 require 'rubygems'
-require 'vm_coordinator'
 require 'base64'
 require "test/unit"
 require 'mocha/setup'
+
+require 'models/chef_executor'
+load 'config/vm_coordinator.conf'
 
 class ChefExecutorTest < Test::Unit::TestCase
   TMP_DIR = 'tmp'
@@ -28,5 +30,17 @@ class ChefExecutorTest < Test::Unit::TestCase
     executor.expects(:execute).with(command_str)
 
     @chef.run(node_object, executor)
+  end
+
+  def test_run_chef_with_empty_or_nil_node_list
+
+    assert_raise ArgumentError do
+      @chef.run(nil)
+    end
+
+    assert_raise ArgumentError do
+      @chef.run({})
+    end
+
   end
 end

@@ -1,9 +1,12 @@
+$LOAD_PATH.unshift(File.dirname(File.expand_path('..', __FILE__)))
+
 require 'erb'
 require 'logger'
 require 'fileutils'
 require 'open-uri'
-require 'vm_coordinator'
 require 'base64'
+
+load 'config/vm_coordinator.conf'
 
 class ChefExecutor
 
@@ -13,7 +16,7 @@ class ChefExecutor
       FileUtils.mkdir_p(log_dir) unless File.exist?(log_dir)
 
       # initialize logger lazily
-      @@logger = Log.new("#{log_dir}/chef-executor.log")
+      @@logger = Logger.new("#{log_dir}/chef-executor.log")
     end
 
     def execute(command)
@@ -30,6 +33,8 @@ class ChefExecutor
   end
 
   def run(node_object = {}, executor = nil)
+    raise ArgumentError if node_object.nil? or !node_object.has_key?(:data) or !node_object.has_key?(:file)
+
     node_object = DEFAULT_TEMPLATE_CONFIG.merge(node_object)
     executor ||= Executor.new
 
@@ -52,11 +57,12 @@ class ChefExecutor
 
   # checks standard locations for path to chef-solo
   def chef_solo
+    # TODO fix this issue in a different way
+    # TODO add exception if not found
+
     %w(/usr/bin/chef-solo /usr/local/bin/chef-solo).each do |path|
       return path if File.exists? path
     end
-
-
   end
 
 end

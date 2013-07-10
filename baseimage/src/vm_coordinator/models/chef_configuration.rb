@@ -1,4 +1,6 @@
-require 'vm_coordinator'
+$LOAD_PATH.unshift(File.dirname(File.expand_path('..', __FILE__)))
+
+load 'config/vm_coordinator.conf'
 
 class ChefConfiguration
 
@@ -9,7 +11,7 @@ class ChefConfiguration
     FileUtils.mkdir_p(log_dir) unless File.exist?(log_dir)
 
     # initialize logger lazily
-    @@logger = Logger.new("#{log_dir}/chef-configuration.log")
+    @@logger = Logger.new("#{log_dir}/chef_configuration.log")
   end
 
   def prepare(config = {})
