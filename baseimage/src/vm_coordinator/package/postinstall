@@ -1,0 +1,26 @@
+#!/bin/bash
+
+## substitute (if necessary) oneapps chef script
+ONE_DIR=/etc/one-context.d
+CHEF=$ONE_DIR/99-one-chef
+
+rm -rf $CHEF
+# ensure that directory exists
+mkdir -p $ONE_DIR
+
+## run chef during first boot
+cat << EOF > $CHEF
+#!/bin/bash
+/opt/vm_coordinator/bin/vm_coordinator.rb
+EOF
+
+chmod +x $CHEF
+
+## run server in background
+VM_COORDINATOR=/etc/rc2.d/S99vm_coordinator
+cat << EOF > $VM_COORDINATOR
+#!/bin/bash
+/opt/vm_coordinator/controllers/vm_coordinator_server.rb >> /opt/vm_coordinator/logs/chef_sinatra.log 2>&1 &
+EOF
+
+chmod +x $VM_COORDINATOR

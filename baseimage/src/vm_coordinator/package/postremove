@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# postinstall script for debian linux family
+
+DIR='/opt/vm_coordinator'
+
+rm -rf /etc/rc2.d/S99vm_coordinator
+rm -rf $DIR
+rm -rf /etc/one-context.d/99-one-chef

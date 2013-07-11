@@ -18,13 +18,27 @@ task :unit_tests do
   end
 end
 
-task :synch, :host, :path do |t, args|
-  args.with_defaults(:path => '/usr/lib/one/ruby/oneapps')
+task :package do
+  PACKAGE_NAME='${PACKAGE_NAME:-vm_coordinator}'
+  PACKAGE_TYPE='${PACKAGE_TYPE:-deb}'
+  VENDOR='${VENDOR:-cum_cloud}'
+  VERSION='${VERSION:-3.8.3}'
+  NAME="#{PACKAGE_NAME}_#{VERSION}.#{PACKAGE_TYPE}"
 
-  user = 'root'
-  host = args[:host]
-  path = args[:path]
+  # clean
+  FileUtils.remove_dir 'pkg'
 
-  puts `rsync -avz src/vm_coordinator #{user}@#{host}:#{path}`
+  # prepare absolute structure
+  FileUtils.mkdir_p('pkg/opt')
+  FileUtils.cp_r 'src/vm_coordinator', 'pkg/opt'
+
+  # create package
+  cwd = File.dirname(File.expand_path(__FILE__))
+  cmd = "cd pkg && fpm -n #{PACKAGE_NAME} -t #{PACKAGE_TYPE} \
+         -s dir --vendor #{VENDOR} -v #{VERSION} -f -a all \
+         --after-install #{cwd}/src/vm_coordinator/package/postinstall \
+         --after-remove #{cwd}/src/vm_coordinator/package/postremove -p #{NAME} *"
+
+  puts %x{#{cmd}}
 end
 
