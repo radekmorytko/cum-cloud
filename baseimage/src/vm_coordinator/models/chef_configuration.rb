@@ -17,7 +17,7 @@ class ChefConfiguration
         config[:path] + '/cookbooks',
         config[:path] + '/site_cookbooks',
         config[:path] + '/cache',
-        config[:filename],
+        File.join(config[:path], config[:filename]),
         File.join(config[:template_dir], config[:template_filename])
     )
 
@@ -40,17 +40,21 @@ class ChefConfiguration
     @@logger.debug('Making configuration directories')
 
     # prepend dirs with the root path
-    [@conf_template.path,  @conf_template.cache_path, @conf_template.cookbooks_path, @conf_template.site_cookbooks_path].each { |d|
+    [@conf_template.dir,  @conf_template.cache_path, @conf_template.cookbooks_path, @conf_template.site_cookbooks_path].each { |d|
+      next if File.exist?(d)
       @@logger.debug("Directory: #{d}")
-      FileUtils.mkdir_p(d) unless File.exist?(d)
+      FileUtils.mkdir_p(d)
     }
   end
 
   def move_cookbooks
-    return if File.directory?(CONTEXT_COOKBOOKS_DIR)
+    if !File.exists?(CONTEXT_COOKBOOKS_DIR)
+      @@logger.debug("There are no cookbooks under: #{CONTEXT_COOKBOOKS_DIR}")
+      return
+    end
 
-    @@logger.debug("Moving cookbooks to: #{@conf_template.path}")
-    FileUtils.mv(CONTEXT_COOKBOOKS_DIR, @conf_template.path, :force => true)
+    @@logger.debug("Moving cookbooks from #{CONTEXT_COOKBOOKS_DIR} to: #{@conf_template.dir}")
+    FileUtils.cp_r(CONTEXT_COOKBOOKS_DIR, @conf_template.dir)
   end
 
   def save_config_file
@@ -59,17 +63,16 @@ class ChefConfiguration
 end
 
 ConfigTemplate = Struct.new(
-    :path,
+    :dir,
     :cookbooks_path,
     :site_cookbooks_path,
     :cache_path,
-    :filename,
+    :config_path,
     :template_filename) do
   def save
-    config_filename = File.join(path, filename)
-    FileUtils.mkdir_p(path) unless File.exists?(path)
+    FileUtils.mkdir_p(dir) unless File.exists?(dir)
 
-    File.open(config_filename, 'w') do |f|
+    File.open(config_path, 'w') do |f|
       f.write(render)
     end
   end

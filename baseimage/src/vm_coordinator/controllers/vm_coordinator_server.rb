@@ -13,7 +13,7 @@ logger = Logger.new(STDOUT)
 
 conf = ChefConfiguration.new
 conf.prepare
-chef = ChefExecutor.new(conf.conf_template[:path], conf.chef_solo)
+chef = ChefExecutor.new(conf.conf_template[:config_path], conf.chef_solo)
 
 logger.info("VmCoordinator server initialized")
 
