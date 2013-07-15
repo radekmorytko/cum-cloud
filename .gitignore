@@ -1,1 +1,4 @@
 *.log
+
+# ignore rubymine-specific files
+.idea
