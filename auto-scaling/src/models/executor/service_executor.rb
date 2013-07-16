@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'logger'
 
+load 'executor/executor.conf'
 require 'executor/service'
 
 module AutoScaling
@@ -19,14 +20,17 @@ module AutoScaling
     #     :name => 'enterprise-app'
     #   }
     #
-    def deploy_service(service)
+    def deploy_service(service, mappings = {})
       # create appflow template
       # but first we need to have appflow service-representation
+      mappings ||= {}
+      mappings = ONE_MAPPINGS.merge(mappings)
+
       bindings = {
-          :loadbalancer_template_id => 6,
-          :loadbalancer_appstage_id => 9,
-          :worker_template_id => 2,
-          :worker_appstage_id => 20
+          :loadbalancer_template_id => mappings[:onetemplate_id],
+          :loadbalancer_appstage_id => mappings[:appstage][:loadbalancer],
+          :worker_template_id => mappings[:onetemplate_id],
+          :worker_appstage_id => mappings[:appstage][service[:stack]]
       }
 
       service_definition = Service::instantiate service, bindings

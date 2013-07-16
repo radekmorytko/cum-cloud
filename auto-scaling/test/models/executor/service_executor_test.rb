@@ -35,7 +35,7 @@ module AutoScaling
             "name": "java-worker",
             "parents": ["loadbalancer"],
 
-            "vm_template": 2,
+            "vm_template": 6,
             "appstage_id": 20,
             "cardinality": 2
         }
