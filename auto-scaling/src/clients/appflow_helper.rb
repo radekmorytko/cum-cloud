@@ -250,6 +250,7 @@ module Service
         def initialize(opts={})
             @username = opts[:username] || ENV['APPFLOW_USER']
             @password = opts[:password] || ENV['APPFLOW_PASSWORD']
+            @timeout = opts[:timeout] if opts[:timeout]
 
             url = opts[:url] || ENV['APPFLOW_URL'] || 'http://localhost:2474'
 
