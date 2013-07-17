@@ -30,7 +30,7 @@ module AutoScaling
           :loadbalancer_template_id => mappings[:onetemplate_id],
           :loadbalancer_appstage_id => mappings[:appstage][:loadbalancer],
           :worker_template_id => mappings[:onetemplate_id],
-          :worker_appstage_id => mappings[:appstage][service[:stack]]
+          :worker_appstage_id => mappings[:appstage][:java]
       }
 
       service_definition = Service::instantiate service, bindings

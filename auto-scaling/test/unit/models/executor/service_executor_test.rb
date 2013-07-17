@@ -15,9 +15,9 @@ module AutoScaling
     end
 
     def teardown
+
     end
 
-    # Fake test
     def test_deploy_service
       service_template =
 <<-eos
