@@ -1,8 +1,10 @@
+$LOAD_PATH.unshift(File.dirname(File.expand_path('..', __FILE__)))
+
 require 'rubygems'
 require 'logger'
 require 'json'
 
-require 'appflow_helper'
+require 'clients/appflow_helper'
 require 'cloud/CloudClient'
 
 module AutoScaling
@@ -35,7 +37,7 @@ module AutoScaling
     end
 
     def instantiate_template(template_id)
-      json_str = Service.build_json_action('instantiate')
+      json_str = ::Service.build_json_action('instantiate')
       response = client.post("#{SERVICE_TEMPLATE_PATH}/#{template_id}/action", json_str)
 
       if CloudClient::is_error?(response)
@@ -52,7 +54,7 @@ module AutoScaling
 
     private
     def client
-      Service::Client.new(
+      ::Service::Client.new(
           :username   => @options[:username],
           :password   => @options[:password],
           :url        => @options[:server],

@@ -1,11 +1,13 @@
 require 'rubygems'
 require 'logger'
 
+require 'models/executor/service_executor'
+
 module AutoScaling
   class ServicePlanner
 
     def initialize(executor)
-      @planner = executor
+      @executor = executor
     end
 
     def plan(service)
@@ -14,7 +16,7 @@ module AutoScaling
       # reserve resources
 
       # deploy
-      @planner.deploy_service service
+      @executor.deploy_service service
     end
   end
 end

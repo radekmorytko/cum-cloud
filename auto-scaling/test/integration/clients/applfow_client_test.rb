@@ -3,7 +3,7 @@ require 'test/unit'
 require 'mocha/setup'
 require 'fakeweb'
 
-require 'appflow_client'
+require 'clients/appflow_client'
 
 module AutoScaling
   class AppflowClientTest < Test::Unit::TestCase
@@ -52,7 +52,9 @@ eos
 
     def test_instantiate_template
       template_id = @appflow_client.create_template(SERVICE_TEMPLATE)
+      assert_equal true, template_id >= 0
       instance_id = @appflow_client.instantiate_template(template_id)
+      assert_equal true, instance_id >= 0
 
       # cleanup
       @appflow_client.delete_instance instance_id

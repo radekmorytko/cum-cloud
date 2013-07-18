@@ -2,7 +2,7 @@ require 'rubygems'
 require 'test/unit'
 require 'mocha/setup'
 
-require 'executor/service_executor'
+require 'models/executor/service_executor'
 
 module AutoScaling
 
@@ -44,15 +44,15 @@ module AutoScaling
       eos
 
       service = {
-          :stack => :java,
-          :instances => 2,
-          :name => 'service-name'
+          'stack' => 'java',
+          'instances' => 2,
+          'name' => 'service-name'
       }
 
 
       template_id = 100
-      @appflow_client.expects(:create_service_template).with(service_template).returns(template_id)
-      @appflow_client.expects(:instantiate_service).with(template_id)
+      @appflow_client.expects(:create_template).with(service_template).returns(template_id)
+      @appflow_client.expects(:instantiate_template).with(template_id)
 
       @planner.deploy_service service
     end

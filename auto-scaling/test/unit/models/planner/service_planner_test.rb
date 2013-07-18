@@ -2,7 +2,7 @@ require 'rubygems'
 require 'test/unit'
 require 'mocha/setup'
 
-require 'planner/service_planner'
+require 'models/planner/service_planner'
 
 module AutoScaling
 
@@ -20,9 +20,9 @@ module AutoScaling
 
     def test_plan
       service = {
-          :stack => :java,
-          :instances => 2,
-          :name => 'enterprise-app'
+          'stack' => 'java',
+          'instances' => 2,
+          'name' => 'enterprise-app'
       }
       @executor.expects(:deploy_service).with(service)
 

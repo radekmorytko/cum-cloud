@@ -18,15 +18,15 @@ module AutoScaling
 
     def self.instantiate(service, bindings)
       result = ServiceTemplate.new(
-          service[:name],
+          service['name'],
 
           bindings[:loadbalancer_template_id],
           bindings[:loadbalancer_appstage_id],
 
-          service[:stack],
+          service['stack'],
           bindings[:worker_template_id],
           bindings[:worker_appstage_id],
-          service[:instances]
+          service['instances']
       )
 
       render = result.render

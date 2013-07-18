@@ -1,8 +1,8 @@
 require 'rubygems'
 require 'logger'
 
-load 'executor/executor.conf'
-require 'executor/service'
+load 'models/executor/executor.conf'
+require 'models/executor/service'
 
 module AutoScaling
 
@@ -34,10 +34,10 @@ module AutoScaling
       }
 
       service_definition = Service::instantiate service, bindings
-      template_id = @appflow_client.create_service_template service_definition
+      template_id = @appflow_client.create_template service_definition
 
       # instantiate
-      @appflow_client.instantiate_service template_id
+      @appflow_client.instantiate_template template_id
     end
 
   end

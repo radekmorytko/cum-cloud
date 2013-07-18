@@ -1,7 +1,5 @@
 require "test/unit"
-require 'executor/service'
-
-require 'executor/service'
+require 'models/executor/service'
 
 module AutoScaling
   class ServiceTest < Test::Unit::TestCase
@@ -32,9 +30,9 @@ module AutoScaling
 eos
 
       service = {
-          :stack => :java,
-          :instances => 2,
-          :name => 'service-name'
+          'stack' => 'java',
+          'instances' => 2,
+          'name' => 'service-name'
       }
 
       bindings = {
