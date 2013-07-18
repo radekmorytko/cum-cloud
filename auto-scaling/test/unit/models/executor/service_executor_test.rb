@@ -11,7 +11,7 @@ module AutoScaling
     def setup
       @appflow_client = mock()
 
-      @planner = ServiceExecutor.new @appflow_client
+      @executor = ServiceExecutor.new @appflow_client
     end
 
     def teardown
@@ -49,12 +49,24 @@ module AutoScaling
           'name' => 'service-name'
       }
 
+      mappings = {
+          :onetemplate_id => 6,
+
+          :appstage => {
+              :loadbalancer => 9,
+              :java => 20
+          }
+
+      }
 
       template_id = 100
+      instance_id = 69
       @appflow_client.expects(:create_template).with(service_template).returns(template_id)
-      @appflow_client.expects(:instantiate_template).with(template_id)
+      @appflow_client.expects(:instantiate_template).with(template_id).returns(instance_id)
 
-      @planner.deploy_service service
+      @executor.deploy_service service, mappings
+
+      assert_equal instance_id, @executor.services[0].service_id
     end
   end
 

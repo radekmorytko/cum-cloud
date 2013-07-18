@@ -8,13 +8,12 @@ module AutoScaling
 
     @logger = Logger.new(STDOUT)
 
-    def initialize
+    attr_accessor :service_id
 
+    def initialize(service_id)
+      @service_id = service_id
     end
 
-    def to_json
-
-    end
 
     def self.instantiate(service, bindings)
       result = ServiceTemplate.new(
@@ -30,7 +29,6 @@ module AutoScaling
       )
 
       render = result.render
-
       @logger.debug "Created service template: #{render}"
       render
     end

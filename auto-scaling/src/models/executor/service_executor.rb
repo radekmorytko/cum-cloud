@@ -8,8 +8,11 @@ module AutoScaling
 
   class ServiceExecutor
 
+    attr_accessor :services
+
     def initialize(appflow_client)
       @appflow_client = appflow_client
+      @services = []
     end
 
     # * *Args* :
@@ -37,7 +40,10 @@ module AutoScaling
       template_id = @appflow_client.create_template service_definition
 
       # instantiate
-      @appflow_client.instantiate_template template_id
+      instance_id = @appflow_client.instantiate_template template_id
+
+      service = AutoScaling::Service.new instance_id
+      @services << service
     end
 
   end
