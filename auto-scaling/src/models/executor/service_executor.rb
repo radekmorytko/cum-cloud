@@ -10,9 +10,10 @@ module AutoScaling
 
     attr_accessor :services
 
-    def initialize(appflow_client)
+    def initialize(appflow_client, one_client)
       @appflow_client = appflow_client
-      @services = []
+      @one_client = one_client
+      @services = {}
     end
 
     # * *Args* :
@@ -43,7 +44,28 @@ module AutoScaling
       instance_id = @appflow_client.instantiate_template template_id
 
       service = AutoScaling::Service.new instance_id
-      @services << service
+      @services[instance_id] = service
+    end
+
+    # returns list of ips of an environment in form:
+    # {
+    #   :loadbalancer => '192.168.122.1'
+    #   :worker => ['192.168.122.10', '192.168.122.11']
+    # }
+    def ips(service_id)
+      ips = {}
+
+      # vm_ids = {:loadbalancer => 0, :worker => [1, 2, 3]}
+      vm_ids = @appflow_client.vm_ids service_id
+
+      ips[:loadbalancer] = @one_client.vm_ip(vm_ids[:loadbalancer])
+      ips[:worker] = []
+
+      vm_ids[:worker].each do |id|
+        ips[:worker] << @one_client.vm_ip(id)
+      end
+
+      ips
     end
 
   end

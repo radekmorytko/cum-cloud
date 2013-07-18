@@ -10,8 +10,9 @@ module AutoScaling
 
     def setup
       @appflow_client = mock()
+      @one_client = mock()
 
-      @executor = ServiceExecutor.new @appflow_client
+      @executor = ServiceExecutor.new @appflow_client, @one_client
     end
 
     def teardown
@@ -66,7 +67,20 @@ module AutoScaling
 
       @executor.deploy_service service, mappings
 
-      assert_equal instance_id, @executor.services[0].service_id
+      assert_equal instance_id, @executor.services[instance_id].service_id
+    end
+
+    def test_configuration
+      instance_id = 10
+      vm_ids = {:loadbalancer => 0, :worker => [1, 2, 3]}
+      @appflow_client.expects(:vm_ids).with(instance_id).returns(vm_ids)
+
+      ips = ['192.168.122.1', '192.168.122.10', '192.168.122.11', '192.168.122.12']
+      [0,1,2,3].each do |id|
+        @one_client.expects(:vm_ip).with(id).returns(ips[id])
+      end
+
+      @executor.ips instance_id
     end
   end
 
