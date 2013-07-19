@@ -1,12 +1,12 @@
 require 'rubygems'
 require 'data_mapper'
 
-module Service
+module AutoScaling
   class Stack
     include DataMapper::Resource
 
     property :id, Serial
-    belongs_to :service_data
+    belongs_to :service
 
     property :type, String
     property :data, String

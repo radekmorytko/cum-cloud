@@ -1,12 +1,12 @@
 require 'rubygems'
 require 'data_mapper'
 
-module Service
-  class ServiceData
+module AutoScaling
+  class Service
     include DataMapper::Resource
 
     # id should correspond to internal service representation (ie. appflow)
-    property :id, String, :key => true
+    property :id, Integer, :key => true
 
     property :name, String
 

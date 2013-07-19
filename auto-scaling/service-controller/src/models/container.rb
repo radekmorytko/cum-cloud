@@ -1,14 +1,14 @@
 require 'rubygems'
 require 'data_mapper'
 
-module Service
+module AutoScaling
   class Container
     include DataMapper::Resource
 
     # id should correspond to internal container representation (ie. opennebula vm id)
-    property :id, String
+    property :id, Integer, :key => true
     belongs_to :stack
 
-    property :ip, String
+    property :ip, IPAddress
   end
 end
