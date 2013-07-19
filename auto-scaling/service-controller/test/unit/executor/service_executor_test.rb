@@ -2,7 +2,7 @@ require 'rubygems'
 require 'test/unit'
 require 'mocha/setup'
 
-require 'models/executor/service_executor'
+require 'executor/service_executor'
 
 module AutoScaling
 

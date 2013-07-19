@@ -1,8 +1,8 @@
 require 'rubygems'
 require 'logger'
 
-load 'models/executor/executor.conf'
-require 'models/executor/service'
+load 'config/auto_scaling.conf'
+require 'models/service'
 
 module AutoScaling
 
@@ -19,9 +19,9 @@ module AutoScaling
     # * *Args* :
     # - +service+ -> description of a service. An instance of HashMap, ex:
     #   service = {
-    #     :stack => :tomcat,
-    #     :instances => 2,
-    #     :name => 'enterprise-app'
+    #     'stack' => 'tomcat',
+    #     'instances' => 2,
+    #     'name' => 'enterprise-app'
     #   }
     #
     def deploy_service(service, mappings = {})

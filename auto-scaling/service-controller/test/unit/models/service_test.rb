@@ -1,5 +1,5 @@
 require "test/unit"
-require 'models/executor/service'
+require 'models/service'
 
 module AutoScaling
   class ServiceTest < Test::Unit::TestCase

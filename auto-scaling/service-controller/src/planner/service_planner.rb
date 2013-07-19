@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'logger'
 
-require 'models/executor/service_executor'
+require 'executor/service_executor'
 
 module AutoScaling
   class ServicePlanner

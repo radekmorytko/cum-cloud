@@ -1,10 +1,8 @@
-$LOAD_PATH.unshift(File.dirname(File.expand_path('..', __FILE__)))
-
 require 'rubygems'
 require 'logger'
 require 'json'
 
-require 'clients/appflow_helper'
+require 'appflow_helper'
 require 'cloud/CloudClient'
 
 module AutoScaling

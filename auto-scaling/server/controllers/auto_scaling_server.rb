@@ -1,15 +1,15 @@
 #!/usr/bin/env ruby
 
-$LOAD_PATH.unshift(File.dirname(File.expand_path('..', __FILE__)))
-$LOAD_PATH.unshift(File.join(File.dirname(File.expand_path('../../', __FILE__)), 'lib'))
+$: << File.join(File.dirname(File.expand_path('../../', __FILE__)), 'service-controller')
+$: << File.join(File.dirname(File.expand_path('../../', __FILE__)), 'clients')
+
 
 require 'rubygems'
 require 'logger'
 require 'sinatra'
 
-require 'clients/appflow_client'
-require 'models/planner/service_planner'
-require 'models/executor/service_executor'
+require 'clients'
+require 'service_controller'
 
 logger = Logger.new(STDOUT)
 
