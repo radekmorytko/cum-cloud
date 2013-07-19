@@ -1,5 +1,5 @@
-require 'models/service_data'
-require 'models/stack'
 require 'models/container'
+require 'models/stack'
+require 'models/service'
 
 DataMapper.finalize

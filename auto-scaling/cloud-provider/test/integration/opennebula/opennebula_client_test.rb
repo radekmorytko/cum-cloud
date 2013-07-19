@@ -1,12 +1,11 @@
 require 'rubygems'
 require 'test/unit'
 require 'mocha/setup'
-require 'fakeweb'
 
-require 'clients/appflow_client'
+require 'opennebula/opennebula_client'
 
 module AutoScaling
-  class AppflowClientTest < Test::Unit::TestCase
+  class OpenNebulaClientTest < Test::Unit::TestCase
 
     SERVICE_TEMPLATE =
 <<-eos
@@ -39,26 +38,30 @@ eos
           :server => 'http://one:2474'
       }
 
-      @appflow_client = AppflowClient.new options
+      @opennebula_client = OpenNebulaClient.new options
     end
 
     def test_create_template
-      template_id = @appflow_client.create_template(SERVICE_TEMPLATE)
+      template_id = @opennebula_client.create_template(SERVICE_TEMPLATE)
       # in fact test will pass as long there will be no exceptions and create_template will return just some unsigned int
       assert_equal true, template_id >= 0
 
-      @appflow_client.delete_template template_id
+      @opennebula_client.appflow.delete_template template_id
     end
 
     def test_instantiate_template
-      template_id = @appflow_client.create_template(SERVICE_TEMPLATE)
+      template_id = @opennebula_client.create_template(SERVICE_TEMPLATE)
       assert_equal true, template_id >= 0
-      instance_id = @appflow_client.instantiate_template(template_id)
+      instance_id = @opennebula_client.instantiate_template(template_id)
       assert_equal true, instance_id >= 0
 
       # cleanup
-      @appflow_client.delete_instance instance_id
-      @appflow_client.delete_template template_id
+      @opennebula_client.appflow.delete_instance instance_id
+      @opennebula_client.appflow.delete_template template_id
+    end
+
+    def render
+
     end
 
   end

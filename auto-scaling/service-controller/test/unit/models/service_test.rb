@@ -1,49 +1,45 @@
+require 'rubygems'
+require 'data_mapper'
 require "test/unit"
-require 'models/service'
+
+require 'models/models'
 
 module AutoScaling
   class ServiceTest < Test::Unit::TestCase
 
-    def test_instantiate
-      expected =
-<<-eos
-{
-    "name": "service-name",
-    "deployment": "straight",
-    "roles": [
-        {
-            "name": "loadbalancer",
-            "vm_template": 6,
-            "appstage_id": 9,
-            "cardinality": 1
-        },
-        {
-            "name": "java-worker",
-            "parents": ["loadbalancer"],
+    def setup
+      DataMapper::Logger.new($stdout, :debug)
+      DataMapper.setup(:default, 'sqlite::memory:')
+      DataMapper.auto_upgrade!
+    end
 
-            "vm_template": 2,
-            "appstage_id": 20,
-            "cardinality": 2
-        }
-    ]
-}
-eos
+    def test_persistence_model
+      DataMapper.finalize
 
-      service = {
-          'stack' => 'java',
-          'instances' => 2,
-          'name' => 'service-name'
-      }
+      DataMapper.finalize
+      @containers = [
+        Container.create(
+          :id => 10,
+          :ip => '192.168.122.1'
+        ),
+        Container.new(
+            :id => 11,
+            :ip => '192.168.122.2'
+        )
+      ]
 
-      bindings = {
-          :loadbalancer_template_id => 6,
-          :loadbalancer_appstage_id => 9,
-          :worker_template_id => 2,
-          :worker_appstage_id => 20
-      }
+      @stack = Stack.create(
+        :type => :java,
+        :data => 'http://jenkins.com/path/to/my/app.war',
+        :containers => @containers
+      )
 
-      actual = Service::instantiate service, bindings
-      assert_equal expected.strip!, actual.strip!
+      @service = ::AutoScaling::Service.create(
+        :id => 110,
+        :name => 'enterprise-app',
+        :stacks => [@stack]
+      )
+
     end
   end
 end

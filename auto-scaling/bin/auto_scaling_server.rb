@@ -1,14 +1,14 @@
 #!/usr/bin/env ruby
 
 $: << File.join(File.dirname(File.expand_path('../', __FILE__)), 'service-controller')
-$: << File.join(File.dirname(File.expand_path('../', __FILE__)), 'clients')
+$: << File.join(File.dirname(File.expand_path('../', __FILE__)), 'cloud-provider')
 
 
 require 'rubygems'
 require 'logger'
 require 'sinatra'
 
-require 'clients'
+require 'cloud_provider'
 require 'service_controller'
 
 logger = Logger.new(STDOUT)
@@ -19,8 +19,8 @@ options = {
     :server => 'http://one:2474'
 }
 
-appflow_client = AutoScaling::AppflowClient.new options
-service_executor = AutoScaling::ServiceExecutor.new appflow_client
+cloud_provder = AutoScaling::OpenNebulaClient.new options
+service_executor = AutoScaling::ServiceExecutor.new cloud_provder
 service_planner = AutoScaling::ServicePlanner.new service_executor
 
 logger.info("auto-scaling server initialized")

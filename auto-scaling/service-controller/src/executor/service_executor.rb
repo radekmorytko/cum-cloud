@@ -2,7 +2,7 @@ require 'rubygems'
 require 'logger'
 
 load 'config/auto_scaling.conf'
-require 'models/service'
+require 'models/models'
 
 module AutoScaling
 
@@ -10,10 +10,8 @@ module AutoScaling
 
     attr_accessor :services
 
-    def initialize(appflow_client, one_client)
-      @appflow_client = appflow_client
-      @one_client = one_client
-      @services = {}
+    def initialize(cloud_provider)
+      @cloud_provider = cloud_provider
     end
 
     # * *Args* :
@@ -30,21 +28,11 @@ module AutoScaling
       mappings ||= {}
       mappings = ONE_MAPPINGS.merge(mappings)
 
-      bindings = {
-          :loadbalancer_template_id => mappings[:onetemplate_id],
-          :loadbalancer_appstage_id => mappings[:appstage][:loadbalancer],
-          :worker_template_id => mappings[:onetemplate_id],
-          :worker_appstage_id => mappings[:appstage][:java]
-      }
-
-      service_definition = Service::instantiate service, bindings
-      template_id = @appflow_client.create_template service_definition
+      service_definition = @cloud_provider.render service, mappings
+      template_id = @cloud_provider.create_template service_definition
 
       # instantiate
-      instance_id = @appflow_client.instantiate_template template_id
-
-      service = AutoScaling::Service.new instance_id
-      @services[instance_id] = service
+      instance_id = @cloud_provider.instantiate_template template_id
     end
 
     # returns list of ips of an environment in form:
@@ -56,13 +44,13 @@ module AutoScaling
       ips = {}
 
       # vm_ids = {:loadbalancer => 0, :worker => [1, 2, 3]}
-      vm_ids = @appflow_client.vm_ids service_id
+      vm_ids = @cloud_provider.vm_ids service_id
 
-      ips[:loadbalancer] = @one_client.vm_ip(vm_ids[:loadbalancer])
+      ips[:loadbalancer] = @cloud_provider.vm_ip(vm_ids[:loadbalancer])
       ips[:worker] = []
 
       vm_ids[:worker].each do |id|
-        ips[:worker] << @one_client.vm_ip(id)
+        ips[:worker] << @cloud_provider.vm_ip(id)
       end
 
       ips

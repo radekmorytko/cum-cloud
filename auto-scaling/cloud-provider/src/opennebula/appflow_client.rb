@@ -2,7 +2,7 @@ require 'rubygems'
 require 'logger'
 require 'json'
 
-require 'appflow_helper'
+require 'opennebula/appflow_helper'
 require 'cloud/CloudClient'
 
 module AutoScaling

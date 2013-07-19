@@ -9,10 +9,9 @@ module AutoScaling
   class ServiceExecutorTest < Test::Unit::TestCase
 
     def setup
-      @appflow_client = mock()
-      @one_client = mock()
+      @cloud_provider = mock()
 
-      @executor = ServiceExecutor.new @appflow_client, @one_client
+      @executor = ServiceExecutor.new @cloud_provider
     end
 
     def teardown
@@ -57,27 +56,25 @@ module AutoScaling
               :loadbalancer => 9,
               :java => 20
           }
-
       }
 
       template_id = 100
       instance_id = 69
-      @appflow_client.expects(:create_template).with(service_template).returns(template_id)
-      @appflow_client.expects(:instantiate_template).with(template_id).returns(instance_id)
+      @cloud_provider.expects(:render).with(service, mappings).returns(service_template)
+      @cloud_provider.expects(:create_template).with(service_template).returns(template_id)
+      @cloud_provider.expects(:instantiate_template).with(template_id).returns(instance_id)
 
       @executor.deploy_service service, mappings
-
-      assert_equal instance_id, @executor.services[instance_id].service_id
     end
 
     def test_configuration
       instance_id = 10
       vm_ids = {:loadbalancer => 0, :worker => [1, 2, 3]}
-      @appflow_client.expects(:vm_ids).with(instance_id).returns(vm_ids)
+      @cloud_provider.expects(:vm_ids).with(instance_id).returns(vm_ids)
 
       ips = ['192.168.122.1', '192.168.122.10', '192.168.122.11', '192.168.122.12']
       [0,1,2,3].each do |id|
-        @one_client.expects(:vm_ip).with(id).returns(ips[id])
+        @cloud_provider.expects(:vm_ip).with(id).returns(ips[id])
       end
 
       @executor.ips instance_id
