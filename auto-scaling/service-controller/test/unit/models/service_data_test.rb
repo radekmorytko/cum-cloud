@@ -6,15 +6,10 @@ require 'models/models'
 
 module AutoScaling
   class ServiceTest < Test::Unit::TestCase
-    URI = 'sqlite:///tmp/project.db'
 
     def setup
       DataMapper::Logger.new($stdout, :debug)
-      DataMapper.setup(:default, URI)
-    end
-
-    def teardown
-      File.delete URI if File.exists? URI
+      DataMapper.setup(:default, 'sqlite::memory:')
     end
 
     def test_persistence_model
@@ -43,7 +38,6 @@ module AutoScaling
         :stacks => [@stack]
       )
 
-      puts @containers
     end
   end
 end
