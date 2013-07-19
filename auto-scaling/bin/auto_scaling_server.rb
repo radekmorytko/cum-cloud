@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 
-$: << File.join(File.dirname(File.expand_path('../../', __FILE__)), 'service-controller')
-$: << File.join(File.dirname(File.expand_path('../../', __FILE__)), 'clients')
+$: << File.join(File.dirname(File.expand_path('../', __FILE__)), 'service-controller')
+$: << File.join(File.dirname(File.expand_path('../', __FILE__)), 'clients')
 
 
 require 'rubygems'
