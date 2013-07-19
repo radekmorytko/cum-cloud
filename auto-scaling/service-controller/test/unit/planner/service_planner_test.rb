@@ -2,6 +2,7 @@ require 'rubygems'
 require 'test/unit'
 require 'mocha/setup'
 
+require 'utils'
 require 'planner/service_planner'
 
 module AutoScaling

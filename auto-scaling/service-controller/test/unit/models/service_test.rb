@@ -2,15 +2,14 @@ require 'rubygems'
 require 'data_mapper'
 require "test/unit"
 
+require 'utils'
 require 'models/models'
 
 module AutoScaling
   class ServiceTest < Test::Unit::TestCase
 
     def setup
-      DataMapper::Logger.new($stdout, :debug)
-      DataMapper.setup(:default, 'sqlite::memory:')
-      DataMapper.auto_upgrade!
+      Utils::setup_database
     end
 
     def test_persistence_model

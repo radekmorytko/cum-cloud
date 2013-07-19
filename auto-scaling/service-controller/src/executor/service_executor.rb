@@ -33,6 +33,17 @@ module AutoScaling
 
       # instantiate
       instance_id = @cloud_provider.instantiate_template template_id
+
+      # update data model
+      stacks = [Stack.create(
+          :type => service['stack']
+      )]
+
+      Service.create(
+          :id => instance_id.to_i,
+          :name => service['name'],
+          :stacks => stacks
+      )
     end
 
     # returns list of ips of an environment in form:
