@@ -46,27 +46,6 @@ module AutoScaling
       )
     end
 
-    # returns list of ips of an environment in form:
-    # {
-    #   :loadbalancer => '192.168.122.1'
-    #   :worker => ['192.168.122.10', '192.168.122.11']
-    # }
-    def ips(service_id)
-      ips = {}
-
-      # vm_ids = {:loadbalancer => 0, :worker => [1, 2, 3]}
-      vm_ids = @cloud_provider.vm_ids service_id
-
-      ips[:loadbalancer] = @cloud_provider.vm_ip(vm_ids[:loadbalancer])
-      ips[:worker] = []
-
-      vm_ids[:worker].each do |id|
-        ips[:worker] << @cloud_provider.vm_ip(id)
-      end
-
-      ips
-    end
-
   end
 
 end

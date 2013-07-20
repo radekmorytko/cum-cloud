@@ -60,9 +60,5 @@ eos
       @opennebula_client.appflow.delete_template template_id
     end
 
-    def render
-
-    end
-
   end
 end

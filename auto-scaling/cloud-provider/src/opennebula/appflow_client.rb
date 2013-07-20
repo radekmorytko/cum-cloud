@@ -9,45 +9,89 @@ module AutoScaling
 
   class AppflowClient
 
-    USER_AGENT = "auto-scaling"
-    TIMEOUT = 10
-    SERVICE_TEMPLATE_PATH = '/service_template'
-    SERVICE_PATH = '/service'
+    CLIENT = {
+        :user_agent => "auto-scaling",
+        :timeout => 10,
+        :retries => 3
+    }
+
+    RESOURCES = {
+        :service => '/service',
+        :service_template => '/service_template'
+    }
+
+    @logger = Logger.new(STDOUT)
 
     def initialize(options)
       @options = options
     end
 
     def create_template(service_template)
-      response = client.post(SERVICE_TEMPLATE_PATH, service_template)
+      response = client.post(RESOURCES[:service_template], service_template)
 
-      if CloudClient::is_error?(response)
-        [response.code.to_i, response.to_s]
-      else
-        template = JSON.parse(response.body)
-        template['DOCUMENT']['ID'].to_i
-      end
+      return [response.code.to_i, response.to_s] if CloudClient::is_error?(response)
 
+      template = JSON.parse(response.body)
+      template['DOCUMENT']['ID'].to_i
     end
 
     def delete_template(service_template_id)
-      client.delete("#{SERVICE_TEMPLATE_PATH}/#{service_template_id}")
+      client.delete("#{RESOURCES[:service_template]}/#{service_template_id}")
     end
 
     def instantiate_template(template_id)
       json_str = ::Service.build_json_action('instantiate')
-      response = client.post("#{SERVICE_TEMPLATE_PATH}/#{template_id}/action", json_str)
+      response = client.post("#{RESOURCES[:service_template]}/#{template_id}/action", json_str)
 
-      if CloudClient::is_error?(response)
-        [response.code.to_i, response.to_s]
-      else
-        template = JSON.parse(response.body)
-        template['DOCUMENT']['ID'].to_i
-      end
+      return [response.code.to_i, response.to_s] if CloudClient::is_error?(response)
+
+      template = JSON.parse(response.body)
+      template['DOCUMENT']['ID'].to_i
     end
 
     def delete_instance(instance_id)
-      client.delete("#{SERVICE_PATH}/#{instance_id}")
+      client.delete("#{RESOURCES[:service]}/#{instance_id}")
+    end
+
+    # Returns configuration of a service as a list of roles and corresponding vms, ex:
+    # {
+    #   "loadbalancer" => [{:ip=>"192.168.122.100", :id=>"138"}],
+    #   "worker" => [{:ip=>"192.168.122.101", :id=>"139"}]
+    # }
+    #
+    # Note: method is blocking
+    def configuration(instance_id)
+      retry_count = 0
+
+      begin
+        response = client.get("#{RESOURCES[:service]}/#{instance_id}")
+
+        # we return if there was an error on server
+        # (retries apply only to a service state)
+        return [response.code.to_i, response.to_s] if CloudClient::is_error?(response)
+
+        document_hash = JSON.parse(response.body)
+        template = document_hash['DOCUMENT']['TEMPLATE']['BODY']
+        retry_count += 1
+
+      end while retry_count <= CLIENT[:retries] and template['state'].to_i < 2
+
+      raise RuntimeError, "Can't get service confiugration - it is still pending" if template['state'].to_i < 2
+
+      result = {}
+      template['roles'].each do |role|
+        result[role['name']] = []
+
+        role['nodes'].each do |node|
+
+          result[role['name']] << {
+              :id => node['vm_info']['VM']["ID"],
+              :ip => node['vm_info']['VM']['TEMPLATE']['NIC']['IP']
+          }
+        end
+      end
+
+      result
     end
 
     private
@@ -56,9 +100,11 @@ module AutoScaling
           :username   => @options[:username],
           :password   => @options[:password],
           :url        => @options[:server],
-          :timeout    => TIMEOUT,
-          :user_agent => USER_AGENT)
+          :timeout    => CLIENT[:timeout],
+          :user_agent => CLIENT[:user_agent])
     end
+
+
 
   end
 end

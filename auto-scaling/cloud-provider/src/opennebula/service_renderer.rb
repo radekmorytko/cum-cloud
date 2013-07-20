@@ -19,9 +19,8 @@ module AutoScaling
           mappings[:onetemplate_id],
           mappings[:appstage][:loadbalancer],
 
-          service['stack'],
           mappings[:onetemplate_id],
-          mappings[:appstage][:java],
+          mappings[:appstage][service['stack'].to_sym],
           service['instances']
       )
 
@@ -34,7 +33,6 @@ module AutoScaling
         :name,
         :loadbalancer_template_id,
         :loadbalancer_appstage_id,
-        :stack,
         :worker_template_id,
         :worker_appstage_id,
         :worker_instances) do

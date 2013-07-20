@@ -20,9 +20,8 @@ module AutoScaling
             "cardinality": 1
         },
         {
-            "name": "java-worker",
+            "name": "worker",
             "parents": ["loadbalancer"],
-
             "vm_template": 6,
             "appstage_id": 20,
             "cardinality": 2

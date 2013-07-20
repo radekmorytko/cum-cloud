@@ -28,6 +28,10 @@ module AutoScaling
       @appflow.instantiate_template template_id
     end
 
+    def configuration(service_id)
+      @appflow.configuration service_id
+    end
+
     def render(service, bindings)
       ServiceRenderer::render(service, bindings)
     end

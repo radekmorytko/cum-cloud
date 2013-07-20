@@ -9,9 +9,8 @@
             "cardinality": 1
         },
         {
-            "name": "<%=stack%>-worker",
+            "name": "worker",
             "parents": ["loadbalancer"],
-
             "vm_template": <%=worker_template_id%>,
             "appstage_id": <%=worker_appstage_id%>,
             "cardinality": <%=worker_instances%>

@@ -69,18 +69,6 @@ module AutoScaling
       @executor.deploy_service service, mappings
     end
 
-    def test_configuration
-      instance_id = 10
-      vm_ids = {:loadbalancer => 0, :worker => [1, 2, 3]}
-      @cloud_provider.expects(:vm_ids).with(instance_id).returns(vm_ids)
-
-      ips = ['192.168.122.1', '192.168.122.10', '192.168.122.11', '192.168.122.12']
-      [0,1,2,3].each do |id|
-        @cloud_provider.expects(:vm_ip).with(id).returns(ips[id])
-      end
-
-      @executor.ips instance_id
-    end
   end
 
 end
