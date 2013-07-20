@@ -3,14 +3,14 @@
     "deployment": "straight",
     "roles": [
         {
-            "name": "loadbalancer",
-            "vm_template": <%=loadbalancer_template_id%>,
-            "appstage_id": <%=loadbalancer_appstage_id%>,
+            "name": "master",
+            "vm_template": <%=master_template_id%>,
+            "appstage_id": <%=master_appstage_id%>,
             "cardinality": 1
         },
         {
-            "name": "worker",
-            "parents": ["loadbalancer"],
+            "name": "slave",
+            "parents": ["master"],
             "vm_template": <%=worker_template_id%>,
             "appstage_id": <%=worker_appstage_id%>,
             "cardinality": <%=worker_instances%>

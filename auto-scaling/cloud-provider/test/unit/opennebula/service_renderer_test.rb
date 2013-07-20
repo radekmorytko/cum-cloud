@@ -14,14 +14,14 @@ module AutoScaling
     "deployment": "straight",
     "roles": [
         {
-            "name": "loadbalancer",
+            "name": "master",
             "vm_template": 6,
             "appstage_id": 9,
             "cardinality": 1
         },
         {
-            "name": "worker",
-            "parents": ["loadbalancer"],
+            "name": "slave",
+            "parents": ["master"],
             "vm_template": 6,
             "appstage_id": 20,
             "cardinality": 2
@@ -37,12 +37,15 @@ eos
       }
 
       mappings = {
-          :onetemplate_id => 6,
+        :onetemplate_id => 6,
 
-          :appstage => {
-              :loadbalancer => 9,
-              :java => 20
+        # supported stacks
+        :appstage => {
+          :java => {
+            :master => 9,
+            :slave => 20
           }
+        }
       }
 
       # test it from client side - ie. using opennebula

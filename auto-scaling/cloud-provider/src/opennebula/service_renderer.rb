@@ -17,10 +17,10 @@ module AutoScaling
           service['name'],
 
           mappings[:onetemplate_id],
-          mappings[:appstage][:loadbalancer],
+          mappings[:appstage][service['stack'].to_sym][:master],
 
           mappings[:onetemplate_id],
-          mappings[:appstage][service['stack'].to_sym],
+          mappings[:appstage][service['stack'].to_sym][:slave],
           service['instances']
       )
 
@@ -31,8 +31,8 @@ module AutoScaling
 
     ServiceTemplate = Struct.new(
         :name,
-        :loadbalancer_template_id,
-        :loadbalancer_appstage_id,
+        :master_template_id,
+        :master_appstage_id,
         :worker_template_id,
         :worker_appstage_id,
         :worker_instances) do

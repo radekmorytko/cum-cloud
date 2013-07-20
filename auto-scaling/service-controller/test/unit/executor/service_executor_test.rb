@@ -20,7 +20,7 @@ module AutoScaling
 
     end
 
-    def test_deploy_service
+    def test_shall_successfully_deploy_service
       service_template =
 <<-eos
 {
@@ -67,6 +67,29 @@ module AutoScaling
       @cloud_provider.expects(:instantiate_template).with(template_id).returns(instance_id)
 
       @executor.deploy_service service, mappings
+    end
+
+    def test_shall_update_model
+      instance_id = 69
+      conf = {
+         'master' => [{:ip=>"192.168.122.100", :id=>"138"}],
+         'slave' => [{:ip=>"192.168.122.101", :id=>"139"}, {:ip=>"192.168.122.102", :id=>"140"}]
+      }
+
+      stacks = [Stack.create(:type => 'java')]
+
+      service = Service.create(
+          :id => instance_id,
+          :name => 'service-name',
+          :stacks => stacks
+      )
+
+      @cloud_provider.expects(:configuration).with(instance_id).returns(conf)
+      @executor.update service
+
+      assert_equal Container.get(138).ip, "192.168.122.100"
+      assert_equal Container.get(139).ip, "192.168.122.101"
+      assert_equal Container.get(140).ip, "192.168.122.102"
     end
 
   end

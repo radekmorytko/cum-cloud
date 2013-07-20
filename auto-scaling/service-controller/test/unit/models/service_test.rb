@@ -16,7 +16,7 @@ module AutoScaling
       DataMapper.finalize
 
       DataMapper.finalize
-      @containers = [
+      @slaves = [
         Container.create(
           :id => 10,
           :ip => '192.168.122.1'
@@ -27,10 +27,16 @@ module AutoScaling
         )
       ]
 
+      @master = Container.new(
+          :id => 0,
+          :ip => '192.168.122.200'
+      )
+
       @stack = Stack.create(
         :type => :java,
         :data => 'http://jenkins.com/path/to/my/app.war',
-        :containers => @containers
+        :slaves => @slaves,
+        :master => @master
       )
 
       @service = ::AutoScaling::Service.create(
