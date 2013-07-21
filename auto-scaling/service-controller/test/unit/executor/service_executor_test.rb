@@ -11,6 +11,15 @@ module AutoScaling
 
   class ServiceExecutorTest < Test::Unit::TestCase
 
+    MAPPINGS = {
+        :onetemplate_id => 6,
+
+        :appstage => {
+            :loadbalancer => 9,
+            :java => 20
+        }
+    }
+
     def setup
       @cloud_provider = mock()
       Utils::setup_database
@@ -49,22 +58,13 @@ module AutoScaling
           'name' => 'service-name'
       }
 
-      mappings = {
-          :onetemplate_id => 6,
-
-          :appstage => {
-              :loadbalancer => 9,
-              :java => 20
-          }
-      }
-
       template_id = 100
       instance_id = 69
-      @cloud_provider.expects(:render).with(service, mappings).returns(service_template)
+      @cloud_provider.expects(:render).with(service, MAPPINGS).returns(service_template)
       @cloud_provider.expects(:create_template).with(service_template).returns(template_id)
       @cloud_provider.expects(:instantiate_template).with(template_id).returns(instance_id)
 
-      @executor.deploy_service service, mappings
+      @executor.deploy_service service, MAPPINGS
     end
 
     def test_shall_update_model
@@ -84,7 +84,7 @@ module AutoScaling
       assert_equal Service.get(instance_id).status, :new
 
       @cloud_provider.expects(:configuration).with(instance_id).returns(conf)
-      @executor.update service
+      @executor.send(:update, service)
 
       assert_equal Service.get(instance_id).status, :converged
       assert_equal Container.get(138).ip, "192.168.122.100"
@@ -131,6 +131,39 @@ module AutoScaling
 
       actual = @executor.converge(service, Container.master(stack).id)
       assert_equal response, actual
+    end
+
+    def test_shall_deploy_new_container
+      instance_id = 69
+
+      containers = [
+          Container.create(
+              :id => 10,
+              :ip => '192.168.122.1'
+          ),
+          Container.create(
+              :id => 0,
+              :ip => '192.168.122.200',
+              :type => :master
+          )
+      ]
+
+      stack = Stack.create(
+          :type => 'java',
+          :containers => containers
+      )
+
+      service = Service.create(
+          :id => instance_id,
+          :name => 'service-name',
+          :stacks => [stack],
+          :status => :converged
+      )
+
+      @cloud_provider.expects(:instantiate_container).with(stack.type, MAPPINGS).returns({:id => 11, :ip => '192.168.122.2'})
+
+      @executor.deploy_container Stack.get(stack.id), MAPPINGS
+      assert_equal 2, Container.slaves(stack).size
     end
 
   end

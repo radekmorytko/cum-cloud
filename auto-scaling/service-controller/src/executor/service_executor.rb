@@ -50,36 +50,19 @@ module AutoScaling
       )
     end
 
-    # Updates model, so it reflects actual configuration
-    #
-    # * *Args* :
-    # - +service+ -> instance of models/service
-    def update(service)
-      # {
-      #   "loadbalancer" => [{:ip=>"192.168.122.100", :id=>"138"}],
-      #   "worker" => [{:ip=>"192.168.122.101", :id=>"139"}]
-      # }
-      conf = @cloud_provider.configuration(service.id)
-      @@logger.debug("Got configuration for a service #{service.id}: #{conf}")
+    def deploy_container(stack, mappings = {})
+      mappings ||= {}
+      mappings = MAPPINGS.merge(mappings)
 
-      # TODO support only for one stack
-      stack = service.stacks[0]
-      stack.containers = [Container.create(
-          :id => conf['master'][0][:id].to_i,
-          :ip => conf['master'][0][:ip],
-          :type => :master
-      )]
+      container_info = @cloud_provider.instantiate_container stack.type, mappings
 
-      conf['slave'].each do |vm|
-        stack.containers << Container.create(
-            :id => vm[:id].to_i,
-            :ip => vm[:ip]
-        )
-      end
+      container = Container.create(
+          :id => container_info[:id],
+          :ip => container_info[:ip]
+      )
+      stack.containers << container
 
-      # TODO add synchronization
-      service.status = :converged
-      service.save
+      stack.save
     end
 
     def converge(service, container_id)
@@ -102,6 +85,39 @@ module AutoScaling
           end
         }
       end
+    end
+
+    private
+    # Updates model, so it reflects actual configuration
+    #
+    # * *Args* :
+    # - +service+ -> instance of models/service
+    def update(service)
+      # {
+      #   "loadbalancer" => [{:ip=>"192.168.122.100", :id=>"138"}],
+      #   "worker" => [{:ip=>"192.168.122.101", :id=>"139"}]
+      # }
+      conf = @cloud_provider.configuration(service.id)
+      @@logger.debug("Got configuration for a service #{service.id}: #{conf}")
+
+      # TODO support for more than one stack
+      stack = service.stacks[0]
+      stack.containers = [Container.create(
+                              :id => conf['master'][0][:id].to_i,
+                              :ip => conf['master'][0][:ip],
+                              :type => :master
+                          )]
+
+      conf['slave'].each do |vm|
+        stack.containers << Container.create(
+            :id => vm[:id].to_i,
+            :ip => vm[:ip]
+        )
+      end
+
+      # TODO add synchronization
+      service.status = :converged
+      service.save
     end
 
   end

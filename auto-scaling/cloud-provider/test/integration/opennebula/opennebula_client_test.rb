@@ -59,5 +59,15 @@ eos
       @opennebula_client.appflow.delete_template template_id
     end
 
+    def test_shall_instantiate_container
+      appstage_id = 25
+      template_id = 7
+
+      instance_id = @opennebula_client.instantiate_container(appstage_id, template_id)
+      assert_equal true, instance_id >= 0
+      # cleanup
+      @opennebula_client.appstage.delete_container instance_id
+    end
+
   end
 end
