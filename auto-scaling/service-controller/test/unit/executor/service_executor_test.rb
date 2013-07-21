@@ -10,7 +10,6 @@ module AutoScaling
 
     def setup
       @cloud_provider = mock()
-
       Utils::setup_database
 
       @executor = ServiceExecutor.new @cloud_provider

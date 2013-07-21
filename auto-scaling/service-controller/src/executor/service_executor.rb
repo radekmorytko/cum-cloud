@@ -8,8 +8,6 @@ module AutoScaling
 
   class ServiceExecutor
 
-    attr_accessor :services
-
     @@logger = Logger.new(STDOUT)
 
     def initialize(cloud_provider)
