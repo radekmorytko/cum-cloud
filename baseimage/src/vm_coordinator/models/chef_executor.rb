@@ -16,9 +16,10 @@ class ChefExecutor
     def execute(command)
       @@logger.debug("Running command: #{command}")
       returned_val = system(command)
-      @@logger.debug("Returned value: #{returned_val}, status #{$?}")
+      status = $?
+      @@logger.debug("Returned value: #{returned_val}, status #{status}")
 
-      returned_val
+      [returned_val, status]
     end
   end
 

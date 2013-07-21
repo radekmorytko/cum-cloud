@@ -25,5 +25,7 @@ post '/chef' do
   logger.info("Node object json: #{Base64::decode64(params[:node_object_data])}")
 
   chef.run( :data => params[:node_object_data] )
+
+  status 200
 end
 

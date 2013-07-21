@@ -28,9 +28,10 @@ class ChefExecutorTest < Test::Unit::TestCase
     command_str = "#{CHEF_EXECUTABLE} -c chef.conf -j #{node_object[:file]} >> #{VM_COORDINATOR_LOG}/chef_executor.log 2>&1"
 
     executor = mock()
-    executor.expects(:execute).with(command_str)
+    executor.expects(:execute).with(command_str).returns([10, 0])
 
-    @chef.run(node_object, executor)
+    result = @chef.run(node_object, executor)
+    assert_equal 0, result[1]
   end
 
   def test_run_chef_with_empty_or_nil_node_list
