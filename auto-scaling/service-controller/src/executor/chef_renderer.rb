@@ -1,5 +1,7 @@
 require 'rubygems'
 require 'json'
+require 'logger'
+require 'models/models'
 
 module AutoScaling
 
@@ -18,7 +20,7 @@ module AutoScaling
             :run_list => ["recipe[haproxy]"]
         }
 
-        stack.slaves.each do |container|
+        Container.slaves(stack).each do |container|
           template[:haproxy][:members] << {
               "hostname" => container.ip,
               "ipaddress" => container.ip

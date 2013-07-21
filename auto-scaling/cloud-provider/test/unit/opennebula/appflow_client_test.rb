@@ -11,7 +11,7 @@ module AutoScaling
     OPTIONS = {
         :username => 'oneadmin',
         :password => 'password',
-        :server => 'http://example.com'
+        :server => 'example.com'
     }
 
     def setup

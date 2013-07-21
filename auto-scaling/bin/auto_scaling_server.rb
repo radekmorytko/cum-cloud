@@ -7,18 +7,28 @@ $: << File.join(File.dirname(File.expand_path('../', __FILE__)), 'cloud-provider
 require 'rubygems'
 require 'logger'
 require 'sinatra'
+require 'rest-client'
 
 require 'cloud_provider'
 require 'service_controller'
 
 logger = Logger.new(STDOUT)
+RestClient.log = Logger.new(STDOUT)
 
 options = {
     :username => 'oneadmin',
     :password => 'password',
-    :server => 'http://one:2474'
+    :server => 'one:2474'
 }
 
+# database
+DataMapper::Logger.new($stdout, :debug)
+db_path = File.join(File.expand_path(File.dirname(__FILE__)), 'auto-scaling.db')
+logger.debug "Using database: #{db_path}"
+DataMapper.setup(:default, "sqlite://#{db_path}")
+DataMapper.auto_migrate!
+
+# service-controller
 cloud_provider = AutoScaling::OpenNebulaClient.new options
 service_executor = AutoScaling::ServiceExecutor.new cloud_provider
 service_planner = AutoScaling::ServicePlanner.new service_executor
@@ -58,13 +68,12 @@ post '/service' do
 end
 
 post '/service/:service_id/container/:container_id' do |service_id, container_id|
-  logger.debug("Container #{container_id} (service: #{service_id}) converged")
+  service = ::AutoScaling::Service.get(service_id)
 
-  service = Service.get(service_id)
-  container = Container.get(container_id)
+  logger.debug("Container #{container_id} (service: #{service.id}) converged")
 
   begin
-    service_executor.converge service, container
+    service_executor.converge service, container_id
     status 200
   rescue RuntimeError => e
     logger.error e

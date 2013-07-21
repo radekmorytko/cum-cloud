@@ -1,8 +1,9 @@
 module AutoScaling
   class Utils
     def self.setup_database
-      DataMapper::Logger.new($stdout, :error)
+      DataMapper::Logger.new($stdout, :debug)
       DataMapper.setup(:default, 'sqlite::memory:')
+      #DataMapper.setup(:default, "sqlite:///tmp/test.db")
       DataMapper.auto_migrate!
     end
   end

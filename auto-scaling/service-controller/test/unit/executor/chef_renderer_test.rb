@@ -1,9 +1,9 @@
 require 'rubygems'
-require 'json'
-require "test/unit"
-require 'utils'
+require 'test/unit'
+require 'data_mapper'
+require 'mocha/setup'
 
-require 'models/models'
+require 'utils'
 require 'executor/chef_renderer'
 
 module AutoScaling
@@ -12,10 +12,6 @@ module AutoScaling
 
     def setup
       Utils::setup_database
-    end
-
-    def teardown
-      # Do nothing
     end
 
     def test_shall_configuration_for_java_stack
@@ -34,26 +30,34 @@ module AutoScaling
         }
       )
 
-      master = Container.create(
-        :id => 99,
-        :ip => "192.168.122.99"
-      )
+      instance_id = 69
 
-      slaves = [
+      containers = [
           Container.create(
-              :id => 100,
-              :ip => "192.168.122.100"
+              :id => 10,
+              :ip => '192.168.122.100'
           ),
           Container.create(
-              :id => 101,
-              :ip => "192.168.122.101"
+              :id => 11,
+              :ip => '192.168.122.101'
+          ),
+          Container.create(
+              :id => 0,
+              :ip => '192.168.122.200',
+              :type => :master
           )
       ]
 
       stack = Stack.create(
-        :master => master,
-        :slaves => slaves,
-        :type => :java
+          :type => 'java',
+          :containers => containers
+      )
+
+      service = Service.create(
+          :id => instance_id,
+          :name => 'service-name',
+          :stacks => [stack],
+          :status => :converged
       )
 
       actual = ChefRenderer.render(stack)

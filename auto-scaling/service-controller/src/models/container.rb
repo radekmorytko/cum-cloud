@@ -10,9 +10,14 @@ module AutoScaling
     belongs_to :stack
 
     property :ip, IPAddress, :required => true
+    property :type, Enum[ :master, :slave ], :default => :slave, :required => true
 
-    def master?
-      stack.master == self
+    def self.master(stack)
+      (all(:stack => stack) & all(:type => :master))[0]
+    end
+
+    def self.slaves(stack)
+      all(:stack => stack) & all(:type => :slave)
     end
   end
 end

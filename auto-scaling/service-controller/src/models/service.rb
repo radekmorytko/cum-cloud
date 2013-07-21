@@ -11,6 +11,6 @@ module AutoScaling
     property :name, String, :required => true
     property :status, Enum[ :new, :converged ], :default => :new
 
-    has n, :stacks, :default => []
+    has n, :stacks
   end
 end

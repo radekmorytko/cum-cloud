@@ -1,8 +1,10 @@
 require 'rubygems'
 require 'test/unit'
+require 'data_mapper'
 require 'mocha/setup'
 require 'fakeweb'
 
+require 'utils'
 require 'executor/service_executor'
 
 module AutoScaling
@@ -14,10 +16,6 @@ module AutoScaling
       Utils::setup_database
 
       @executor = ServiceExecutor.new @cloud_provider
-    end
-
-    def teardown
-
     end
 
     def test_shall_successfully_deploy_service
@@ -97,34 +95,31 @@ module AutoScaling
     def test_shall_converge_and_update_master
       instance_id = 69
 
-      slaves = [
+      containers = [
           Container.create(
               :id => 10,
               :ip => '192.168.122.1'
           ),
-          Container.new(
+          Container.create(
               :id => 11,
               :ip => '192.168.122.2'
+          ),
+          Container.create(
+              :id => 0,
+              :ip => '192.168.122.200',
+              :type => :master
           )
       ]
 
-      master = Container.new(
-          :id => 0,
-          :ip => '192.168.122.200'
-      )
-
-      stacks = [
-          Stack.create(
+      stack = Stack.create(
               :type => 'java',
-              :master => master,
-              :slaves => slaves
+              :containers => containers
           )
-      ]
 
       service = Service.create(
           :id => instance_id,
           :name => 'service-name',
-          :stacks => stacks,
+          :stacks => [stack],
           :status => :converged
       )
 
@@ -134,7 +129,7 @@ module AutoScaling
                            :body => response,
                            :status => ["200", "OK"])
 
-      actual = @executor.converge(service, master)
+      actual = @executor.converge(service, Container.master(stack).id)
       assert_equal response, actual
     end
 

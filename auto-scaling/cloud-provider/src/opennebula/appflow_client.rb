@@ -87,16 +87,10 @@ module AutoScaling
       retry_count = 0
 
       begin
-        response = client("#{RESOURCES[:service]}/#{instance_id}").get {|response, request, result, &block|
-          error response if response.code != 201
-        }
-
-        # we return if there was an error on server
-        # (retries apply only to a service state)
-        raise RuntimeError, "Cannot execute client action: #{[response.code.to_i, response.to_s]}" if CloudClient::is_error?(response)
-
-        document_hash = JSON.parse(response.body)
+        resource = client("#{RESOURCES[:service]}/#{instance_id}").get
+        document_hash = JSON.parse(resource)
         template = document_hash['DOCUMENT']['TEMPLATE']['BODY']
+
         retry_count += 1
 
       end while retry_count <= CLIENT[:retries] and template['state'].to_i < 2

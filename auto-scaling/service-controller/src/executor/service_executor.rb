@@ -1,8 +1,10 @@
 require 'rubygems'
 require 'logger'
 require 'rest_client'
+require 'base64'
 
 load 'config/auto_scaling.conf'
+require 'executor/chef_renderer'
 require 'models/models'
 
 module AutoScaling
@@ -62,14 +64,14 @@ module AutoScaling
 
       # TODO support only for one stack
       stack = service.stacks[0]
-      stack.master = Container.create(
+      stack.containers = [Container.create(
           :id => conf['master'][0][:id].to_i,
-          :ip => conf['master'][0][:ip]
-      )
-      stack.slaves = []
+          :ip => conf['master'][0][:ip],
+          :type => :master
+      )]
 
       conf['slave'].each do |vm|
-        stack.slaves << Container.create(
+        stack.containers << Container.create(
             :id => vm[:id].to_i,
             :ip => vm[:ip]
         )
@@ -80,16 +82,17 @@ module AutoScaling
       service.save
     end
 
-    def converge(service, container)
+    def converge(service, container_id)
       update(service) if(service.status != :converged)
+      container = ::AutoScaling::Container.get(container_id)
 
-      if(container.master?)
+      if(container.type == :master)
         chef = ChefRenderer.render container.stack
         url = "http://#{container.ip}:4567/chef"
 
         @@logger.debug "Sending configuration #{chef} to #{url}"
 
-        RestClient.post(url, :node_object_data => chef) { |response, request, result, &block|
+        RestClient.post(url, :node_object_data => Base64::encode64(chef)) { |response, request, result, &block|
           case response.code
             when 200
               @@logger.debug "Successfully sent configuration #{response}"

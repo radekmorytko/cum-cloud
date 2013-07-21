@@ -13,30 +13,26 @@ module AutoScaling
     end
 
     def test_persistence_model
-      DataMapper.finalize
-
-      DataMapper.finalize
-      @slaves = [
+      containers = [
         Container.create(
           :id => 10,
           :ip => '192.168.122.1'
         ),
-        Container.new(
+        Container.create(
             :id => 11,
             :ip => '192.168.122.2'
+        ),
+        Container.create(
+            :id => 0,
+            :ip => '192.168.122.200',
+            :type => :master
         )
       ]
-
-      @master = Container.new(
-          :id => 0,
-          :ip => '192.168.122.200'
-      )
 
       @stack = Stack.create(
         :type => :java,
         :data => 'http://jenkins.com/path/to/my/app.war',
-        :slaves => @slaves,
-        :master => @master
+        :containers => containers
       )
 
       @service = ::AutoScaling::Service.create(
@@ -47,10 +43,10 @@ module AutoScaling
 
       # test_shall_get_information_if_container_is_a_master
       container = Container.get(0)
-      assert container.master?
+      assert_equal Container.master(Stack.get(@stack.id)), container
 
-      container = Container.get(10)
-      assert !container.master?
+      slaves = Container.slaves(Stack.get(@stack.id))
+      assert_equal 2, slaves.size
     end
 
   end

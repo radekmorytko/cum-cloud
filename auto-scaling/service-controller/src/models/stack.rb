@@ -13,8 +13,7 @@ module AutoScaling
     #property :name, String
     property :data, String
 
-    has 1, :master, 'Container', :default => nil
-    has n, :slaves, 'Container', :default => []
+    has n, :containers
 
     # TODO who should have information about where stack is deployed (ex. opennebula endpoint?)
     # -> probably cloud controller who scales to different cloud

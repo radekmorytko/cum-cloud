@@ -283,17 +283,9 @@ module OpenNebula
     private
 
         def prepare_vm_vars(vm_no)
-          vm_role = @body['parents'] ? 'SLAVE' : 'MASTER'
-          Log.info LOG_COMP, "VM's role: #{vm_role}", @service.id
-
-          configuration = YAML.load_file(CONFIGURATION_FILE)
-
           {
               'SERVICE_ID' => @service.id,
-              'ROLE' => vm_role,
-              'REDIS_HOST' => configuration[:redis_host],
-              'REDIS_PORT' => configuration[:redis_port],
-              'VM_NAME' => "#{@body['name']}_#{vm_no}_(service_#{@service.id})"
+              'VM_ID' => '$VMID'
           }
         end
 
