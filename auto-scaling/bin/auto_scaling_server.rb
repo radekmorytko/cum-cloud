@@ -19,8 +19,8 @@ options = {
     :server => 'http://one:2474'
 }
 
-cloud_provder = AutoScaling::OpenNebulaClient.new options
-service_executor = AutoScaling::ServiceExecutor.new cloud_provder
+cloud_provider = AutoScaling::OpenNebulaClient.new options
+service_executor = AutoScaling::ServiceExecutor.new cloud_provider
 service_planner = AutoScaling::ServicePlanner.new service_executor
 
 logger.info("auto-scaling server initialized")
@@ -55,4 +55,20 @@ post '/service' do
   end
 
   status 200
+end
+
+post '/service/:service_id/container/:container_id' do |service_id, container_id|
+  logger.debug("Container #{container_id} (service: #{service_id}) converged")
+
+  service = Service.get(service_id)
+  container = Container.get(container_id)
+
+  begin
+    service_executor.converge service, container
+    status 200
+  rescue RuntimeError => e
+    logger.error e
+    status 503
+  end
+
 end

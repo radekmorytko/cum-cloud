@@ -8,8 +8,9 @@ module AutoScaling
     # id should correspond to internal service representation (ie. appflow)
     property :id, Integer, :key => true
 
-    property :name, String
+    property :name, String, :required => true
+    property :status, Enum[ :new, :converged ], :default => :new
 
-    has n, :stacks
+    has n, :stacks, :default => []
   end
 end

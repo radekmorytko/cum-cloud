@@ -3,11 +3,13 @@ require 'json'
 
 module AutoScaling
 
-  # Class responsbile for rendering a chef configuration
+  # Class responsible for rendering a chef configuration
   # that corresponds to internal model
   class ChefRenderer
 
     class JavaStack
+      @@logger = Logger.new(STDOUT)
+
       def self.render(stack)
         template = {
             :haproxy => {
@@ -23,12 +25,14 @@ module AutoScaling
           }
         end
 
+        @@logger.debug("Rendered chef node: #{template.to_json}")
+
         template.to_json
       end
     end
 
     # Renders configuration
-    def render(stack)
+    def self.render(stack)
       # select appropriate renderer, depending on the type of a stack
       JavaStack.render(stack)
     end

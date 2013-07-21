@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'test/unit'
 require 'mocha/setup'
+require 'fakeweb'
 
 require 'executor/service_executor'
 
@@ -82,13 +83,59 @@ module AutoScaling
           :name => 'service-name',
           :stacks => stacks
       )
+      assert_equal Service.get(instance_id).status, :new
 
       @cloud_provider.expects(:configuration).with(instance_id).returns(conf)
       @executor.update service
 
+      assert_equal Service.get(instance_id).status, :converged
       assert_equal Container.get(138).ip, "192.168.122.100"
       assert_equal Container.get(139).ip, "192.168.122.101"
       assert_equal Container.get(140).ip, "192.168.122.102"
+    end
+
+    def test_shall_converge_and_update_master
+      instance_id = 69
+
+      slaves = [
+          Container.create(
+              :id => 10,
+              :ip => '192.168.122.1'
+          ),
+          Container.new(
+              :id => 11,
+              :ip => '192.168.122.2'
+          )
+      ]
+
+      master = Container.new(
+          :id => 0,
+          :ip => '192.168.122.200'
+      )
+
+      stacks = [
+          Stack.create(
+              :type => 'java',
+              :master => master,
+              :slaves => slaves
+          )
+      ]
+
+      service = Service.create(
+          :id => instance_id,
+          :name => 'service-name',
+          :stacks => stacks,
+          :status => :converged
+      )
+
+      response = "Miod, smietana, pij browara do rana"
+      FakeWeb.register_uri(:post,
+                           "http://192.168.122.200:4567/chef",
+                           :body => response,
+                           :status => ["200", "OK"])
+
+      actual = @executor.converge(service, master)
+      assert_equal response, actual
     end
 
   end

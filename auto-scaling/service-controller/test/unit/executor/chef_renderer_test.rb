@@ -12,7 +12,6 @@ module AutoScaling
 
     def setup
       Utils::setup_database
-      @chef = ChefRenderer.new
     end
 
     def teardown
@@ -57,7 +56,7 @@ module AutoScaling
         :type => :java
       )
 
-      actual = @chef.render(stack)
+      actual = ChefRenderer.render(stack)
 
       assert_equal expected, actual
     end

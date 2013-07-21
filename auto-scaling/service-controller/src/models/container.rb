@@ -9,6 +9,10 @@ module AutoScaling
     property :id, Integer, :key => true
     belongs_to :stack
 
-    property :ip, IPAddress
+    property :ip, IPAddress, :required => true
+
+    def master?
+      stack.master == self
+    end
   end
 end

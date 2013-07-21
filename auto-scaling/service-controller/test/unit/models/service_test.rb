@@ -45,6 +45,13 @@ module AutoScaling
         :stacks => [@stack]
       )
 
+      # test_shall_get_information_if_container_is_a_master
+      container = Container.get(0)
+      assert container.master?
+
+      container = Container.get(10)
+      assert !container.master?
     end
+
   end
 end
