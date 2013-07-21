@@ -10,24 +10,23 @@ module AutoScaling
     SERVICE_TEMPLATE =
 <<-eos
 {
-    "name": "service-name",
+"name": "service-name",
     "deployment": "straight",
     "roles": [
-        {
-            "name": "loadbalancer",
-            "vm_template": 6,
-            "appstage_id": 9,
-            "cardinality": 1
-        },
-        {
-            "name": "java-worker",
-            "parents": ["loadbalancer"],
+    {
+        "name": "master",
+        "vm_template": 7,
+        "appstage_id": 39,
+        "cardinality": 1
+    },
 
-            "vm_template": 6,
-            "appstage_id": 20,
-            "cardinality": 2
-        }
-    ]
+    {
+        "name": "slave",
+        "parents": [ "master" ],
+        "vm_template": 7,
+        "appstage_id": 25
+    }]
+
 }
 eos
 
@@ -35,7 +34,7 @@ eos
       options = {
           :username => 'oneadmin',
           :password => 'password',
-          :server => 'http://one:2474'
+          :server => '192.168.122.181:2474'
       }
 
       @opennebula_client = OpenNebulaClient.new options

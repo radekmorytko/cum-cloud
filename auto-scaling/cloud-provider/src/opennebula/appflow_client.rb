@@ -1,9 +1,7 @@
 require 'rubygems'
 require 'logger'
 require 'json'
-
-require 'opennebula/appflow_helper'
-require 'cloud/CloudClient'
+require 'rest_client'
 
 module AutoScaling
 
@@ -11,7 +9,7 @@ module AutoScaling
 
     CLIENT = {
         :user_agent => "auto-scaling",
-        :timeout => 10,
+        :timeout => 100,
         :retries => 3
     }
 
@@ -20,37 +18,62 @@ module AutoScaling
         :service_template => '/service_template'
     }
 
-    @logger = Logger.new(STDOUT)
+    @@logger = Logger.new(STDOUT)
 
     def initialize(options)
       @options = options
     end
 
     def create_template(service_template)
-      response = client.post(RESOURCES[:service_template], service_template)
-
-      return [response.code.to_i, response.to_s] if CloudClient::is_error?(response)
-
-      template = JSON.parse(response.body)
-      template['DOCUMENT']['ID'].to_i
+      client(RESOURCES[:service_template]).post(service_template) {|response, request, result, &block|
+        case response.code
+          when 201
+            template = JSON.parse(response.body)
+            template['DOCUMENT']['ID'].to_i
+          else
+            error response
+        end
+      }
     end
 
     def delete_template(service_template_id)
-      client.delete("#{RESOURCES[:service_template]}/#{service_template_id}")
+      client("#{RESOURCES[:service_template]}/#{service_template_id}").delete {|response, request, result, &block|
+        case response.code
+          when 201
+            0
+          else
+            error response
+        end
+      }
     end
 
     def instantiate_template(template_id)
-      json_str = ::Service.build_json_action('instantiate')
-      response = client.post("#{RESOURCES[:service_template]}/#{template_id}/action", json_str)
+      action = {
+          :action => {
+              :perform => 'instantiate'
+          }
+      }
 
-      return [response.code.to_i, response.to_s] if CloudClient::is_error?(response)
-
-      template = JSON.parse(response.body)
-      template['DOCUMENT']['ID'].to_i
+      client("#{RESOURCES[:service_template]}/#{template_id}/action").post(action.to_json){|response, request, result, &block|
+        case response.code
+          when 201
+            template = JSON.parse(response.body)
+            template['DOCUMENT']['ID'].to_i
+          else
+            error response
+        end
+      }
     end
 
     def delete_instance(instance_id)
-      client.delete("#{RESOURCES[:service]}/#{instance_id}")
+      client("#{RESOURCES[:service]}/#{instance_id}").delete {|response, request, result, &block|
+        case response.code
+          when 201
+            0
+          else
+            error response
+        end
+      }
     end
 
     # Returns configuration of a service as a list of roles and corresponding vms, ex:
@@ -64,11 +87,13 @@ module AutoScaling
       retry_count = 0
 
       begin
-        response = client.get("#{RESOURCES[:service]}/#{instance_id}")
+        response = client("#{RESOURCES[:service]}/#{instance_id}").get {|response, request, result, &block|
+          error response if response.code != 201
+        }
 
         # we return if there was an error on server
         # (retries apply only to a service state)
-        return [response.code.to_i, response.to_s] if CloudClient::is_error?(response)
+        raise RuntimeError, "Cannot execute client action: #{[response.code.to_i, response.to_s]}" if CloudClient::is_error?(response)
 
         document_hash = JSON.parse(response.body)
         template = document_hash['DOCUMENT']['TEMPLATE']['BODY']
@@ -95,16 +120,17 @@ module AutoScaling
     end
 
     private
-    def client
-      ::Service::Client.new(
-          :username   => @options[:username],
-          :password   => @options[:password],
-          :url        => @options[:server],
-          :timeout    => CLIENT[:timeout],
-          :user_agent => CLIENT[:user_agent])
+    def client(path)
+      RestClient::Resource.new(
+          "http://#{@options[:username]}:#{@options[:password]}@#{@options[:server]}#{path}",
+          :timeout => @options[:timeout],
+          :open_timeout => @options[:timeout]
+      )
     end
 
-
+    def error(response)
+      raise RuntimeError, "Cannot execute client action: #{response.code.to_i}, #{response.to_s}"
+    end
 
   end
 end
