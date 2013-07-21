@@ -21,7 +21,7 @@ packages.each do |pkg|
 end
 
 # cum-oneapps
-%w(json sinatra).each do |gem|
+%w(json sinatra rest-client).each do |gem|
   gem_package(gem) do
     gem_binary "gem"
   end
