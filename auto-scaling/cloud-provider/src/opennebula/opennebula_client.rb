@@ -14,9 +14,9 @@ module AutoScaling
     # * options - connectivity parameters, ex:
     #
     # options = {
-    #   :username   => 'username',
-    #   :password   => 'password',
-    #   :url        => 'http://redtube.com/cum-cloud:69'
+    #   :username   => 'username',        <- opennebula username (also a linux user)
+    #   :password   => 'password',        <- opennebula username password (also a password of a linux user)
+    #   :url        => 'redtube.com:69'   <- hostname:port of a appflow-server running
     # }
     def initialize(options)
       @appflow = AppflowClient.new options

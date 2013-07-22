@@ -12,11 +12,14 @@ module AutoScaling
   class ServiceExecutorTest < Test::Unit::TestCase
 
     MAPPINGS = {
-        :onetemplate_id => 6,
+        :onetemplate_id => 7,
 
+        # supported stacks
         :appstage => {
-            :loadbalancer => 9,
-            :java => 20
+            :java => {
+                :master => 39,
+                :slave => 25
+            }
         }
     }
 
@@ -160,10 +163,13 @@ module AutoScaling
           :status => :converged
       )
 
-      @cloud_provider.expects(:instantiate_container).with(stack.type, MAPPINGS).returns({:id => 11, :ip => '192.168.122.2'})
+      container_id = 800
+      @cloud_provider.expects(:instantiate_container).with(25, 7).returns(container_id)
 
-      @executor.deploy_container Stack.get(stack.id), MAPPINGS
+      id = @executor.deploy_container stack, MAPPINGS
       assert_equal 2, Container.slaves(stack).size
+
+      assert Container.slaves(stack).include?(Container.get(container_id))
     end
 
   end

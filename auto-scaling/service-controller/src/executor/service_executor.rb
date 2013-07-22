@@ -54,8 +54,12 @@ module AutoScaling
       mappings ||= {}
       mappings = MAPPINGS.merge(mappings)
 
-      container_info = @cloud_provider.instantiate_container stack.type, mappings
+      appstage_id = mappings[:appstage][stack.type.to_sym][:slave]
+      template_id = mappings[:onetemplate_id]
 
+      container_info = @cloud_provider.instantiate_container(appstage_id, template_id)
+
+      # TODO add ip
       container = Container.create(
           :id => container_info[:id],
           :ip => container_info[:ip]

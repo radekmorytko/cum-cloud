@@ -2,6 +2,7 @@ require 'rubygems'
 require 'logger'
 require 'json'
 require 'net/ssh'
+require 'nokogiri'
 
 module AutoScaling
   class AppstageClient
@@ -19,7 +20,11 @@ module AutoScaling
         id = output.split(' ')[2]
 
         @@logger.debug("Instantiated vm: #{id} with appstage_id #{appstage_id} and tempalte #{template_id}")
-        id.to_i
+
+        # get ip address here
+        ip = ''
+
+        {:id => id.to_i, :ip => ip}
       end
     end
 
@@ -34,5 +39,17 @@ module AutoScaling
     def host
       @options[:server].split(':')[0]
     end
+
+    def extract_ip(xml)
+      doc = Nokogiri::XML(xml)
+      cdata = doc.xpath("//IP").children[0]
+
+      if cdata == nil
+        nil
+      else
+        cdata.content
+      end
+    end
+
   end
 end
