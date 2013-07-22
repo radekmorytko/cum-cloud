@@ -35,8 +35,8 @@ module AutoScaling
       @appflow.configuration service_id
     end
 
-    def instantiate_container(appstage_id, template_id)
-      @appstage.instantiate_container appstage_id, template_id
+    def instantiate_container(appstage_id, template_id, service_id)
+      @appstage.instantiate_container appstage_id, template_id, service_id
     end
 
     def delete_container(container_id)

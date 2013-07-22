@@ -18,9 +18,9 @@ module AutoScaling
       @options = options
     end
 
-    def instantiate_container(appstage_id, template_id)
+    def instantiate_container(appstage_id, template_id, service_id)
       Net::SSH.start( host, @options[:username], :password => @options[:password] ) do|ssh|
-        output = ssh.exec!("appstage instantiate -t #{template_id} #{appstage_id}")
+        output = ssh.exec!("appstage instantiate -t #{template_id} #{appstage_id} -d SERVICE_ID=#{service_id},VM_ID=$VMID")
         # output is in a format: "VM ID: 168"
         id = output.split(' ')[2]
 

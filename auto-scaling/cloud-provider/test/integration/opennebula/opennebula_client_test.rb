@@ -62,8 +62,9 @@ eos
     def test_shall_instantiate_container
       appstage_id = 25
       template_id = 7
+      service_id = 1
 
-      container_info = @opennebula_client.instantiate_container(appstage_id, template_id)
+      container_info = @opennebula_client.instantiate_container(appstage_id, template_id, service_id)
       assert_equal true, container_info[:id] >= 0
       assert_equal true, container_info[:ip] != ''
 

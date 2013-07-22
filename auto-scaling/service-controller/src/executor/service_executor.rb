@@ -57,7 +57,7 @@ module AutoScaling
       appstage_id = mappings[:appstage][stack.type.to_sym][:slave]
       template_id = mappings[:onetemplate_id]
 
-      container_info = @cloud_provider.instantiate_container(appstage_id, template_id)
+      container_info = @cloud_provider.instantiate_container(appstage_id, template_id, stack.service.id)
 
       # persist data
       container = Container.create(
@@ -78,6 +78,7 @@ module AutoScaling
 
       slave = slaves.pop
       @cloud_provider.delete_container slave.id
+      slave.destroy
       stack.save
 
       # reconfigure master

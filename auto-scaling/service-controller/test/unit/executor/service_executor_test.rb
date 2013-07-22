@@ -167,7 +167,7 @@ module AutoScaling
       container_id = 800
       container_ip = '192.168.122.69'
       response = 'Od przedszkola do Opola, kupuj szybko dzis bejzbola'
-      @cloud_provider.expects(:instantiate_container).with(25, 7).returns({:id => container_id, :ip=> container_ip})
+      @cloud_provider.expects(:instantiate_container).with(25, 7, instance_id).returns({:id => container_id, :ip=> container_ip})
       FakeWeb.register_uri(:post,
                            "http://#{master_ip}:4567/chef",
                            :body => response,
@@ -215,7 +215,7 @@ module AutoScaling
       @cloud_provider.expects(:delete_container).with(10)
 
       @executor.delete_container(Stack.get(stack.id))
-      assert_equal 1, Container.slaves(stack).size
+      assert_equal 0, Container.slaves(stack).size
     end
 
     def test_shall_throw_exception_when_there_is_no_slaves_left
