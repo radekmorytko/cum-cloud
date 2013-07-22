@@ -138,6 +138,7 @@ module AutoScaling
 
     def test_shall_deploy_new_container
       instance_id = 69
+      master_ip = '192.168.122.200'
 
       containers = [
           Container.create(
@@ -146,7 +147,7 @@ module AutoScaling
           ),
           Container.create(
               :id => 0,
-              :ip => '192.168.122.200',
+              :ip => master_ip,
               :type => :master
           )
       ]
@@ -164,7 +165,13 @@ module AutoScaling
       )
 
       container_id = 800
-      @cloud_provider.expects(:instantiate_container).with(25, 7).returns(container_id)
+      container_ip = '192.168.122.69'
+      response = 'Od przedszkola do Opola, kupuj szybko dzis bejzbola'
+      @cloud_provider.expects(:instantiate_container).with(25, 7).returns({:id => container_id, :ip=> container_ip})
+      FakeWeb.register_uri(:post,
+                           "http://#{master_ip}:4567/chef",
+                           :body => response,
+                           :status => ["200", "OK"])
 
       id = @executor.deploy_container stack, MAPPINGS
       assert_equal 2, Container.slaves(stack).size

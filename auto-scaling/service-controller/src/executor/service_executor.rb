@@ -59,7 +59,7 @@ module AutoScaling
 
       container_info = @cloud_provider.instantiate_container(appstage_id, template_id)
 
-      # TODO add ip
+      # persist data
       container = Container.create(
           :id => container_info[:id],
           :ip => container_info[:ip]
@@ -67,28 +67,16 @@ module AutoScaling
       stack.containers << container
 
       stack.save
+
+      # reconfigure master
+      configure(Container.master(stack))
     end
 
     def converge(service, container_id)
       update(service) if(service.status != :converged)
       container = ::AutoScaling::Container.get(container_id)
 
-      if(container.type == :master)
-        chef = ChefRenderer.render container.stack
-        url = "http://#{container.ip}:4567/chef"
-
-        @@logger.debug "Sending configuration #{chef} to #{url}"
-
-        RestClient.post(url, :node_object_data => Base64::encode64(chef)) { |response, request, result, &block|
-          case response.code
-            when 200
-              @@logger.debug "Successfully sent configuration #{response}"
-              response
-            else
-              raise RuntimeError, "An error occurred during sending configuration, status: #{response.code}"
-          end
-        }
-      end
+      configure(container) if container.type == :master
     end
 
     private
@@ -122,6 +110,23 @@ module AutoScaling
       # TODO add synchronization
       service.status = :converged
       service.save
+    end
+
+    def configure(container)
+      chef = ChefRenderer.render container.stack
+      url = "http://#{container.ip}:4567/chef"
+
+      @@logger.debug "Sending configuration #{chef} to #{url}"
+
+      RestClient.post(url, :node_object_data => Base64::encode64(chef)) { |response, request, result, &block|
+        case response.code
+          when 200
+            @@logger.debug "Successfully sent configuration #{response}"
+            response
+          else
+            raise RuntimeError, "An error occurred during sending configuration, status: #{response.code}"
+        end
+      }
     end
 
   end

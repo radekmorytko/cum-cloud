@@ -9,7 +9,7 @@ module AutoScaling
     property :id, Integer, :key => true
     belongs_to :stack
 
-    property :ip, IPAddress
+    property :ip, IPAddress, :required => true
     property :type, Enum[ :master, :slave ], :default => :slave, :required => true
 
     def self.master(stack)
