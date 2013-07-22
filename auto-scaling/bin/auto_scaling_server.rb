@@ -81,3 +81,31 @@ post '/service/:service_id/container/:container_id' do |service_id, container_id
   end
 
 end
+
+put '/service/:service_id/stack/:stack_id' do |service_id, stack_id|
+  stack = ::AutoScaling::Stack.get(stack_id)
+  logger.debug("Scaling up stack #{stack.id} (service: #{service_id})")
+
+  begin
+    service_executor.deploy_container stack
+    status 200
+  rescue RuntimeError => e
+    logger.error e
+    status 503
+  end
+
+end
+
+delete '/service/:service_id/stack/:stack_id' do |service_id, stack_id|
+  stack = ::AutoScaling::Stack.get(stack_id)
+  logger.debug("Scaling down stack #{stack.id} (service: #{service_id})")
+
+  begin
+    service_executor.delete_container stack
+    status 200
+  rescue RuntimeError => e
+    logger.error e
+    status 503
+  end
+
+end
