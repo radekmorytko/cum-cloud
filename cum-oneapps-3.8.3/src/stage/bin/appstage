@@ -289,7 +289,15 @@ cmd = CommandParser::CmdParser.new(ARGV) do
             end
         end
 
-        res=chef_doc.instantiate(options[:template], options[:variables]||{})
+        vars = {}
+        if options[:variables]
+          options[:variables].each do |pair|
+            values = pair.split('=')
+            vars[values[0]] = values[1]
+          end
+        end
+
+        res=chef_doc.instantiate(options[:template], vars)
 
         if OpenNebula.is_error? res
             STDERR.puts res.message
