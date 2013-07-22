@@ -72,6 +72,18 @@ module AutoScaling
       configure(Container.master(stack))
     end
 
+    def delete_container(stack, mappings = {})
+      slaves = Container.slaves(stack)
+      raise RuntimeError, "Can't delete slave from stack: #{stack.id}, there aren't any left" if slaves.size == 0
+
+      slave = slaves.pop
+      @cloud_provider.delete_container slave.id
+      stack.save
+
+      # reconfigure master
+      configure(Container.master(stack))
+    end
+
     def converge(service, container_id)
       update(service) if(service.status != :converged)
       container = ::AutoScaling::Container.get(container_id)

@@ -179,6 +179,64 @@ module AutoScaling
       assert Container.slaves(stack).include?(Container.get(container_id))
     end
 
+    def test_shall_delete_container
+      instance_id = 69
+      master_ip = '192.168.122.200'
+
+      containers = [
+          Container.create(
+              :id => 10,
+              :ip => '192.168.122.1'
+          ),
+          Container.create(
+              :id => 0,
+              :ip => master_ip,
+              :type => :master
+          )
+      ]
+
+      stack = Stack.create(
+          :type => 'java',
+          :containers => containers
+      )
+
+      Service.create(
+          :id => instance_id,
+          :name => 'service-name',
+          :stacks => [stack],
+          :status => :converged
+      )
+
+      response = 'Hulaj dusza, baki ida'
+      FakeWeb.register_uri(:post,
+                           "http://#{master_ip}:4567/chef",
+                           :body => response,
+                           :status => ["200", "OK"])
+      @cloud_provider.expects(:delete_container).with(10)
+
+      @executor.delete_container(Stack.get(stack.id))
+      assert_equal 1, Container.slaves(stack).size
+    end
+
+    def test_shall_throw_exception_when_there_is_no_slaves_left
+      instance_id = 69
+      stack = Stack.create(
+          :type => 'java',
+          :containers => []
+      )
+
+      Service.create(
+          :id => instance_id,
+          :name => 'service-name',
+          :stacks => [stack],
+          :status => :converged
+      )
+
+      assert_raise RuntimeError do
+        @executor.delete_container(Stack.get(stack.id))
+      end
+    end
+
   end
 
 end
