@@ -2,3 +2,9 @@
 
 # ignore rubymine-specific files
 .idea
+
+# ignore thesis logs directory
+thesis/logs
+
+# ignore vim temporary files
+*.swp

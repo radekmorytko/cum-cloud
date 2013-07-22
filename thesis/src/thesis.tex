@@ -1,0 +1,77 @@
+\documentclass[en]{aghdpl}  % praca w języku angielskim
+\usepackage[utf8]{inputenc}
+
+\usepackage{enumerate}
+\usepackage{listings}
+\lstloadlanguages{TeX}
+
+\lstset{
+  literate={ą}{{\k{a}}}1
+           {ć}{{\'c}}1
+           {ę}{{\k{e}}}1
+           {ó}{{\'o}}1
+           {ń}{{\'n}}1
+           {ł}{{\l{}}}1
+           {ś}{{\'s}}1
+           {ź}{{\'z}}1
+           {ż}{{\.z}}1
+           {Ą}{{\k{A}}}1
+           {Ć}{{\'C}}1
+           {Ę}{{\k{E}}}1
+           {Ó}{{\'O}}1
+           {Ń}{{\'N}}1
+           {Ł}{{\L{}}}1
+           {Ś}{{\'S}}1
+           {Ź}{{\'Z}}1
+           {Ż}{{\.Z}}1
+}
+
+%---------------------------------------------------------------------------
+
+\author{Dariusz Chrząścik \\
+  Radosław Morytko
+}
+
+\shortauthor{D. Chrząścik, R. Morytko}
+
+\titlePL{Framework dla autoskalowalnego środowiska wykonawczego dla aplikacji użytkowników w konfiguracji hybrydowej chmury obliczeniowej}
+\titleEN{Framework for auto-scaling of runtime infrastructure for users' applications in configuration of hybrid cloud computing}
+
+
+\supervisorPL{dr inż. Marcin Jarząb}
+\supervisorEN{Marcin Jarząb}
+
+\date{2013}
+
+\departmentPL{Katedra Informatyki}
+\departmentEN{Department of Computer Science}
+
+\facultyPL{Wydział Informatyki, Elektroniki i Telekomunikacji}
+\facultyEN{Faculty of Computer Science, Electronics and Telecommunications}
+
+\acknowledgements{I would love to express my best wishes ..}
+
+
+\setlength{\cftsecnumwidth}{10mm}
+
+%---------------------------------------------------------------------------
+
+\begin{document}
+\titlepages
+
+\tableofcontents
+\clearpage
+
+\include{chapters/chapter-1}
+
+
+% itd.
+% \appendix
+% \include{dodatekA}
+% \include{dodatekB}
+% itd.
+
+\bibliographystyle{alpha}
+\bibliography{bibliografia}
+
+\end{document}
