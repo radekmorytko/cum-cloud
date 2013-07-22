@@ -9,6 +9,11 @@ module AutoScaling
 
     @@logger = Logger.new(STDOUT)
 
+    CLIENT = {
+        :retries => 3,
+        :sleep => 2
+    }
+
     def initialize(options)
       @options = options
     end
@@ -19,10 +24,24 @@ module AutoScaling
         # output is in a format: "VM ID: 168"
         id = output.split(' ')[2]
 
-        @@logger.debug("Instantiated vm: #{id} with appstage_id #{appstage_id} and tempalte #{template_id}")
+        @@logger.debug("Instantiated vm: #{id} with appstage_id #{appstage_id} and template #{template_id}")
 
-        # get ip address here
+        # get ip address
+        retry_count = 0
         ip = ''
+        begin
+          if ip == nil
+            @@logger.debug "Waiting for scheduling vm to get an ip address"
+            sleep CLIENT[:sleep]
+          end
+
+          xml = ssh.exec!("onevm show #{id} --xml")
+          ip = extract_ip xml
+          retry_count += 1
+        end while retry_count <= CLIENT[:retries] and ip != nil
+
+        raise RuntimeError, "Can't get container ip" if ip == nil
+        @@logger.debug "VM #{id} has an address: #{ip}"
 
         {:id => id.to_i, :ip => ip}
       end

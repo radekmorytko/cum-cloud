@@ -63,10 +63,12 @@ eos
       appstage_id = 25
       template_id = 7
 
-      instance_id = @opennebula_client.instantiate_container(appstage_id, template_id)
-      assert_equal true, instance_id >= 0
+      container_info = @opennebula_client.instantiate_container(appstage_id, template_id)
+      assert_equal true, container_info[:id] >= 0
+      assert_equal true, container_info[:ip] != ''
+
       # cleanup
-      @opennebula_client.appstage.delete_container instance_id
+      @opennebula_client.delete_container container_info[:id]
     end
 
   end

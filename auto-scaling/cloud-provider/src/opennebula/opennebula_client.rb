@@ -39,6 +39,10 @@ module AutoScaling
       @appstage.instantiate_container appstage_id, template_id
     end
 
+    def delete_container(container_id)
+      @appstage.delete_container container_id
+    end
+
     def render(service, bindings)
       ServiceRenderer::render(service, bindings)
     end
