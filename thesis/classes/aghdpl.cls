@@ -187,6 +187,10 @@
 \end{minipage}
 \end{flushright}
 
+\clearpage \titlepage
+
+\include{abstract}
+
 \clearpage
 
 \setcounter{page}{5}
