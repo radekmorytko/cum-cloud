@@ -1,0 +1,10 @@
+ruby '1.8.7'
+source 'https://rubygems.org'
+
+gem 'trollop'
+
+group :development do
+  gem 'rspec'
+  gem 'guard-rspec'
+end
+
