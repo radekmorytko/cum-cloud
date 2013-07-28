@@ -25,8 +25,8 @@ module AutoScaling
       set_2 = [["1374678040", "524288"], ["1374678083", "524288"], ["1374678113", "524288"], ["1374678155", "524288"], ["1374678198", "524288"], ["1374678241", "524288"], ["1374678284", "524288"], ["1374678327", "524288"], ["1374678370", "524288"], ["1374678413", "524288"]]
 
 
-      assert_equal set_1, @client.send(:last, set_1)
-      assert_equal set_2 - set_1, @client.send(:last, set_2)
+      assert_equal set_1, @client.send(:monitor_container, set_1)
+      assert_equal set_2, @client.send(:monitor_container, set_2)
     end
 
   end
