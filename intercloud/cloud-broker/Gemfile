@@ -1,0 +1,13 @@
+ruby '1.8.7'
+source 'https://rubygems.org'
+
+gem 'sinatra', :require => 'sinatra/base'
+gem 'json'
+gem 'redis'
+
+group :development do
+  gem 'rspec'
+  gem 'rack-test'
+  gem 'sinatra-contrib'
+  gem 'guard-rspec'
+end
