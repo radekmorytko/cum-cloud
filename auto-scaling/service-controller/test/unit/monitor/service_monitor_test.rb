@@ -1,32 +1,66 @@
 require 'rubygems'
 require 'test/unit'
 require 'mocha/setup'
-require 'fakeweb'
 
-require 'opennebula/opennebula_frontend'
+require 'utils'
+require 'monitor/service_monitor'
 
 module AutoScaling
 
-  class OpenNebulaFrontendTest < Test::Unit::TestCase
-
-    OPTIONS = {
-        :username => 'oneadmin',
-        :password => 'password',
-        :endpoint => 'http://host:2633/RPC2',
-        :monitoring_keys => ['CPU', 'MEMORY']
-    }
+  class ServiceMonitorTest < Test::Unit::TestCase
 
     def setup
-      @client = OpenNebulaFrontend.new OPTIONS
+      @cloud_provider = mock()
+      Utils::setup_database
+
+      @monitor = ServiceMonitor.new @cloud_provider
     end
 
     def test_shall_return_data_from_last_timestamp
       set_1 = [["1374678040", "524288"], ["1374678083", "524288"], ["1374678113", "524288"], ["1374678155", "524288"]]
       set_2 = [["1374678040", "524288"], ["1374678083", "524288"], ["1374678113", "524288"], ["1374678155", "524288"], ["1374678198", "524288"], ["1374678241", "524288"], ["1374678284", "524288"], ["1374678327", "524288"], ["1374678370", "524288"], ["1374678413", "524288"]]
 
+      assert_equal set_1, @monitor.send(:last, set_1)
+      assert_equal set_2 - set_1, @monitor.send(:last, set_2)
+    end
 
-      assert_equal set_1, @client.send(:monitor_container, set_1)
-      assert_equal set_2, @client.send(:monitor_container, set_2)
+    def test_shall_grab_data_about_all_containers
+      instance_id = 69
+
+      containers = [
+        Container.create(
+            :id => 10,
+            :ip => '192.168.122.1'
+        ),
+        Container.create(
+            :id => 11,
+            :ip => '192.168.122.2'
+        ),
+        Container.create(
+            :id => 12,
+            :ip => '192.168.122.200',
+            :type => :master
+        )
+      ]
+
+      stack = Stack.create(
+          :type => 'java',
+          :containers => containers
+      )
+
+      service = Service.create(
+          :id => instance_id,
+          :name => 'service-name',
+          :stacks => [stack],
+          :status => :converged
+      )
+
+      data = [["1", "100"]]
+      containers.each {|c| @cloud_provider.expects(:monitor_container).with(c.id).returns(data)}
+      actual = @monitor.monitor service.id
+
+      expected = {10 => data, 11 => data, 12 => data}
+      assert_equal expected, actual
     end
 
   end

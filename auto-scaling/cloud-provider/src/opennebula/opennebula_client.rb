@@ -17,10 +17,12 @@ module AutoScaling
     #   :username   => 'username',        <- opennebula username (also a linux user)
     #   :password   => 'password',        <- opennebula username password (also a password of a linux user)
     #   :url        => 'redtube.com:69'   <- hostname:port of a appflow-server running
+    #   :endpoints  => {:opennebula => "", :appflow => "'"}
     # }
     def initialize(options)
       @appflow = AppflowClient.new options
       @appstage = AppstageClient.new options
+      @frontend = OpenNebulaFrontend.new options
     end
 
     def create_template(service_template)
@@ -41,6 +43,10 @@ module AutoScaling
 
     def delete_container(container_id)
       @appstage.delete_container container_id
+    end
+
+    def monitor_container(container_id)
+      @frontend.monitor(container_id)
     end
 
     def render(service, bindings)
