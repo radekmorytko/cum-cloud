@@ -8,7 +8,7 @@ def test(t, files)
   t.verbose = true
   #t.warning = true
   t.test_files = FileList.new(files)
-  t.libs = %W(src test .. ../cloud-provider)
+  t.libs = %W(src test .. ../cloud-provider ../../lib)
 end
 
 task :unit_tests do

@@ -11,7 +11,6 @@ module AutoScaling
 
     def initialize(cloud_provider)
       @cloud_provider = cloud_provider
-      @time_stamp = 0
     end
 
     def monitor(service_id)
@@ -29,14 +28,18 @@ module AutoScaling
     end
 
     def monitor_container(container)
-      @cloud_provider.monitor_container container.id
+      data = @cloud_provider.monitor_container container.id
+      data.merge(data){ |k, probes| last(probes, container) }
     end
 
+    private
     # example data
     # [["1374678040", "524288"], ["1374678083", "524288"], ["1374678113", "524288"], ["1374678155", "524288"]]
-    def last(data)
-      selection = data.select {|item| item[0].to_i > @time_stamp }
-      @time_stamp = selection.last[0].to_i
+    def last(data, container)
+      selection = data.select {|item| item[0].to_i > container.probed.to_i }
+      container.probed = selection.last[0] if selection.last != nil
+      container.save
+
       selection
     end
 

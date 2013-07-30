@@ -1,3 +1,5 @@
-class ServiceAnalyzer
-  # To change this template use File | Settings | File Templates.
+module AutoScaling
+  class ServiceAnalyzer
+
+  end
 end

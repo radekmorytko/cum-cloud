@@ -12,6 +12,9 @@ module AutoScaling
     property :ip, IPAddress, :required => true
     property :type, Enum[ :master, :slave ], :default => :slave, :required => true
 
+    # monitoring
+    property :probed, String, :default => "0"
+
     def self.master(stack)
       (all(:stack => stack) & all(:type => :master))[0]
     end
