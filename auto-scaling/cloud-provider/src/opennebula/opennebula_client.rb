@@ -1,5 +1,6 @@
 require 'opennebula/appflow_client'
 require 'opennebula/appstage_client'
+require 'opennebula/opennebula_frontend'
 require 'opennebula/service_renderer'
 
 module AutoScaling
