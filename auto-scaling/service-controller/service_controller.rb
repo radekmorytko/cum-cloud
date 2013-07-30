@@ -4,4 +4,6 @@ $: << File.join(File.dirname(File.expand_path(__FILE__)), '..')
 
 require 'planner/service_planner'
 require 'executor/service_executor'
+require 'monitor/service_monitor'
+require 'analyzer/service_analyzer'
 require 'models/models'

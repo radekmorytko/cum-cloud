@@ -14,8 +14,6 @@ module AutoScaling
       Utils::setup_database
 
       @monitor = ServiceMonitor.new @cloud_provider
-
-
     end
 
     def test_shall_return_data_from_last_timestamp

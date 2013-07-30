@@ -22,5 +22,9 @@ module AutoScaling
     def self.slaves(stack)
       all(:stack => stack) & all(:type => :slave)
     end
+
+    def master?
+      self == Container.master(self.stack)
+    end
   end
 end
