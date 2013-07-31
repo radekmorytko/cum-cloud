@@ -43,7 +43,9 @@ module AutoScaling
 
     def monitor_container(container)
       data = @cloud_provider.monitor_container container.id
+
       # filter out historical data
+      # TODO normalize?
       data.merge(data){ |k, probes| last(probes, container) }
     end
 
@@ -71,8 +73,12 @@ module AutoScaling
       template
     end
 
-    # example data
-    # [["1374678040", "524288"], ["1374678083", "524288"], ["1374678113", "524288"], ["1374678155", "524288"]]
+    # Selects data from last time_stamp
+    #
+    # * *Args* :
+    # - +data+ -> hashmap that contains monitoring data in form
+    #   [["1374678040", "524288"], ["1374678083", "524288"], ["1374678113", "524288"], ["1374678155", "524288"]]
+    # - +container+ -> container to which data corresponds (used to determine timestamp)
     def last(data, container)
       selection = data.select {|item| item[0].to_i > container.probed.to_i }
       container.probed = selection.last[0] if selection.last != nil
