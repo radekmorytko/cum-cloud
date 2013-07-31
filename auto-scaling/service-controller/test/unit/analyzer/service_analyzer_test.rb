@@ -10,7 +10,8 @@ module AutoScaling
 
     def setup
       Utils::setup_database
-      @analyzer = ServiceAnalyzer.new
+      @model = mock()
+      @analyzer = ServiceAnalyzer.new @model
 
       instance_id = 69
 
@@ -47,43 +48,22 @@ module AutoScaling
 
     end
 
-    def test_shall_conclude_insufficient_hosts
+    def test_shall_analyze_data
+      # let say that model is represented by [min,max] =  [10,50]
       data = {
           10 => {"CPU" => [["1", "10"], ["2", "60"]]},
-          11 => {"CPU" => [["1", "90"], ["2", "10"]]},
+          11 => {"CPU" => [["1", "5"], ["2", "10"]]},
           12 => {"CPU" => [["1", "40"], ["2", "20"]]}
       }
 
+      responses = {10 => :greater, 11 => :lesser, 12 => :fits}
+      data.each {|id, probes| @model.expects(:analyze).with(data[id]["CPU"]).returns(responses[id])}
+
       conclusion = @analyzer.analyze(@service, data)
-      expected = {10 => :insufficient_slaves, 11 => :insufficient_slaves, 12 => :healthy}
+      expected = {10 => :insufficient_slaves, 11 => :redundant, 12 => :healthy}
 
       assert_equal expected, conclusion
     end
 
-    def test_shall_conclude_healthy_system
-      data = {
-          10 => {"CPU" => [["1", "10"], ["2", "10"]]},
-          11 => {"CPU" => [["1", "10"], ["2", "10"]]},
-          12 => {"CPU" => [["1", "10"], ["2", "10"]]}
-      }
-
-      conclusion = @analyzer.analyze(@service, data)
-      expected = {10 => :healthy, 11 => :healthy, 12 => :healthy}
-
-      assert_equal expected, conclusion
-    end
-
-    def test_shall_conclude_overloaded_master
-      data = {
-          10 => {"CPU" => [["1", "10"], ["2", "10"]]},
-          11 => {"CPU" => [["1", "10"], ["2", "10"]]},
-          12 => {"CPU" => [["1", "60"], ["2", "10"]]}
-      }
-
-      conclusion = @analyzer.analyze(@service, data)
-      expected = {10 => :healthy, 11 => :healthy, 12 => :overloaded_master}
-
-      assert_equal expected, conclusion
-    end
   end
 end
