@@ -58,7 +58,8 @@ module Intercloud
 
       return 400 unless cloud_broker.valid?(request_body)
 
-      cloud_broker.deploy(request_body, env['HTTP_IC_RETURN_ENDPOINT'])
+      id = cloud_broker.deploy(request_body, env['HTTP_IC_RETURN_ENDPOINT'])
+      id.to_s
     end
 
     get '/service/:id' do

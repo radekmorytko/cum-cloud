@@ -9,6 +9,7 @@ module Intercloud
     end
 
     def deploy(service_spec, client_endpoint)
+      12
     end
 
     def valid?(service_spec)

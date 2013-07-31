@@ -20,7 +20,7 @@ module Intercloud
       @database.set('service_id', service_id)
     end
 
-    def check_status(environment_id)
+    def check_status(service_id)
 
     end
 
