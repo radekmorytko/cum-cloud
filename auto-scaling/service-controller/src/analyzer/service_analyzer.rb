@@ -8,8 +8,14 @@ module AutoScaling
     attr_reader :conclusions
 
     CONCLUSIONS = [
+      # efficiency problems
       :insufficient_slaves,
       :overloaded_master,
+
+      # underutilized
+      :underutilized,
+
+      # normal
       :healthy
     ]
 

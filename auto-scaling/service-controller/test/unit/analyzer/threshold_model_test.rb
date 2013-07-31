@@ -3,87 +3,43 @@ require 'test/unit'
 require 'mocha/setup'
 
 require 'utils'
-require 'analyzer/service_analyzer'
+require 'analyzer/threshold_model'
 
 module AutoScaling
-  class ServiceAnalyzerTest < Test::Unit::TestCase
+  class ThresholdModelTest < Test::Unit::TestCase
+
+    MIN = 10
+    MAX = 50
 
     def setup
-      Utils::setup_database
-      @analyzer = ServiceAnalyzer.new
-
-      instance_id = 69
-
-      @containers = [
-          Container.create(
-              :id => 10,
-              :ip => '192.168.122.1'
-          ),
-          Container.create(
-              :id => 11,
-              :ip => '192.168.122.2'
-          ),
-          Container.create(
-              :id => 12,
-              :ip => '192.168.122.200',
-              :type => :master
-          )
-      ]
-
-      @stack = Stack.create(
-          :type => 'java',
-          :containers => @containers
-      )
-
-      @service = Service.create(
-          :id => instance_id,
-          :name => 'service-name',
-          :stacks => [@stack],
-          :status => :converged
-      )
+      @model = ThresholdModel.new(MIN, MAX)
     end
 
-    def teardown
-
+    def test_shall_validate_arguments
+      assert_raise ArgumentError do
+        ThresholdModel.new(10, 1)
+      end
     end
 
-    def test_shall_conclude_insufficient_hosts
-      data = {
-          10 => {"CPU" => [["1", "10"], ["2", "60"]]},
-          11 => {"CPU" => [["1", "90"], ["2", "10"]]},
-          12 => {"CPU" => [["1", "40"], ["2", "20"]]}
-      }
+    def test_shall_analyse_by_count
+      # list of values in form: [[timestamp, value], [timestamp, value], [timestamp, value]]
+      data = [["10", "5" , "8", "60"], ["10", "50" , "80"], ["11", "15" , "50"]]
+      expected = [:lesser, :greater, :fits]
 
-      conclusion = @analyzer.analyze(@service, data)
-      expected = {10 => :insufficient_slaves, 11 => :insufficient_slaves, 12 => :healthy}
-
-      assert_equal expected, conclusion
+      (0..data.size - 1 ).each do |i|
+        actual = @model.analyze(data[i])
+        assert_equal expected[i], actual
+      end
     end
 
-    def test_shall_conclude_healthy_system
-      data = {
-          10 => {"CPU" => [["1", "10"], ["2", "10"]]},
-          11 => {"CPU" => [["1", "10"], ["2", "10"]]},
-          12 => {"CPU" => [["1", "10"], ["2", "10"]]}
-      }
+    def test_shall_aggregate_data
+      data = ["10", "5" , "7", "60"]
 
-      conclusion = @analyzer.analyze(@service, data)
-      expected = {10 => :healthy, 11 => :healthy, 12 => :healthy}
-
-      assert_equal expected, conclusion
+      assert_equal :greater, @model.analyze(data.max {|x,y | x.to_i <=> y.to_i })
+      assert_equal :greater, @model.analyze( data.last )
+      assert_equal :lesser, @model.analyze( data.min {|x,y | x.to_i <=> y.to_i } )
+      assert_equal :fits, @model.analyze((data.inject{ |sum, el| sum.to_i + el.to_i }.to_f / data.size).to_s)
     end
 
-    def test_shall_conclude_overloaded_master
-      data = {
-          10 => {"CPU" => [["1", "10"], ["2", "10"]]},
-          11 => {"CPU" => [["1", "10"], ["2", "10"]]},
-          12 => {"CPU" => [["1", "60"], ["2", "10"]]}
-      }
-
-      conclusion = @analyzer.analyze(@service, data)
-      expected = {10 => :healthy, 11 => :healthy, 12 => :overloaded_master}
-
-      assert_equal expected, conclusion
-    end
   end
 end
