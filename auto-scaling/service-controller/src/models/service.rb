@@ -12,5 +12,6 @@ module AutoScaling
     property :status, Enum[ :new, :converged ], :default => :new
 
     has n, :stacks
+
   end
 end

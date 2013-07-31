@@ -26,5 +26,6 @@ module AutoScaling
     def master?
       self == Container.master(self.stack)
     end
+
   end
 end

@@ -45,23 +45,23 @@ module AutoScaling
 
       # TODO move mappings to model?
       mappings = {
-          :master => {
-              :greater => :overloaded_master,
-              :lesser => :healthy,
-              :fits => :healthy
-          },
+        :master => {
+          :greater => :overloaded_master,
+          :lesser => :healthy,
+          :fits => :healthy
+        },
 
-          :slave => {
-              :greater => :insufficient_slaves,
-              :lesser => :redundant,
-              :fits => :healthy
-          }
+        :slave => {
+          :greater => :insufficient_slaves,
+          :lesser => :redundant,
+          :fits => :healthy
+        }
       }
 
       role = Container.get(container_id).master? ? :master : :slave
       conclusion = mappings[role][result]
 
-      @@logger.debug "Concluded that currently #{container_id} is #{conclusion} (by key: #{key}"
+      @@logger.debug "Concluded that currently #{container_id} is #{conclusion} (by key: #{key})"
       return conclusion
     end
 
