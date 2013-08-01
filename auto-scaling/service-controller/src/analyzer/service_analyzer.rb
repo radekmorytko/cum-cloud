@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'logger'
+require 'set'
 
 require 'models/models'
 require 'analyzer/threshold_model'
@@ -9,41 +10,57 @@ module AutoScaling
 
     @@logger = Logger.new(STDOUT)
 
-    attr_reader :conclusions
-
-    CONCLUSIONS = [
-      # efficiency problems
-      :insufficient_slaves,
-      :overloaded_master,
-
-      # underutilized
-      :redundant,
-
-      # normal
-      :healthy
-    ]
-
     def initialize(model)
       @model = model
     end
 
-    def analyze(service, data)
+    # Analyzes data using supplied model
+    #
+    # * *Args* :
+    # - +data+ -> hashmap that contains monitoring data in form:
+    # stack => {
+    #    container => {
+    #        "CPU" => ["100", "105", "200"],
+    #        "MEMORY" => ["70", "7345", "3213"],
+    #    }
+    # }
+    #
+    # Returns hashmap that contains conclusions about supplied data, correlated with
+    # appropriate stack, ex:
+    #
+    # stack => [:insufficient_slaves, :overloaded_master]
+    #
+    def analyze(data)
       conclusions = {}
 
-      data.each do |container_id, metrics|
-        metrics.each do |key, probes|
-          conclusions[container_id] = analyze_probes(container_id, key, probes)
+      # analyze all stacks
+      data.each do |stack, containers|
+        # we are interested only in unique problems
+        conclusions[stack] = Set.new
+        containers.each do |container, metrics|
+
+          metrics.each do |key, values|
+            conclusion = analyze_values(container, values)
+            @@logger.debug "Concluded that currently #{container} is #{conclusion} (by key: #{key})"
+
+            conclusions[stack] << conclusion
+          end
+
         end
+      end
+
+      # filter out healthy conclusions if there were some issues
+      conclusions.each do |stack, issues|
+        issues.delete(:healthy) if issues.size > 1
       end
 
       conclusions
     end
 
     private
-    def analyze_probes(container_id, key, probes)
+    def analyze_values(container, probes)
       result = @model.analyze(probes)
 
-      # TODO move mappings to model?
       mappings = {
         :master => {
           :greater => :overloaded_master,
@@ -58,10 +75,9 @@ module AutoScaling
         }
       }
 
-      role = Container.get(container_id).master? ? :master : :slave
+      role = container.master? ? :master : :slave
       conclusion = mappings[role][result]
 
-      @@logger.debug "Concluded that currently #{container_id} is #{conclusion} (by key: #{key})"
       return conclusion
     end
 
