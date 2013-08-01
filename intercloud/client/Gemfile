@@ -3,6 +3,8 @@ source 'https://rubygems.org'
 
 gem 'trollop'
 gem 'json'
+gem 'sinatra', :require => 'sinatra/base'
+gem 'redis'
 
 group :development do
   gem 'rspec'
