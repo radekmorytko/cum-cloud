@@ -9,8 +9,12 @@ module AutoScaling
       @max = max
     end
 
-    # list of values in form: [[timestamp, value], [timestamp, value], [timestamp, value]], ex:
-    # data = [["10", "5" , "8", "60"], ["10", "50" , "80"], ["11", "15" , "50"]]
+    # Analyzes data using threshold model
+    #
+    # * *Args* :
+    # - +data+ -> list of data, ex: ["10", "243", "432"]
+    #
+    # Return decision whether supplied data fits / is lesser / is greater than range [@min, @max]
     def analyze(data)
       # wrap data if it is not an array (ie single value, aggregated beforehand)
       data = [data] unless data.kind_of?(Array)

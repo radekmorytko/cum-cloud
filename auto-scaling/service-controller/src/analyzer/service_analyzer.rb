@@ -50,6 +50,7 @@ module AutoScaling
       end
 
       # filter out healthy conclusions if there were some issues
+      # TODO analyze here global problems
       conclusions.each do |stack, issues|
         issues.delete(:healthy) if issues.size > 1
       end

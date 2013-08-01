@@ -58,7 +58,7 @@ post '/service' do
   logger.info("Got service creation request: #{service}")
 
   begin
-    service_planner.plan service
+    service_planner.plan_deployment service
   rescue RuntimeError => e
     logger.error e
     error 400
