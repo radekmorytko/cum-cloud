@@ -8,7 +8,7 @@ def test(t, files)
   t.verbose = true
   t.warning = true
   t.test_files = FileList.new(files)
-  t.libs = %W(.. src ../../lib)
+  t.libs = %W(lib ext)
 end
 
 task :unit_tests do
