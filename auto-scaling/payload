@@ -1,5 +1,0 @@
-{
-"name" : "myapp",
-"instances" : 1,
-"stack" :"java"
-}

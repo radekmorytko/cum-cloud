@@ -1,6 +1,4 @@
-$: << File.join(File.dirname(File.expand_path(__FILE__)), 'src')
 $: << File.join(File.dirname(File.expand_path(__FILE__)), 'lib')
-$: << File.join(File.dirname(File.expand_path(__FILE__)), '..')
 
 require 'rubygems'
 require 'logger'

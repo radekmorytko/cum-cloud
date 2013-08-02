@@ -8,7 +8,7 @@ def test(t, files)
   t.verbose = true
   t.warning = true
   t.test_files = FileList.new(files)
-  t.libs = %W(../lib src/vm_coordinator)
+  t.libs = %W(lib/vm_coordinator)
 end
 
 task :unit_tests do
@@ -30,14 +30,14 @@ task :package do
 
   # prepare absolute structure
   FileUtils.mkdir_p('pkg/opt')
-  FileUtils.cp_r 'src/vm_coordinator', 'pkg/opt'
+  FileUtils.cp_r 'lib/vm_coordinator', 'pkg/opt'
 
   # create package
   cwd = File.dirname(File.expand_path(__FILE__))
   cmd = "cd pkg && fpm -n #{PACKAGE_NAME} -t #{PACKAGE_TYPE} \
          -s dir --vendor #{VENDOR} -v #{VERSION} -f -a all \
-         --after-install #{cwd}/src/vm_coordinator/package/postinstall \
-         --after-remove #{cwd}/src/vm_coordinator/package/postremove -p #{NAME} *"
+         --after-install #{cwd}/lib/vm_coordinator/package/postinstall \
+         --after-remove #{cwd}/lib/vm_coordinator/package/postremove -p #{NAME} *"
 
   puts %x{#{cmd}}
 end

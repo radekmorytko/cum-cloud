@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'logger'
 
-require 'cloud_provider'
+require 'cloud-provider/cloud_provider'
 require 'models/models'
 
 module AutoScaling

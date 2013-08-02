@@ -1,34 +1,34 @@
 #!/usr/bin/env ruby
 
-$: << File.join(File.dirname(File.expand_path('../', __FILE__)), 'service-controller')
-$: << File.join(File.dirname(File.expand_path('../', __FILE__)), 'cloud-provider')
-$: << File.join(File.dirname(File.expand_path('../../', __FILE__)), 'lib')
-
+$: << File.dirname(File.expand_path('..', __FILE__))
 
 require 'rubygems'
 require 'logger'
 require 'sinatra'
 require 'rest-client'
 
-require 'cloud_provider'
-require 'service_controller'
+require 'cloud-provider/cloud_provider'
+require 'service-controller/service_controller'
 
 module AutoScaling
 
   class CloudBrokerClientEndpoint < Sinatra::Base
 
+    # setup logging
     configure do
-
       RestClient.log = Logger.new(STDOUT)
-
-      # database
-      DataMapper::Logger.new($stdout, :debug)
-      db_path = File.join(File.expand_path(File.dirname(__FILE__)), 'auto-scaling.db')
-      DataMapper.setup(:default, "sqlite://#{db_path}")
-      DataMapper.auto_migrate!
-
     end
 
+    # setup database
+    configure do
+      DataMapper::Logger.new($stdout, :debug)
+      db_path = File.join(File.expand_path(File.dirname(__FILE__)), 'auto-scaling.db')
+
+      DataMapper.setup(:default, "sqlite://#{db_path}")
+      DataMapper.auto_migrate!
+    end
+
+    # setup components
     configure do
       options = {
           :username => 'oneadmin',
@@ -92,7 +92,6 @@ module AutoScaling
     end
 
     run! if app_file == $0
-
   end
 
 end
