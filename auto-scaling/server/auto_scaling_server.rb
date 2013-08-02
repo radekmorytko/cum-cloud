@@ -6,6 +6,7 @@ require 'rubygems'
 require 'logger'
 require 'sinatra'
 require 'rest-client'
+require 'yaml'
 
 require 'cloud-provider/cloud_provider'
 require 'service-controller/service_controller'
@@ -14,9 +15,11 @@ module AutoScaling
 
   class CloudBrokerClientEndpoint < Sinatra::Base
 
-    # setup logging
+    # configuration
     configure do
       RestClient.log = Logger.new(STDOUT)
+
+      set :config, YAML.load_file('config/config.yaml')
     end
 
     # setup database
@@ -61,7 +64,11 @@ module AutoScaling
         error 400
       end
 
-      settings.planner.plan_deployment service
+      begin
+        settings.planner.plan_deployment(service, settings.config)
+      rescue RuntimeError => e
+        status 503
+      end
 
       status 200
     end
@@ -85,7 +92,6 @@ module AutoScaling
         settings.executor.converge(service, container_id)
         status 200
       rescue RuntimeError => e
-        logger.error e
         status 503
       end
 

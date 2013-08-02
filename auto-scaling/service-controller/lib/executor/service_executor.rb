@@ -3,7 +3,6 @@ require 'logger'
 require 'rest_client'
 require 'base64'
 
-load 'config/auto_scaling.conf'
 require 'executor/chef_renderer'
 require 'models/models'
 
@@ -25,11 +24,10 @@ module AutoScaling
     #     'name' => 'enterprise-app'
     #   }
     #
-    def deploy_service(service, mappings = {})
+    def deploy_service(service, mappings)
       # create appflow template
       # but first we need to have appflow service-representation
-      mappings ||= {}
-      mappings = MAPPINGS.merge(mappings)
+      raise ArgumentError, "Mappings cannot be nil nor empty" if mappings == nil or mappings.empty?
 
       service_definition = @cloud_provider.render service, mappings
       template_id = @cloud_provider.create_template service_definition
@@ -51,8 +49,7 @@ module AutoScaling
     end
 
     def deploy_container(stack, mappings = {})
-      mappings ||= {}
-      mappings = MAPPINGS.merge(mappings)
+      raise ArgumentError, "Mappings cannot be nil nor empty" if mappings == nil or mappings.empty?
 
       appstage_id = mappings[:appstage][stack.type.to_sym][:slave]
       template_id = mappings[:onetemplate_id]

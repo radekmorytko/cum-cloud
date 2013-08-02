@@ -12,13 +12,13 @@ module AutoScaling
       @executor = executor
     end
 
-    def plan_deployment(service)
+    def plan_deployment(service, mappings)
       # are there enough resources?
 
       # reserve resources
 
       # deploy
-      @executor.deploy_service service
+      @executor.deploy_service service, mappings
     end
 
     # Analyzes data using supplied model

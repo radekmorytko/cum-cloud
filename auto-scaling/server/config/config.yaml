@@ -1,0 +1,9 @@
+# store ids of opennebula resources
+mappings:
+    onetemplate_id: 7
+
+    # supported stacks
+    appstage:
+        java:
+            master: 39,
+            slave:  25
