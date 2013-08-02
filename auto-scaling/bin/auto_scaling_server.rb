@@ -2,6 +2,7 @@
 
 $: << File.join(File.dirname(File.expand_path('../', __FILE__)), 'service-controller')
 $: << File.join(File.dirname(File.expand_path('../', __FILE__)), 'cloud-provider')
+$: << File.join(File.dirname(File.expand_path('../../', __FILE__)), 'lib')
 
 
 require 'rubygems'
@@ -12,100 +13,86 @@ require 'rest-client'
 require 'cloud_provider'
 require 'service_controller'
 
-logger = Logger.new(STDOUT)
-RestClient.log = Logger.new(STDOUT)
+module AutoScaling
 
-options = {
-    :username => 'oneadmin',
-    :password => 'password',
-    :server => 'one:2474'
-}
+  class CloudBrokerClientEndpoint < Sinatra::Base
 
-# database
-DataMapper::Logger.new($stdout, :debug)
-db_path = File.join(File.expand_path(File.dirname(__FILE__)), 'auto-scaling.db')
-logger.debug "Using database: #{db_path}"
-DataMapper.setup(:default, "sqlite://#{db_path}")
-DataMapper.auto_migrate!
+    configure do
 
-# service-controller
-cloud_provider = AutoScaling::OpenNebulaClient.new options
-service_executor = AutoScaling::ServiceExecutor.new cloud_provider
-service_planner = AutoScaling::ServicePlanner.new service_executor
+      RestClient.log = Logger.new(STDOUT)
 
-logger.info("auto-scaling server initialized")
+      # database
+      DataMapper::Logger.new($stdout, :debug)
+      db_path = File.join(File.expand_path(File.dirname(__FILE__)), 'auto-scaling.db')
+      DataMapper.setup(:default, "sqlite://#{db_path}")
+      DataMapper.auto_migrate!
 
-## sinatra part
-set :bind, '0.0.0.0'
+    end
 
-# JSON:
-# {
-#   'stack' => 'tomcat',
-#   'instances' => 2,
-#   'name' => 'enterprise-app'
-# }
-post '/service' do
-  payload = request.body.read
+    configure do
+      options = {
+          :username => 'oneadmin',
+          :password => 'password',
+          :server => 'one:2474'
+      }
 
-  begin
-    service = JSON.parse(payload)
-  rescue JSON::ParserError => e
-    logger.error "Got invalid payload: #{payload}"
-    logger.error e
-    error 400
-  end
+      set :cloud_provider, OpenNebulaClient.new(options)
+      set :executor, ServiceExecutor.new(settings.cloud_provider)
+      set :planner, ServicePlanner.new(settings.executor)
+    end
 
-  logger.info("Got service creation request: #{service}")
+    # Deploys new service.
+    #
+    # Request should contain a proper JSON body in form:
+    # {
+    #   'stack' => 'tomcat',
+    #   'instances' => 2,
+    #   'name' => 'enterprise-app'
+    # }
+    post '/service' do
 
-  begin
-    service_planner.plan_deployment service
-  rescue RuntimeError => e
-    logger.error e
-    error 400
-  end
+      payload = request.body.read
 
-  status 200
-end
+      begin
+        service = JSON.parse(payload)
+      rescue JSON::ParserError => e
+        logger.error "Got invalid payload: #{payload}"
+        logger.error e
+        error 400
+      end
 
-post '/service/:service_id/container/:container_id' do |service_id, container_id|
-  service = ::AutoScaling::Service.get(service_id)
+      settings.planner.plan_deployment service
 
-  logger.debug("Container #{container_id} (service: #{service.id}) converged")
+      status 200
+    end
 
-  begin
-    service_executor.converge service, container_id
-    status 200
-  rescue RuntimeError => e
-    logger.error e
-    status 503
-  end
+    # Deletes specified service
+    delete '/service/:id' do |service_id|
+      @@logger.info("Attempt to delete a service: #{service_id}")
+      error 400
+    end
 
-end
+    # Converges container - ie. sends appropriate configuration
+    #
+    # - service_id -> id of a service to which container belongs
+    # - container_id -> id of a container
+    post '/service/:service_id/container/:container_id' do |service_id, container_id|
+      service = Service.get(service_id)
 
-put '/service/:service_id/stack/:stack_id' do |service_id, stack_id|
-  stack = ::AutoScaling::Stack.get(stack_id)
-  logger.debug("Scaling up stack #{stack.id} (service: #{service_id})")
+      logger.debug("Container #{container_id} (service: #{service.id}) converged")
 
-  begin
-    service_executor.deploy_container stack
-    status 200
-  rescue RuntimeError => e
-    logger.error e
-    status 503
-  end
+      begin
+        settings.executor.converge(service, container_id)
+        status 200
+      rescue RuntimeError => e
+        logger.error e
+        status 503
+      end
 
-end
+    end
 
-delete '/service/:service_id/stack/:stack_id' do |service_id, stack_id|
-  stack = ::AutoScaling::Stack.get(stack_id)
-  logger.debug("Scaling down stack #{stack.id} (service: #{service_id})")
+    run! if app_file == $0
 
-  begin
-    service_executor.delete_container stack
-    status 200
-  rescue RuntimeError => e
-    logger.error e
-    status 503
   end
 
 end

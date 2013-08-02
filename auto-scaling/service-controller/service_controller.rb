@@ -37,7 +37,7 @@ module AutoScaling
 
     def initialize(monitor, analyzer, planner, scheduler = nil)
       @monitor, @analyzer, @planner = monitor, analyzer, planner
-      #scheduler ||= Rufus::Scheduler.new
+      scheduler ||= Rufus::Scheduler.new
 
       @scheduler = scheduler
     end
