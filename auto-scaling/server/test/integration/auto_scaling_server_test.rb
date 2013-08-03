@@ -4,6 +4,7 @@ require 'mocha/setup'
 require 'rack/test'
 require 'json'
 require 'fakeweb'
+require 'uri'
 
 ENV['RACK_ENV'] = 'test'
 
@@ -20,14 +21,15 @@ module AutoScaling
 
     def setup
       config = YAML.load_file('config/config.yaml')
+      @settings = config['endpoints'][ENV['RACK_ENV']]['opennebula']
     end
 
     def url
-      username = "bolek"
-      password = "lolek"
-      endpoint = "cloud.com:6969"
+      username = @settings['username']
+      password = @settings['password']
+      uri = URI(@settings['endpoints']['appflow'])
 
-      "http://#{username}:#{password}@#{endpoint}"
+      "#{uri.scheme}://#{username}:#{password}@#{uri.host}:#{uri.port}#{uri.path}"
     end
 
     def test_shall_deploy_a_service

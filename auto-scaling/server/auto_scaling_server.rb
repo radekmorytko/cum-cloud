@@ -38,7 +38,7 @@ module AutoScaling
 
     # setup components
     configure do
-      set :cloud_provider, OpenNebulaClient.new(settings.endpoints['opennebula'])
+      set :cloud_provider, OpenNebulaClient.new(settings.endpoints[settings.cloud_provider_name])
       set :executor, ServiceExecutor.new(settings.cloud_provider)
       set :planner, ServicePlanner.new(settings.executor)
     end
@@ -66,7 +66,7 @@ module AutoScaling
 
       begin
         @@logger.debug "Planning deployment of: #{service}"
-        service = settings.planner.plan_deployment(service, settings.mappings)
+        service = settings.planner.plan_deployment(service, settings.mappings[settings.cloud_provider_name])
         @@logger.debug "Deployed service #{service.to_s}"
       rescue RuntimeError => e
         @@logger.error e
