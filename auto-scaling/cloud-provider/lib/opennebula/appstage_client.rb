@@ -19,7 +19,11 @@ module AutoScaling
       @options = options
     end
 
-    def instantiate_container(appstage_id, template_id, service_id)
+    def instantiate_container(stack_type, service_id, mappings)
+      template_id = mappings['onetemplate_id']
+      # i assume that only slave can be instantied as a single container
+      appstage_id = mappings['appstage'][stack_type]['slave']
+
       Net::SSH.start( host, @options['username'], :password => @options['password'] ) do|ssh|
         output = ssh.exec!("appstage instantiate -t #{template_id} #{appstage_id} -d SERVICE_ID=#{service_id},VM_ID=$VMID")
         # output is in a format: "VM ID: 168"

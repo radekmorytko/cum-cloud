@@ -51,13 +51,10 @@ module AutoScaling
       )
     end
 
-    def deploy_container(stack, mappings = {})
+    def deploy_container(stack, mappings)
       raise ArgumentError, "Mappings cannot be nil nor empty" if mappings == nil or mappings.empty?
 
-      appstage_id = mappings['appstage'][stack.type.to_s]['slave']
-      template_id = mappings['onetemplate_id']
-
-      container_info = @cloud_provider.instantiate_container(appstage_id, template_id, stack.service.id)
+      container_info = @cloud_provider.instantiate_container(stack.type.to_s, stack.service.id, mappings)
 
       # persist data
       container = Container.create(
@@ -98,10 +95,6 @@ module AutoScaling
     # * *Args* :
     # - +service+ -> instance of models/service
     def update(service)
-      # {
-      #   "loadbalancer" => [{:ip=>"192.168.122.100", :id=>"138"}],
-      #   "worker" => [{:ip=>"192.168.122.101", :id=>"139"}]
-      # }
       conf = @cloud_provider.configuration(service.id)
       @@logger.debug("Got configuration for a service #{service.id}: #{conf}")
 

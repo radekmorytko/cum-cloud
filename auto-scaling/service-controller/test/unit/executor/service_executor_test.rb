@@ -167,7 +167,7 @@ module AutoScaling
       container_id = 800
       container_ip = '192.168.122.69'
       response = 'Od przedszkola do Opola, kupuj szybko dzis bejzbola'
-      @cloud_provider.expects(:instantiate_container).with(25, 7, instance_id).returns({:id => container_id, :ip=> container_ip})
+      @cloud_provider.expects(:instantiate_container).with('java', instance_id, MAPPINGS).returns({:id => container_id, :ip=> container_ip})
       FakeWeb.register_uri(:post,
                            "http://#{master_ip}:4567/chef",
                            :body => response,
