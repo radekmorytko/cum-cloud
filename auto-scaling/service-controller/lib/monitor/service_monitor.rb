@@ -26,8 +26,9 @@ module AutoScaling
     #    }
     # }
     def monitor(service)
-      # check all vms that forms a service
+      @@logger.debug "Monitoring a service #{service}"
 
+      # check all vms that forms a service
       data = {}
       service.stacks.each do |stack|
         data[stack] = {}
@@ -42,7 +43,9 @@ module AutoScaling
     end
 
     def monitor_container(container)
+      @@logger.debug "Grabbing data about container: #{container}"
       data = @cloud_provider.monitor_container container.id
+      @@logger.debug "Grabbed data about container: #{container}"
 
       # filter out historical data
       # TODO normalize?

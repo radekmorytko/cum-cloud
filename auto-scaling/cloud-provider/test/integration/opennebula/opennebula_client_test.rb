@@ -66,20 +66,28 @@ eos
     end
 
     def test_shall_instantiate_container
-      appstage_id = 25
-      template_id = 7
+      mappings = {
+          'onetemplate_id' => 7,
+
+          # supported stacks
+          'appstage' => {
+              'java' => {
+                  'master' => 39,
+                  'slave' => 25
+              }
+          }
+      }
+
       service_id = 1
 
-      container_info = @opennebula_client.instantiate_container(appstage_id, template_id, service_id)
+      container_info = @opennebula_client.instantiate_container('java', service_id, mappings)
       assert_equal true, container_info[:id] >= 0
       assert_equal true, container_info[:ip] != ''
 
       data = @opennebula_client.monitor_container(container_info[:id])
       assert_equal 2, data.size
 
-    ensure
-      # cleanup
-      @opennebula_client.delete_container container_info[:id] if container_info[:id]
+      @opennebula_client.delete_container container_info[:id]
     end
 
   end

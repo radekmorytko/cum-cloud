@@ -12,25 +12,9 @@ require 'models/models'
 
 module AutoScaling
 
-  class ServiceJob
-    @@logger = Logger.new(STDOUT)
-
-    def initialize(service, controller)
-      @service = service
-      @controller = controller
-    end
-
-    def call(job)
-      @@logger.debug "Executing job: #{job}"
-
-      monitoring_data = @controller.monitor.monitor(@service)
-      conclusions = @controller.analyzer.analyze(monitoring_data)
-      @controller.planner.plan(conclusions)
-    end
-  end
-
   class ServiceController
 
+    @@logger = Logger.new(STDOUT)
     attr_reader :monitor, :analyzer, :planner
 
     def initialize(monitor, analyzer, planner, scheduler = nil)
@@ -40,8 +24,14 @@ module AutoScaling
       @scheduler = scheduler
     end
 
-    def schedule(job, interval)
-      @scheduler.every interval, job
+    def schedule(service, interval)
+      @scheduler.every(interval) do
+        @@logger.debug "Executing job for a #{service}"
+
+        monitoring_data = monitor.monitor(service)
+        conclusions = analyzer.analyze(monitoring_data)
+        planner.plan(conclusions)
+      end
     end
 
   end

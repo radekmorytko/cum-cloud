@@ -95,6 +95,7 @@ module AutoScaling
     # * *Args* :
     # - +service+ -> instance of models/service
     def update(service)
+      # note method blocks until i get a full configuration (inc ids and ips)
       conf = @cloud_provider.configuration(service.id)
       @@logger.debug("Got configuration for a service #{service.id}: #{conf}")
 

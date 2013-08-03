@@ -13,6 +13,7 @@ module AutoScaling
     end
 
     def plan_deployment(service, mappings)
+      @@logger.debug "Planning deployment of a #{service}, using mappings: #{mappings}"
       # are there enough resources?
 
       # reserve resources
@@ -31,6 +32,8 @@ module AutoScaling
     # }
     #
     def plan(data)
+      @@logger.debug "Planning actions based on data #{data}"
+
       data.each do |stack, conclusions|
         conclusions.each do |conclusion|
           self.send(conclusion, stack)

@@ -15,14 +15,6 @@ module AutoScaling
 
     has n, :containers
 
-    def to_s
-      {
-        :id => @id,
-        :type => @type,
-        :containers => @containers
-      }.to_s
-    end
-
     # TODO who should have information about where stack is deployed (ex. opennebula endpoint?)
     # -> probably cloud controller who scales to different cloud
   end

@@ -31,6 +31,8 @@ module AutoScaling
     # stack => [:insufficient_slaves, :overloaded_master]
     #
     def analyze(data)
+      @@logger.debug "Analyzing data #{data}"
+
       conclusions = {}
 
       # analyze all stacks

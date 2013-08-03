@@ -126,14 +126,11 @@ module AutoScaling
           :status => :converged
       )
 
-      response = "Miod, smietana, pij browara do rana"
       FakeWeb.register_uri(:post,
                            "http://192.168.122.200:4567/chef",
-                           :body => response,
                            :status => ["200", "OK"])
 
-      actual = @executor.converge(service, Container.master(stack).id)
-      assert_equal response, actual
+      @executor.converge(service, Container.master(stack).id)
     end
 
     def test_shall_deploy_new_container

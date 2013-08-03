@@ -1,3 +1,8 @@
+## CONTROLLER SETTINGS
+scheduler:
+  interval: '5s'
+
+## CLOUD PROVIDER SETTINGS
 cloud_provider_name:  opennebula
 
 # store ids of opennebula resources

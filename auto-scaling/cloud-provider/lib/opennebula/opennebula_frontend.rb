@@ -19,7 +19,7 @@ module AutoScaling
       vm = ::OpenNebula::VirtualMachine.new(VirtualMachine.build_xml(vm_id), @client)
       data = vm.monitoring(@data)
 
-      raise RuntimeError(data.message) if OpenNebula.is_error?(data)
+      raise(RuntimeError, data.message) if OpenNebula.is_error?(data)
       data
     end
 

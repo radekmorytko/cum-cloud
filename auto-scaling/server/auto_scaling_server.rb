@@ -39,8 +39,14 @@ module AutoScaling
     # setup components
     configure do
       set :cloud_provider, OpenNebulaClient.new(settings.endpoints[settings.cloud_provider_name])
+
+      set :monitor, ServiceMonitor.new(settings.cloud_provider)
+      # TODO specify model as a part of policy
+      set :analyzer, ServiceAnalyzer.new(ThresholdModel.new(30, 80))
       set :executor, ServiceExecutor.new(settings.cloud_provider)
       set :planner, ServicePlanner.new(settings.executor)
+
+      set :controller, ServiceController.new(settings.monitor, settings.analyzer, settings.planner)
     end
 
     # Deploys new service.
@@ -68,6 +74,9 @@ module AutoScaling
         @@logger.debug "Planning deployment of: #{service}"
         service = settings.planner.plan_deployment(service, settings.mappings[settings.cloud_provider_name])
         @@logger.debug "Deployed service #{service.to_s}"
+
+        settings.controller.schedule(service, settings.scheduler['interval'])
+        @@logger.debug "Scheduled job execution for a service: #{service.to_s}"
       rescue RuntimeError => e
         @@logger.error e
         status 503
@@ -89,10 +98,11 @@ module AutoScaling
     post '/service/:service_id/container/:container_id' do |service_id, container_id|
       service = Service.get(service_id)
 
-      logger.debug("Container #{container_id} (service: #{service.id}) converged")
+      logger.debug("Attempt to converge container #{container_id} (service: #{service.id})")
 
       begin
         settings.executor.converge(service, container_id)
+        logger.debug("Container #{container_id} (service: #{service.id}) successfully converged")
         status 200
       rescue RuntimeError => e
         status 503
