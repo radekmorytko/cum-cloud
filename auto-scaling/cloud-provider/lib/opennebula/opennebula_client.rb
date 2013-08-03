@@ -17,7 +17,11 @@ module AutoScaling
     # options = {
     #   'username'   => 'username',        <- opennebula username (also a linux user)
     #   'password'   => 'password',        <- opennebula username password (also a password of a linux user)
-    #   'server'     => 'redtube.com:69'   <- hostname:port of a appflow-server running
+    #   'endpoints'  => {                  <- hashmap of endpoints that are used by this client (all of them have to support the same credential)
+    #     'opennebula' => 'http://redtube.com:69/XMLRPC2'
+    #     'appflow' => 'http://pudelek.pl:4567'
+    #   },
+    #   'monitoring_keys' => ['CPU', 'MEMORY']
     # }
     def initialize(options)
       @appflow = AppflowClient.new options

@@ -8,12 +8,16 @@ mappings:
       master: 39
       slave:  25
 
+
+
 endpoints:
   development:
     opennebula:
       username: oneadmin
       password: password
-      server: one:2474
+      endpoints:
+                        - opennebula: http://one:2633/RPC2
+                        - appflow: http://one:2474
       monitoring_keys:
                         - CPU
                         - MEMORY
@@ -21,7 +25,9 @@ endpoints:
     opennebula:
       username: bolek
       password: lolek
-      server: cloud.com:6969
+      endpoints:
+                        - opennebula: http://cloud.com:2633/RPC2
+                        - appflow: http://cloud.com:2474
       monitoring_keys:
                         - CPU
                         - MEMORY

@@ -11,7 +11,7 @@ module AutoScaling
     OPTIONS = {
         'username' => 'oneadmin',
         'password' => 'password',
-        'server' => 'example.com'
+        'endpoints' => {'appflow' => 'http://example.com'}
     }
 
     def setup

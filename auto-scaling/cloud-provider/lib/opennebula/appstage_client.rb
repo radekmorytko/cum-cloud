@@ -3,6 +3,7 @@ require 'logger'
 require 'json'
 require 'net/ssh'
 require 'nokogiri'
+require 'uri'
 
 module AutoScaling
   class AppstageClient
@@ -56,7 +57,7 @@ module AutoScaling
 
     private
     def host
-      @options['server'].split(':')[0]
+      URI(@options['endpoints']['opennebula']).host
     end
 
     def extract_ip(xml)

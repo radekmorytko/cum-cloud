@@ -2,6 +2,7 @@ require 'rubygems'
 require 'logger'
 require 'json'
 require 'rest_client'
+require 'uri'
 
 module AutoScaling
 
@@ -117,8 +118,10 @@ module AutoScaling
 
     private
     def client(path)
+      uri = URI(@options['endpoints']['appflow'])
+
       RestClient::Resource.new(
-          "http://#{@options['username']}:#{@options['password']}@#{@options['server']}#{path}",
+          "#{uri.scheme}://#{@options['username']}:#{@options['password']}@#{uri.host}:#{uri.port}#{uri.path}#{path}",
           :timeout => @options['timeout'],
           :open_timeout => @options['timeout']
       )

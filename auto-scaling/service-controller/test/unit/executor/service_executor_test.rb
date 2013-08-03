@@ -12,13 +12,13 @@ module AutoScaling
   class ServiceExecutorTest < Test::Unit::TestCase
 
     MAPPINGS = {
-        :onetemplate_id => 7,
+        'onetemplate_id' => 7,
 
         # supported stacks
-        :appstage => {
-            :java => {
-                :master => 39,
-                :slave => 25
+        'appstage' => {
+            'java' => {
+                'master' => 39,
+                'slave' => 25
             }
         }
     }

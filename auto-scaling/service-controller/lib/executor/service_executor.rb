@@ -54,7 +54,7 @@ module AutoScaling
     def deploy_container(stack, mappings = {})
       raise ArgumentError, "Mappings cannot be nil nor empty" if mappings == nil or mappings.empty?
 
-      appstage_id = mappings['appstage'][stack.type]['slave']
+      appstage_id = mappings['appstage'][stack.type.to_s]['slave']
       template_id = mappings['onetemplate_id']
 
       container_info = @cloud_provider.instantiate_container(appstage_id, template_id, stack.service.id)

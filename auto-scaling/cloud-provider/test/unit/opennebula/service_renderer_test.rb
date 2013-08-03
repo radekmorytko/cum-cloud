@@ -48,8 +48,14 @@ eos
         }
       }
 
+      options = {
+          'username' => 'oneadmin',
+          'password' => 'password',
+          'endpoints' => {'appflow' => 'http://example.com'}
+      }
+
       # test it from client side - ie. using opennebula
-      actual = OpenNebulaClient.new({}).render(service, mappings)
+      actual = OpenNebulaClient.new(options).render(service, mappings)
       assert_equal expected.strip!, actual.strip!
     end
   end

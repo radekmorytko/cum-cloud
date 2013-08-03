@@ -11,7 +11,7 @@ module AutoScaling
     @@logger = Logger.new(STDOUT)
 
     def initialize(options)
-      @client = ::OpenNebula::Client.new("#{options['username']}:#{options['password']}", options['endpoint'])
+      @client = ::OpenNebula::Client.new("#{options['username']}:#{options['password']}", options['endpoints']['opennebula'])
       @data = options['monitoring_keys']
     end
 

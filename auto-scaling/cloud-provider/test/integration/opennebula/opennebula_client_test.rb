@@ -34,7 +34,11 @@ eos
       options = {
           'username' => 'oneadmin',
           'password' => 'password',
-          'server' => '192.168.122.181:2474'
+          'endpoints' =>  {
+            'opennebula' => 'http://one:2633/RPC2',
+            'appflow' => 'http://one:2474'
+          },
+          'monitoring_keys' => ['CPU', 'MEMORY']
       }
 
       @opennebula_client = OpenNebulaClient.new options
@@ -49,14 +53,16 @@ eos
     end
 
     def test_instantiate_template
+
       template_id = @opennebula_client.create_template(SERVICE_TEMPLATE)
       assert_equal true, template_id >= 0
       instance_id = @opennebula_client.instantiate_template(template_id)
       assert_equal true, instance_id >= 0
 
+    ensure
       # cleanup
-      @opennebula_client.appflow.delete_instance instance_id
-      @opennebula_client.appflow.delete_template template_id
+      @opennebula_client.appflow.delete_instance instance_id if instance_id
+      @opennebula_client.appflow.delete_template template_id if template_id
     end
 
     def test_shall_instantiate_container
@@ -68,8 +74,12 @@ eos
       assert_equal true, container_info[:id] >= 0
       assert_equal true, container_info[:ip] != ''
 
+      data = @opennebula_client.monitor_container(container_info[:id])
+      assert_equal 2, data.size
+
+    ensure
       # cleanup
-      @opennebula_client.delete_container container_info[:id]
+      @opennebula_client.delete_container container_info[:id] if container_info[:id]
     end
 
   end
