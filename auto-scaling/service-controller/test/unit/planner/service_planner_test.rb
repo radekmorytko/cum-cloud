@@ -15,10 +15,6 @@ module AutoScaling
       @planner = ServicePlanner.new @executor
     end
 
-    def teardown
-
-    end
-
     def test_shall_plan_service_deployment
       service = {
           'stack' => 'java',

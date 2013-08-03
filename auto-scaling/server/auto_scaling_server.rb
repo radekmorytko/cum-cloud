@@ -5,6 +5,7 @@ $: << File.dirname(File.expand_path('..', __FILE__))
 require 'rubygems'
 require 'logger'
 require 'sinatra'
+require 'sinatra/config_file'
 require 'rest-client'
 require 'yaml'
 
@@ -13,18 +14,22 @@ require 'service-controller/service_controller'
 
 module AutoScaling
 
-  class CloudBrokerClientEndpoint < Sinatra::Base
+  class AutoScalingServer < Sinatra::Base
+    register Sinatra::ConfigFile
+
+    @@logger = Logger.new(STDOUT)
+    config_file 'config/config.yaml'
 
     # configuration
     configure do
       RestClient.log = Logger.new(STDOUT)
-
-      set :config, YAML.load_file('config/config.yaml')
+      enable :logging
+      enable :dump_error
     end
 
     # setup database
     configure do
-      DataMapper::Logger.new($stdout, :debug)
+      DataMapper::Logger.new($stdout, :info)
       db_path = File.join(File.expand_path(File.dirname(__FILE__)), 'auto-scaling.db')
 
       DataMapper.setup(:default, "sqlite://#{db_path}")
@@ -33,13 +38,7 @@ module AutoScaling
 
     # setup components
     configure do
-      options = {
-          :username => 'oneadmin',
-          :password => 'password',
-          :server => 'one:2474'
-      }
-
-      set :cloud_provider, OpenNebulaClient.new(options)
+      set :cloud_provider, OpenNebulaClient.new(settings.endpoints['opennebula'])
       set :executor, ServiceExecutor.new(settings.cloud_provider)
       set :planner, ServicePlanner.new(settings.executor)
     end
@@ -55,22 +54,26 @@ module AutoScaling
     post '/service' do
 
       payload = request.body.read
+      @@logger.debug "Got body #{payload}"
 
       begin
         service = JSON.parse(payload)
       rescue JSON::ParserError => e
-        logger.error "Got invalid payload: #{payload}"
-        logger.error e
+        @@logger.error "Got invalid payload: #{payload}"
+        @@logger.error e
         error 400
       end
 
       begin
-        settings.planner.plan_deployment(service, settings.config)
+        @@logger.debug "Planning deployment of: #{service}"
+        service = settings.planner.plan_deployment(service, settings.mappings)
+        @@logger.debug "Deployed service #{service.to_s}"
       rescue RuntimeError => e
+        @@logger.error e
         status 503
       end
 
-      status 200
+      [status(200), service.to_s]
     end
 
     # Deletes specified service

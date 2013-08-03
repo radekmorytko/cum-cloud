@@ -13,5 +13,13 @@ module AutoScaling
 
     has n, :stacks
 
+    def to_s
+      {
+        :id => @id,
+        :status => @status,
+        :stacks => @stacks.inject("") {|sum,n| sum + n.to_s}
+      }
+    end
+
   end
 end

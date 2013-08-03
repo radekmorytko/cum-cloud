@@ -27,5 +27,9 @@ module AutoScaling
       self == Container.master(self.stack)
     end
 
+    def to_s
+      {:id => @id, :ip => @ip, :type => @type}
+    end
+
   end
 end

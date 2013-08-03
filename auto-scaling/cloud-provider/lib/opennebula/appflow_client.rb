@@ -27,7 +27,7 @@ module AutoScaling
     def create_template(service_template)
       client(RESOURCES[:service_template]).post(service_template) {|response, request, result, &block|
         case response.code
-          when 201
+          when 201, 200
             template = JSON.parse(response.body)
             id = template['DOCUMENT']['ID'].to_i
             @@logger.debug "Created template: #{id}"
@@ -41,7 +41,7 @@ module AutoScaling
     def delete_template(service_template_id)
       client("#{RESOURCES[:service_template]}/#{service_template_id}").delete {|response, request, result, &block|
         case response.code
-          when 201
+          when 201, 200
             0
           else
             error response
@@ -58,7 +58,7 @@ module AutoScaling
 
       client("#{RESOURCES[:service_template]}/#{template_id}/action").post(action.to_json){|response, request, result, &block|
         case response.code
-          when 201
+          when 201, 200
             template = JSON.parse(response.body)
             template['DOCUMENT']['ID'].to_i
           else
@@ -70,7 +70,7 @@ module AutoScaling
     def delete_instance(instance_id)
       client("#{RESOURCES[:service]}/#{instance_id}").delete {|response, request, result, &block|
         case response.code
-          when 201
+          when 201, 200
             0
           else
             error response

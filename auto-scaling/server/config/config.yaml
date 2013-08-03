@@ -1,9 +1,27 @@
 # store ids of opennebula resources
 mappings:
-    onetemplate_id: 7
+  onetemplate_id: 7
 
-    # supported stacks
-    appstage:
-        java:
-            master: 39,
-            slave:  25
+  # supported stacks
+  appstage:
+    java:
+      master: 39
+      slave:  25
+
+endpoints:
+  development:
+    opennebula:
+      username: oneadmin
+      password: password
+      server: one:2474
+      monitoring_keys:
+                        - CPU
+                        - MEMORY
+  test:
+    opennebula:
+      username: bolek
+      password: lolek
+      server: cloud.com:6969
+      monitoring_keys:
+                        - CPU
+                        - MEMORY

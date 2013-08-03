@@ -25,11 +25,14 @@ module AutoScaling
     #   }
     #
     def deploy_service(service, mappings)
+      @@logger.debug "Deploying service #{service} with mappings: #{mappings}"
+
       # create appflow template
       # but first we need to have appflow service-representation
       raise ArgumentError, "Mappings cannot be nil nor empty" if mappings == nil or mappings.empty?
 
       service_definition = @cloud_provider.render service, mappings
+      @@logger.debug "Got service definition #{service_definition}"
       template_id = @cloud_provider.create_template service_definition
 
       # instantiate
@@ -51,8 +54,8 @@ module AutoScaling
     def deploy_container(stack, mappings = {})
       raise ArgumentError, "Mappings cannot be nil nor empty" if mappings == nil or mappings.empty?
 
-      appstage_id = mappings[:appstage][stack.type.to_sym][:slave]
-      template_id = mappings[:onetemplate_id]
+      appstage_id = mappings['appstage'][stack.type]['slave']
+      template_id = mappings['onetemplate_id']
 
       container_info = @cloud_provider.instantiate_container(appstage_id, template_id, stack.service.id)
 
