@@ -43,9 +43,8 @@ module AutoScaling
     end
 
     def monitor_container(container)
-      @@logger.debug "Grabbing data about container: #{container}"
       data = @cloud_provider.monitor_container container.id
-      @@logger.debug "Grabbed data about container: #{container}"
+      @@logger.debug "Grabbed data about container: #{container}, #{data}"
 
       # filter out historical data
       # TODO normalize?

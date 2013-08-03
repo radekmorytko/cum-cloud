@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'json'
 require 'data_mapper'
 
 module AutoScaling
@@ -14,6 +15,10 @@ module AutoScaling
     property :data, String
 
     has n, :containers
+
+    def to_s
+      JSON.pretty_generate(self)
+    end
 
     # TODO who should have information about where stack is deployed (ex. opennebula endpoint?)
     # -> probably cloud controller who scales to different cloud

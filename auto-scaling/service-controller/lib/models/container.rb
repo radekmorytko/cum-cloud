@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'json'
 require 'data_mapper'
 
 module AutoScaling
@@ -25,6 +26,10 @@ module AutoScaling
 
     def master?
       self == Container.master(self.stack)
+    end
+
+    def to_s
+      JSON.pretty_generate(self)
     end
 
   end

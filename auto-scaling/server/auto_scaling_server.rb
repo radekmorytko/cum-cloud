@@ -63,7 +63,7 @@ module AutoScaling
       @@logger.debug "Got body #{payload}"
 
       begin
-        service = JSON.parse(payload)
+        service_data = JSON.parse(payload)
       rescue JSON::ParserError => e
         @@logger.error "Got invalid payload: #{payload}"
         @@logger.error e
@@ -71,18 +71,18 @@ module AutoScaling
       end
 
       begin
-        @@logger.debug "Planning deployment of: #{service}"
-        service = settings.planner.plan_deployment(service, settings.mappings[settings.cloud_provider_name])
-        @@logger.debug "Deployed service #{service.to_s}"
+        @@logger.debug "Planning deployment of: #{service_data}"
+        service = settings.planner.plan_deployment(service_data, settings.mappings[settings.cloud_provider_name])
+        @@logger.debug "Deployed service #{service.to_json}"
 
         settings.controller.schedule(service, settings.scheduler['interval'])
-        @@logger.debug "Scheduled job execution for a service: #{service.to_s}"
+        @@logger.debug "Scheduled job execution for a service: #{service.to_json}"
       rescue RuntimeError => e
         @@logger.error e
         status 503
       end
 
-      [status(200), service.to_s]
+      [status(200), service.to_json]
     end
 
     # Deletes specified service

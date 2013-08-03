@@ -64,6 +64,8 @@ module AutoScaling
     def analyze_values(container, probes)
       result = @model.analyze(probes)
 
+      @@logger.debug "Model claims that: #{result} (container: #{container}, probes: #{probes}"
+
       mappings = {
         :master => {
           :greater => :overloaded_master,
