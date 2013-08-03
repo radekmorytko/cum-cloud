@@ -32,9 +32,9 @@ eos
 
     def setup
       options = {
-          'username' => 'oneadmin',
-          'password' => 'password',
-          'server' => '192.168.122.181:2474'
+          :username => 'oneadmin',
+          :password => 'password',
+          :server => '192.168.122.181:2474'
       }
 
       @opennebula_client = OpenNebulaClient.new options

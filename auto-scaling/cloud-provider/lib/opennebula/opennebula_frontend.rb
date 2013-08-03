@@ -11,8 +11,8 @@ module AutoScaling
     @@logger = Logger.new(STDOUT)
 
     def initialize(options)
-      @client = ::OpenNebula::Client.new("#{options[:username]}:#{options[:password]}", options[:endpoint])
-      @data = options[:monitoring_keys]
+      @client = ::OpenNebula::Client.new("#{options['username']}:#{options['password']}", options['endpoint'])
+      @data = options['monitoring_keys']
     end
 
     def monitor(vm_id)

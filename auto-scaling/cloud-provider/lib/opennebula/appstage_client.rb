@@ -19,7 +19,7 @@ module AutoScaling
     end
 
     def instantiate_container(appstage_id, template_id, service_id)
-      Net::SSH.start( host, @options[:username], :password => @options[:password] ) do|ssh|
+      Net::SSH.start( host, @options['username'], :password => @options['password'] ) do|ssh|
         output = ssh.exec!("appstage instantiate -t #{template_id} #{appstage_id} -d SERVICE_ID=#{service_id},VM_ID=$VMID")
         # output is in a format: "VM ID: 168"
         id = output.split(' ')[2]
@@ -48,7 +48,7 @@ module AutoScaling
     end
 
     def delete_container(instance_id)
-      Net::SSH.start( host, @options[:username], :password => @options[:password] ) do|ssh|
+      Net::SSH.start( host, @options['username'], :password => @options['password'] ) do|ssh|
         output = ssh.exec!("onevm delete #{instance_id}")
         @@logger.debug("Deleted vm: #{instance_id}")
       end
@@ -56,7 +56,7 @@ module AutoScaling
 
     private
     def host
-      @options[:server].split(':')[0]
+      @options['server'].split(':')[0]
     end
 
     def extract_ip(xml)

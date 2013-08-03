@@ -1,4 +1,4 @@
-require 'rubygems'
+  require 'rubygems'
 require 'logger'
 require 'erb'
 
@@ -16,11 +16,11 @@ module AutoScaling
       result = ServiceTemplate.new(
           service['name'],
 
-          mappings[:onetemplate_id],
-          mappings[:appstage][service['stack'].to_sym][:master],
+          mappings['onetemplate_id'],
+          mappings['appstage'][service['stack']]['master'],
 
-          mappings[:onetemplate_id],
-          mappings[:appstage][service['stack'].to_sym][:slave],
+          mappings['onetemplate_id'],
+          mappings['appstage'][service['stack']]['slave'],
           service['instances']
       )
 

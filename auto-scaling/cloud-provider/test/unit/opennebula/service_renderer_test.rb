@@ -37,13 +37,13 @@ eos
       }
 
       mappings = {
-        :onetemplate_id => 6,
+        'onetemplate_id' => 6,
 
         # supported stacks
-        :appstage => {
-          :java => {
-            :master => 9,
-            :slave => 20
+        'appstage' => {
+          'java' => {
+            'master' => 9,
+            'slave' => 20
           }
         }
       }

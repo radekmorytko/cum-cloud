@@ -9,10 +9,10 @@ module AutoScaling
   class OpenNebulaFrontendTest < Test::Unit::TestCase
 
     OPTIONS = {
-        :username => 'oneadmin',
-        :password => 'password',
-        :endpoint => 'http://one:2633/RPC2',
-        :monitoring_keys => ['CPU', 'MEMORY']
+        'username' => 'oneadmin',
+        'password' => 'password',
+        'endpoint' => 'http://one:2633/RPC2',
+        'monitoring_keys' => ['CPU', 'MEMORY']
     }
 
     def setup

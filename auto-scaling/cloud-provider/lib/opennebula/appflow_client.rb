@@ -29,7 +29,9 @@ module AutoScaling
         case response.code
           when 201
             template = JSON.parse(response.body)
-            template['DOCUMENT']['ID'].to_i
+            id = template['DOCUMENT']['ID'].to_i
+            @@logger.debug "Created template: #{id}"
+            id
           else
             error response
         end
@@ -116,9 +118,9 @@ module AutoScaling
     private
     def client(path)
       RestClient::Resource.new(
-          "http://#{@options[:username]}:#{@options[:password]}@#{@options[:server]}#{path}",
-          :timeout => @options[:timeout],
-          :open_timeout => @options[:timeout]
+          "http://#{@options['username']}:#{@options['password']}@#{@options['server']}#{path}",
+          :timeout => @options['timeout'],
+          :open_timeout => @options['timeout']
       )
     end
 
