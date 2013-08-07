@@ -27,7 +27,7 @@ module AutoScaling
       @cloud_provider = mock()
       Utils::setup_database
 
-      @executor = ServiceExecutor.new @cloud_provider
+      @executor = ServiceExecutor.new(@cloud_provider, MAPPINGS)
     end
 
     def test_shall_successfully_deploy_service
@@ -67,7 +67,7 @@ module AutoScaling
       @cloud_provider.expects(:create_template).with(service_template).returns(template_id)
       @cloud_provider.expects(:instantiate_template).with(template_id).returns(instance_id)
 
-      @executor.deploy_service service, MAPPINGS
+      @executor.deploy_service service
     end
 
     def test_shall_update_model
@@ -170,7 +170,7 @@ module AutoScaling
                            :body => response,
                            :status => ["200", "OK"])
 
-      id = @executor.deploy_container stack, MAPPINGS
+      id = @executor.deploy_container stack
       assert_equal 2, Container.slaves(stack).size
 
       assert Container.slaves(stack).include?(Container.get(container_id))

@@ -21,9 +21,9 @@ module AutoScaling
           'instances' => 2,
           'name' => 'enterprise-app'
       }
-      @executor.expects(:deploy_service).with(service, {})
+      @executor.expects(:deploy_service).with(service)
 
-      @planner.plan_deployment(service, {})
+      @planner.plan_deployment(service)
     end
 
     def test_shall_plan_appropriate_executor_actions

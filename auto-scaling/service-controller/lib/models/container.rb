@@ -25,7 +25,7 @@ module AutoScaling
     end
 
     def master?
-      self == Container.master(self.stack)
+      type == :master
     end
 
     def to_s

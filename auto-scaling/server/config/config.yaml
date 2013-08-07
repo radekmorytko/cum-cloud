@@ -1,6 +1,11 @@
 ## CONTROLLER SETTINGS
 scheduler:
-  interval: '5s'
+  test:
+    interval: '5s'
+
+  production:
+    interval: '1m'
+
 
 ## CLOUD PROVIDER SETTINGS
 cloud_provider_name:  opennebula
@@ -19,7 +24,7 @@ mappings:
 
 
 endpoints:
-  development:
+  production:
     opennebula:
       username: oneadmin
       password: password
@@ -39,3 +44,4 @@ endpoints:
       monitoring_keys:
                         - CPU
                         - MEMORY
+                        - NET_RX

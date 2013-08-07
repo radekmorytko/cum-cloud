@@ -25,12 +25,14 @@ module AutoScaling
     end
 
     def schedule(service, interval)
-      @scheduler.in(interval) do
+      @scheduler.every(interval) do
         @@logger.debug "Executing job for a #{service}"
 
         monitoring_data = monitor.monitor(service)
         conclusions = analyzer.analyze(monitoring_data)
         planner.plan(conclusions)
+
+        @@logger.debug "Job execution has finished"
       end
     end
 

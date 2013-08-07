@@ -56,6 +56,9 @@ module AutoScaling
       )
 
       assert_equal set_1, @monitor.send(:last, set_1, container )
+      container.probed = "1374678155"
+      container.save
+
       assert_equal set_2 - set_1, @monitor.send(:last, set_2, container )
     end
 

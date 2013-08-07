@@ -12,8 +12,11 @@ module AutoScaling
 
     @@logger = Logger.new(STDOUT)
 
-    def initialize(cloud_provider)
+    def initialize(cloud_provider, mappings)
+      raise ArgumentError, "Mappings cannot be nil nor empty" if mappings == nil or mappings.empty?
+
       @cloud_provider = cloud_provider
+      @mappings = mappings
     end
 
     # * *Args* :
@@ -24,15 +27,14 @@ module AutoScaling
     #     'name' => 'enterprise-app'
     #   }
     #
-    def deploy_service(service, mappings)
-      @@logger.debug "Deploying service #{service} with mappings: #{mappings}"
+    def deploy_service(service)
+      @@logger.debug "Deploying service #{service} with mappings: #{@mappings}"
 
       # create appflow template
       # but first we need to have appflow service-representation
-      raise ArgumentError, "Mappings cannot be nil nor empty" if mappings == nil or mappings.empty?
 
-      service_definition = @cloud_provider.render service, mappings
-      @@logger.debug "Got service definition #{service_definition}"
+
+      service_definition = @cloud_provider.render service, @mappings
       template_id = @cloud_provider.create_template service_definition
 
       # instantiate
@@ -51,10 +53,9 @@ module AutoScaling
       )
     end
 
-    def deploy_container(stack, mappings)
-      raise ArgumentError, "Mappings cannot be nil nor empty" if mappings == nil or mappings.empty?
-
-      container_info = @cloud_provider.instantiate_container(stack.type.to_s, stack.service.id, mappings)
+    def deploy_container(stack)
+      @@logger.debug "Deploying container at #{stack} with mappings: #{@mappings}"
+      container_info = @cloud_provider.instantiate_container(stack.type.to_s, stack.service.id, @mappings)
 
       # persist data
       container = Container.create(
@@ -69,7 +70,8 @@ module AutoScaling
       configure(Container.master(stack))
     end
 
-    def delete_container(stack, mappings = {})
+    def delete_container(stack)
+      @@logger.debug "Deleting container from #{stack}"
       slaves = Container.slaves(stack)
       raise RuntimeError, "Can't delete slave from stack: #{stack.id}, there aren't any left" if slaves.size == 0
 
@@ -86,7 +88,7 @@ module AutoScaling
       update(service) if(service.status != :converged)
       container = ::AutoScaling::Container.get(container_id)
 
-      configure(container) if container.type == :master
+      configure(container) if container.master?
     end
 
     private

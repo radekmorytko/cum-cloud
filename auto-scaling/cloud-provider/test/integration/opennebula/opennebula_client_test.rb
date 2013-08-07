@@ -90,5 +90,10 @@ eos
       @opennebula_client.delete_container container_info[:id]
     end
 
+    def test_my
+      data = @opennebula_client.monitor_container(228)
+      puts data
+    end
+
   end
 end

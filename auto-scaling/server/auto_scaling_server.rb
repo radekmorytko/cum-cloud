@@ -43,7 +43,7 @@ module AutoScaling
       set :monitor, ServiceMonitor.new(settings.cloud_provider)
       # TODO specify model as a part of policy
       set :analyzer, ServiceAnalyzer.new(ThresholdModel.new(30, 80))
-      set :executor, ServiceExecutor.new(settings.cloud_provider)
+      set :executor, ServiceExecutor.new(settings.cloud_provider, settings.mappings[settings.cloud_provider_name])
       set :planner, ServicePlanner.new(settings.executor)
 
       set :controller, ServiceController.new(settings.monitor, settings.analyzer, settings.planner)
@@ -72,7 +72,7 @@ module AutoScaling
 
       begin
         @@logger.debug "Planning deployment of: #{service_data}"
-        service = settings.planner.plan_deployment(service_data, settings.mappings[settings.cloud_provider_name])
+        service = settings.planner.plan_deployment(service_data)
         @@logger.debug "Deployed service #{service.to_json}"
 
         settings.controller.schedule(service, settings.scheduler['interval'])
