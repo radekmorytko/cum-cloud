@@ -5,14 +5,12 @@
         {
             "name": "master",
             "vm_template": <%=master_template_id%>,
-            "appstage_id": <%=master_appstage_id%>,
             "cardinality": 1
         },
         {
             "name": "slave",
             "parents": ["master"],
             "vm_template": <%=worker_template_id%>,
-            "appstage_id": <%=worker_appstage_id%>,
             "cardinality": <%=worker_instances%>
         }
     ]

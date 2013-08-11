@@ -13,13 +13,13 @@ cloud_provider_name:  opennebula
 # store ids of opennebula resources
 mappings:
   opennebula:
-    onetemplate_id: 7
-
-    # supported stacks
-    appstage:
+    stacks:
       java:
-        master: 39
-        slave:  25
+        master: 7
+        slave:  7
+
+      bootstrap:
+        base:   7
 
 
 

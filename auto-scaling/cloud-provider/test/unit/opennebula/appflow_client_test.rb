@@ -25,13 +25,20 @@ module AutoScaling
 
     def test_shall_return_configuration_when_service_is_running
       service_id = 120
-      response = OpenNebulaGenerator.show_service(ShowService.new(service_id, 2))
-      FakeWeb.register_uri(:get, url(service_id), [{:body => response, :times => 2}, {:body => response}])
-
       expected = {
           "slave"=>[{:ip=>"192.168.122.101", :id=>"139"}],
           "master"=>[{:ip=>"192.168.122.100", :id=>"138"}]
       }
+
+      response = OpenNebulaGenerator.show_service(
+          ShowService.new(
+              service_id, 2,
+              expected['master'][0][:id], expected['master'][0][:ip],
+              expected['slave'][0][:id], expected['slave'][0][:ip]
+          )
+      )
+      FakeWeb.register_uri(:get, url(service_id), [{:body => response, :times => 2}, {:body => response}])
+
       actual = @appflow_client.configuration service_id
 
       assert_equal expected, actual
@@ -40,7 +47,18 @@ module AutoScaling
 
     def test_shall_throw_exception_when_service_is_pending
       service_id = 120
-      response = OpenNebulaGenerator.show_service(ShowService.new(service_id, 1))
+      expected = {
+          "slave"=>[{:ip=>"192.168.122.101", :id=>"139"}],
+          "master"=>[{:ip=>"192.168.122.100", :id=>"138"}]
+      }
+      response = OpenNebulaGenerator.show_service(
+          ShowService.new(
+              service_id, 1,
+              expected['master'][0][:id], expected['master'][0][:ip],
+              expected['slave'][0][:id], expected['slave'][0][:ip]
+          )
+      )
+
       FakeWeb.register_uri(:get, url(service_id), {:body => response, :times => 4})
 
       assert_raises RuntimeError do

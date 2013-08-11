@@ -74,14 +74,14 @@ module AutoScaling
       # hence, i use rotating response and assume that master is probed first
       master[:response] = OpenNebulaGenerator.monitor_vm(MonitorVmData.new(master[:id]))
       slave[:response] = OpenNebulaGenerator.monitor_vm(MonitorVmData.new(slave[:id]))
+      response = OpenNebulaGenerator.template_info(::AutoScaling::Template.new('ubuntu'))
       FakeWeb.register_uri(:post,
                            "#{@settings['endpoints']['opennebula']}",
                            [{:status => ["200", "OK"], :body => master[:response], :content_type => "text/xml"},
                             {:status => ["200", "OK"], :body => slave[:response], :content_type => "text/xml"},
+                            {:status => ["200", "OK"], :body => response, :content_type => "text/xml"},
                             {:status => ["200", "OK"], :body => master[:response], :content_type => "text/xml"},
                             {:status => ["200", "OK"], :body => slave[:response], :content_type => "text/xml"}])
-
-
 
       sleep 10
     end

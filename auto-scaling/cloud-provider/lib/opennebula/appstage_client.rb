@@ -4,6 +4,7 @@ require 'json'
 require 'net/ssh'
 require 'nokogiri'
 require 'uri'
+require 'digest/md5'
 
 module AutoScaling
   class AppstageClient
@@ -19,43 +20,16 @@ module AutoScaling
       @options = options
     end
 
-    def instantiate_container(stack_type, service_id, mappings)
-      template_id = mappings['onetemplate_id']
-      # i assume that only slave can be instantied as a single container
-      appstage_id = mappings['appstage'][stack_type]['slave']
+    def create_template(definition)
+      Net::SSH.start( host, @options['username'], :password => @options['password'] ) do |ssh|
+        tmp_file = File.join("/tmp", Digest::MD5.hexdigest(definition))
+        ssh.exec!("echo '#{definition}' > #{tmp_file}")
+        output = ssh.exec!("appstage create #{tmp_file}")
+        id = output.split(' ')[1]
 
-      Net::SSH.start( host, @options['username'], :password => @options['password'] ) do|ssh|
-        output = ssh.exec!("appstage instantiate -t #{template_id} #{appstage_id} -d SERVICE_ID=#{service_id},VM_ID=$VMID")
-        # output is in a format: "VM ID: 168"
-        id = output.split(' ')[2]
+        @@logger.debug("Created definition (id: #{id}): #{definition} using file #{tmp_file}")
 
-        @@logger.debug("Instantiated vm: #{id} with appstage_id #{appstage_id} and template #{template_id}")
-
-        # get ip address
-        retry_count = 0
-        ip = ''
-        begin
-          if ip == nil
-            @@logger.debug "Waiting for scheduling vm to get an ip address"
-            sleep CLIENT[:sleep]
-          end
-
-          xml = ssh.exec!("onevm show #{id} --xml")
-          ip = extract_ip xml
-          retry_count += 1
-        end while retry_count <= CLIENT[:retries] and ip != nil
-
-        raise RuntimeError, "Can't get container ip" if ip == nil
-        @@logger.debug "VM #{id} has an address: #{ip}"
-
-        {:id => id.to_i, :ip => ip}
-      end
-    end
-
-    def delete_container(instance_id)
-      Net::SSH.start( host, @options['username'], :password => @options['password'] ) do|ssh|
-        output = ssh.exec!("onevm delete #{instance_id}")
-        @@logger.debug("Deleted vm: #{instance_id}")
+        id
       end
     end
 
@@ -64,14 +38,11 @@ module AutoScaling
       URI(@options['endpoints']['opennebula']).host
     end
 
-    def extract_ip(xml)
-      doc = Nokogiri::XML(xml)
-      cdata = doc.xpath("//IP").children[0]
-
-      if cdata == nil
-        nil
-      else
-        cdata.content
+    def delete_template(template_id)
+      Net::SSH.start( host, @options['username'], :password => @options['password'] ) do |ssh|
+        output = ssh.exec!("appstage delete #{template_id}")
+        @@logger.debug("Deleted template #{template_id}")
+        output
       end
     end
 

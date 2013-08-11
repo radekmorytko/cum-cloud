@@ -7,6 +7,20 @@ require 'opennebula/opennebula_client'
 module AutoScaling
   class OpenNebulaClientTest < Test::Unit::TestCase
 
+    MAPPINGS = {
+        # supported stacks
+        'stacks' => {
+            'java' => {
+                'master' => 10,
+                'slave' => 11
+            },
+            'bootstrap' => {
+                'base' => 7
+            }
+        }
+    }
+
+
     SERVICE_TEMPLATE =
 <<-eos
 {
@@ -15,16 +29,14 @@ module AutoScaling
     "roles": [
     {
         "name": "master",
-        "vm_template": 7,
-        "appstage_id": 39,
+        "vm_template": 10,
         "cardinality": 1
     },
 
     {
         "name": "slave",
         "parents": [ "master" ],
-        "vm_template": 7,
-        "appstage_id": 25
+        "vm_template": 11
     }]
 
 }
@@ -66,21 +78,9 @@ eos
     end
 
     def test_shall_instantiate_container
-      mappings = {
-          'onetemplate_id' => 7,
-
-          # supported stacks
-          'appstage' => {
-              'java' => {
-                  'master' => 39,
-                  'slave' => 25
-              }
-          }
-      }
-
       service_id = 1
 
-      container_info = @opennebula_client.instantiate_container('java', service_id, mappings)
+      container_info = @opennebula_client.instantiate_container('bootstrap', 'base', 'bootstrap', MAPPINGS)
       assert_equal true, container_info[:id] >= 0
       assert_equal true, container_info[:ip] != ''
 
@@ -90,9 +90,28 @@ eos
       @opennebula_client.delete_container container_info[:id]
     end
 
-    def test_my
-      data = @opennebula_client.monitor_container(228)
-      puts data
+    def test_shall_show_image
+      # note that you need to have image_ids on backend
+      assert_not_nil @opennebula_client.image_name(0)
+      assert_nil @opennebula_client.image_name(1000)
+    end
+
+    def test_shall_create_stack
+      definition = <<-eos
+{
+  "name": "tomcat-stack",
+  "run_list": [
+    "recipe[tomcat]"
+  ]
+}
+      eos
+
+      id = @opennebula_client.create_stack(definition)
+      @opennebula_client.appstage.send(:delete_template, id)
+    end
+
+    def test_shall_save_container
+
     end
 
   end

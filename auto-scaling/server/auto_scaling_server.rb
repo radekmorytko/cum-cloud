@@ -91,6 +91,14 @@ module AutoScaling
       error 400
     end
 
+    # Method used to bootstrap a container template
+    post '/service/bootstrap/container/:container_id' do |container_id|
+      provider = settings.cloud_provider
+      logger.info "Bootstrap container template: #{container_id}"
+      provider.save_container(container_id)
+      provider.shutdown_container(container_id)
+    end
+
     # Converges container - ie. sends appropriate configuration
     #
     # - service_id -> id of a service to which container belongs

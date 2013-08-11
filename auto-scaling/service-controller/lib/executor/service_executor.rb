@@ -55,7 +55,7 @@ module AutoScaling
 
     def deploy_container(stack)
       @@logger.debug "Deploying container at #{stack} with mappings: #{@mappings}"
-      container_info = @cloud_provider.instantiate_container(stack.type.to_s, stack.service.id, @mappings)
+      container_info = @cloud_provider.instantiate_container(stack.type.to_s, 'slave', stack.service.id, @mappings)
 
       # persist data
       container = Container.create(
@@ -89,6 +89,13 @@ module AutoScaling
       container = ::AutoScaling::Container.get(container_id)
 
       configure(container) if container.master?
+    end
+
+    def bootstrap(definition)
+      @@logger.debug "Bootstraping node #{definition} with mappings: #{@mappings}"
+      stack_id = @cloud_provider.create_stack(definition)
+      container_id = @cloud_provider.create_container(stack_id, 'bootstrap', @mappings)
+      # thats all here, wait for a notification
     end
 
     private

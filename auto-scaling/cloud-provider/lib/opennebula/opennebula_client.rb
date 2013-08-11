@@ -37,20 +37,40 @@ module AutoScaling
       @appflow.instantiate_template template_id
     end
 
+
+
     def configuration(service_id)
       @appflow.configuration service_id
     end
 
-    def instantiate_container(stack_type, service_id, mappings)
-      @appstage.instantiate_container(stack_type, service_id, mappings)
+    def create_stack(definition)
+      @appstage.create_template(definition)
     end
 
+
+
     def delete_container(container_id)
-      @appstage.delete_container container_id
+      @frontend.delete_container container_id
+    end
+
+    def instantiate_container(stack_type, container_role, service_id, mappings)
+      @frontend.instantiate_container(stack_type, container_role, service_id, mappings)
     end
 
     def monitor_container(container_id)
       @frontend.monitor(container_id)
+    end
+
+    def save_container(container_id)
+      @frontend.save_container(container_id)
+    end
+
+    def shutdown_container(container_id)
+      @frontend.shutdown_container(container_id)
+    end
+
+    def image_name(image_id)
+      @frontend.image_name(image_id)
     end
 
     def render(service, bindings)

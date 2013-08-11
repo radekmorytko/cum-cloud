@@ -15,12 +15,8 @@ module AutoScaling
 
       result = ServiceTemplate.new(
           service['name'],
-
-          mappings['onetemplate_id'],
-          mappings['appstage'][service['stack']]['master'],
-
-          mappings['onetemplate_id'],
-          mappings['appstage'][service['stack']]['slave'],
+          mappings['stacks'][service['stack']]['master'],
+          mappings['stacks'][service['stack']]['slave'],
           service['instances']
       )
 
@@ -32,9 +28,7 @@ module AutoScaling
     ServiceTemplate = Struct.new(
         :name,
         :master_template_id,
-        :master_appstage_id,
         :worker_template_id,
-        :worker_appstage_id,
         :worker_instances) do
 
       def render

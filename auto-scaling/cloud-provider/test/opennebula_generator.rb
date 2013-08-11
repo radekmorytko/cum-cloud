@@ -11,6 +11,7 @@ module AutoScaling
 
   MonitorVmData = Struct.new(:vm_id)
   MonitorVm = Struct.new(:data)
+  Template = Struct.new(:name)
 
   # Helper that is used to generate opennebula-like response
   class OpenNebulaGenerator
@@ -25,11 +26,13 @@ module AutoScaling
 
     def self.monitor_vm(monitor_vm_data)
       vm_data = self.render(monitor_vm_data, 'monitor_vm_data.erb')
-    #  doc = Nokogiri(vm_data)
-    #  doc = doc.xpath('//text()[not(normalize-space())]').remove
 
       encoded_data = HTMLEntities.new.encode(vm_data)
       self.render(MonitorVm.new(encoded_data), 'monitor_vm.erb')
+    end
+
+    def self.template_info(template)
+      self.render(template, 'template_info.erb')
     end
 
     private
