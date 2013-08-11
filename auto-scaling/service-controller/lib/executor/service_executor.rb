@@ -91,13 +91,6 @@ module AutoScaling
       configure(container) if container.master?
     end
 
-    def bootstrap(definition)
-      @@logger.debug "Bootstraping node #{definition} with mappings: #{@mappings}"
-      stack_id = @cloud_provider.create_stack(definition)
-      container_info = @cloud_provider.instantiate_container('bootstrap', 'slave', 'bootstrap', @mappings)
-      # thats all here, wait for a notification
-    end
-
     private
     # Updates model, so it reflects actual configuration
     #

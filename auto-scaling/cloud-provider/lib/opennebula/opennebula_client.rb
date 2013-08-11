@@ -1,15 +1,14 @@
 require 'opennebula/appflow_client'
-require 'opennebula/appstage_client'
 require 'opennebula/opennebula_frontend'
 require 'opennebula/service_renderer'
 
 module AutoScaling
 
-  # facade that provide access to opennebula resources (both frontend and appflow)
+  # Facade that provides access to opennebula resources (both frontend and appflow)
   class OpenNebulaClient
 
     attr_reader :appflow
-    attr_reader :appstage
+    attr_reader :frontend
 
     #
     # * options - connectivity parameters, ex:
@@ -25,7 +24,6 @@ module AutoScaling
     # }
     def initialize(options)
       @appflow = AppflowClient.new options
-      @appstage = AppstageClient.new options
       @frontend = OpenNebulaFrontend.new options
     end
 
@@ -37,22 +35,15 @@ module AutoScaling
       @appflow.instantiate_template template_id
     end
 
-
-
     def configuration(service_id)
       @appflow.configuration service_id
     end
-
-    def create_stack(definition)
-      @appstage.create_template(definition)
-    end
-
-
 
     def delete_container(container_id)
       @frontend.delete_container container_id
     end
 
+    # Creates an instance of a container with a predefined template in mappings
     def instantiate_container(stack_type, container_role, service_id, mappings)
       @frontend.instantiate_container(stack_type, container_role, service_id, mappings)
     end
@@ -61,20 +52,8 @@ module AutoScaling
       @frontend.monitor(container_id)
     end
 
-    def save_container(container_id, disk_id, image_name)
-      @frontend.save_container(container_id, disk_id, image_name)
-    end
-
-    def shutdown_container(container_id)
-      @frontend.shutdown_container(container_id)
-    end
-
     def image_name(image_id)
       @frontend.image_name(image_id)
-    end
-
-    def delete_image(image_id)
-      @frontend.delete_image(image_id)
     end
 
     def render(service, bindings)

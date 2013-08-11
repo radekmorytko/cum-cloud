@@ -46,6 +46,7 @@ module AutoScaling
 
       template_id = 120
       service_id = 144
+      puts "Using url: #{url}"
       FakeWeb.register_uri(:post, "#{url}/service_template", :body => '{ "DOCUMENT": { "ID": "120" } }')
       FakeWeb.register_uri(:post, "#{url}/service_template/#{template_id}/action", :body => '{ "DOCUMENT": { "ID": "144" } }')
 

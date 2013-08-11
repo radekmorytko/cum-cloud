@@ -12,6 +12,8 @@ require 'yaml'
 require 'cloud-provider/cloud_provider'
 require 'service-controller/service_controller'
 
+ENV['RACK_ENV'] = 'development'
+
 module AutoScaling
 
   class AutoScalingServer < Sinatra::Base
@@ -89,14 +91,6 @@ module AutoScaling
     delete '/service/:id' do |service_id|
       @@logger.info("Attempt to delete a service: #{service_id}")
       error 400
-    end
-
-    # Method used to bootstrap a container template
-    post '/service/bootstrap/container/:container_id' do |container_id|
-      provider = settings.cloud_provider
-      logger.info "Bootstrap container template: #{container_id}"
-      provider.save_container(container_id)
-      provider.shutdown_container(container_id)
     end
 
     # Converges container - ie. sends appropriate configuration

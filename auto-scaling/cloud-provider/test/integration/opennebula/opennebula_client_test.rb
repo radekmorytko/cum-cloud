@@ -3,6 +3,7 @@ require 'test/unit'
 require 'mocha/setup'
 
 require 'opennebula/opennebula_client'
+require 'opennebula_generator'
 
 module AutoScaling
   class OpenNebulaClientTest < Test::Unit::TestCase
@@ -65,7 +66,6 @@ eos
     end
 
     def test_instantiate_template
-
       template_id = @opennebula_client.create_template(SERVICE_TEMPLATE)
       assert_equal true, template_id >= 0
       instance_id = @opennebula_client.instantiate_template(template_id)
@@ -85,14 +85,7 @@ eos
       data = @opennebula_client.monitor_container(container_info[:id])
       assert_equal 2, data.size
 
-      image_id = @opennebula_client.save_container(container_info[:id], 0, 'my_new_image')
-
-      # sleep so the vm will be scheduler and we can shutdown it to perform vm save
-      sleep 30
-      @opennebula_client.shutdown_container(container_info[:id])
-
       @opennebula_client.delete_container container_info[:id]
-      @opennebula_client.delete_image(image_id)
     end
 
     def test_shall_show_image
@@ -101,18 +94,13 @@ eos
       assert_nil @opennebula_client.image_name(1000)
     end
 
-    def test_shall_create_stack
-      definition = <<-eos
-{
-  "name": "tomcat-stack",
-  "run_list": [
-    "recipe[tomcat]"
-  ]
-}
-      eos
+    def test_shall_extract_ip
 
-      id = @opennebula_client.create_stack(definition)
-      @opennebula_client.appstage.send(:delete_template, id)
+      expected = '192.168.122.104'
+      configuration = OpenNebulaGenerator.show_vm(ShowVm.new(100, expected))
+      actual = @opennebula_client.frontend.send(:extract_ip, configuration)
+
+      assert_equal expected, actual
     end
 
   end

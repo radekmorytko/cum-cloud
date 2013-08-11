@@ -11,6 +11,8 @@ module AutoScaling
     @@logger = Logger.new(STDOUT)
 
     def initialize(options)
+      @@logger.debug "Using credentials: #{options}"
+
       @client = ::OpenNebula::Client.new("#{options['username']}:#{options['password']}", options['endpoints']['opennebula'])
       @data = options['monitoring_keys']
     end
@@ -64,24 +66,6 @@ module AutoScaling
       data
     end
 
-    def save_container(container_id, disk_id, image_name)
-      vm = ::OpenNebula::VirtualMachine.new(VirtualMachine.build_xml(container_id), @client)
-      data = vm.save_as(disk_id, image_name)
-
-      raise(RuntimeError, data.message) if OpenNebula.is_error?(data)
-      @@logger.debug "Saved container: #{container_id} as #{image_name}, id: #{data}"
-      data
-    end
-
-    def shutdown_container(container_id)
-      vm = ::OpenNebula::VirtualMachine.new(VirtualMachine.build_xml(container_id), @client)
-      data = vm.shutdown
-
-      raise(RuntimeError, data.message) if OpenNebula.is_error?(data)
-      @@logger.debug "Shutdown container: #{container_id}"
-      data
-    end
-
     def image_name(image_id)
       image = ::OpenNebula::Image.new(Image.build_xml(image_id), @client)
       image.info
@@ -90,16 +74,6 @@ module AutoScaling
       raise(RuntimeError, data.message) if OpenNebula.is_error?(data)
       data
     end
-
-    def delete_image(image_id)
-      image = ::OpenNebula::Image.new(Image.build_xml(image_id), @client)
-      image.delete
-
-      raise(RuntimeError, data.message) if OpenNebula.is_error?(data)
-      @@logger.debug "Deleted image: #{image_id}"
-      data
-    end
-
 
     private
     # Extra variables that needs to be added to handle base image initialization

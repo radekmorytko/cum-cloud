@@ -15,15 +15,13 @@ module AutoScaling
     "roles": [
         {
             "name": "master",
-            "vm_template": 6,
-            "appstage_id": 9,
+            "vm_template": 9,
             "cardinality": 1
         },
         {
             "name": "slave",
             "parents": ["master"],
-            "vm_template": 6,
-            "appstage_id": 20,
+            "vm_template": 20,
             "cardinality": 2
         }
     ]
@@ -37,14 +35,12 @@ eos
       }
 
       mappings = {
-        'onetemplate_id' => 6,
-
         # supported stacks
-        'appstage' => {
+        'stacks' => {
           'java' => {
             'master' => 9,
             'slave' => 20
-          }
+          },
         }
       }
 

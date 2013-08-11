@@ -3,7 +3,7 @@ scheduler:
   test:
     interval: '5s'
 
-  production:
+  development:
     interval: '1m'
 
 
@@ -18,13 +18,8 @@ mappings:
         master: 7
         slave:  7
 
-      bootstrap:
-        base:   7
-
-
-
 endpoints:
-  production:
+  development:
     opennebula:
       username: oneadmin
       password: password
