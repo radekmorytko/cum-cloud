@@ -69,7 +69,7 @@ module AutoScaling
       data = vm.save_as(disk_id, image_name)
 
       raise(RuntimeError, data.message) if OpenNebula.is_error?(data)
-      @@logger.debug "Saved container: #{container_id} as #{image_name}"
+      @@logger.debug "Saved container: #{container_id} as #{image_name}, id: #{data}"
       data
     end
 
@@ -90,6 +90,16 @@ module AutoScaling
       raise(RuntimeError, data.message) if OpenNebula.is_error?(data)
       data
     end
+
+    def delete_image(image_id)
+      image = ::OpenNebula::Image.new(Image.build_xml(image_id), @client)
+      image.delete
+
+      raise(RuntimeError, data.message) if OpenNebula.is_error?(data)
+      @@logger.debug "Deleted image: #{image_id}"
+      data
+    end
+
 
     private
     # Extra variables that needs to be added to handle base image initialization

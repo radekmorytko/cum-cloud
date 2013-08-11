@@ -77,9 +77,7 @@ eos
       @opennebula_client.appflow.delete_template template_id if template_id
     end
 
-    def test_shall_instantiate_container
-      service_id = 1
-
+    def test_shall_manage_container
       container_info = @opennebula_client.instantiate_container('bootstrap', 'base', 'bootstrap', MAPPINGS)
       assert_equal true, container_info[:id] >= 0
       assert_equal true, container_info[:ip] != ''
@@ -87,7 +85,14 @@ eos
       data = @opennebula_client.monitor_container(container_info[:id])
       assert_equal 2, data.size
 
+      image_id = @opennebula_client.save_container(container_info[:id], 0, 'my_new_image')
+
+      # sleep so the vm will be scheduler and we can shutdown it to perform vm save
+      sleep 30
+      @opennebula_client.shutdown_container(container_info[:id])
+
       @opennebula_client.delete_container container_info[:id]
+      @opennebula_client.delete_image(image_id)
     end
 
     def test_shall_show_image
@@ -108,10 +113,6 @@ eos
 
       id = @opennebula_client.create_stack(definition)
       @opennebula_client.appstage.send(:delete_template, id)
-    end
-
-    def test_shall_save_container
-
     end
 
   end

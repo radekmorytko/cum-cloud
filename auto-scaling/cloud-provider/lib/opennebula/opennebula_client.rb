@@ -61,8 +61,8 @@ module AutoScaling
       @frontend.monitor(container_id)
     end
 
-    def save_container(container_id)
-      @frontend.save_container(container_id)
+    def save_container(container_id, disk_id, image_name)
+      @frontend.save_container(container_id, disk_id, image_name)
     end
 
     def shutdown_container(container_id)
@@ -71,6 +71,10 @@ module AutoScaling
 
     def image_name(image_id)
       @frontend.image_name(image_id)
+    end
+
+    def delete_image(image_id)
+      @frontend.delete_image(image_id)
     end
 
     def render(service, bindings)
