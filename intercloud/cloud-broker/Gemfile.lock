@@ -1,6 +1,14 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    amq-client (1.0.2)
+      amq-protocol (>= 1.2.0)
+      eventmachine
+    amq-protocol (1.6.0)
+    amqp (1.0.2)
+      amq-client (~> 1.0.2)
+      amq-protocol (>= 1.3.0)
+      eventmachine
     backports (3.3.3)
     coderay (1.0.9)
     diff-lcs (1.2.4)
@@ -65,6 +73,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  amqp
   guard-rspec
   json
   rack-test

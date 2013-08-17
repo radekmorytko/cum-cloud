@@ -1,17 +1,14 @@
-require 'rubygems'
-require 'bundler/setup'
-
 module Intercloud
   class CloudBroker
 
     def initialize(options = {})
-      @database  = options[:database]
-      @publisher = options[:publisher]
+      @database      = options[:db]
+      @message_queue = options[:message_queue]
     end
 
     def deploy(service_spec, client_endpoint)
       id = save_deploy_request(service_spec, client_endpoint)
-      @publisher.publish(id, service_spec)
+      @message_queue << {:id => id, :service_spec => service_spec}.to_json
       id
     end
 
