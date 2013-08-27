@@ -1,7 +1,7 @@
 SRC_DIR=src
 LOG_DIR=logs
 CHAPTERS_SUBDIR=chapters
-PDFLATEX_ENV=TEXINPUTS=$$TEXINPUTS:classes:assets:$(SRC_DIR)
+PDFLATEX_ENV=TEXINPUTS=$$TEXINPUTS:classes:assets:assets/figures:$(SRC_DIR)
 PDFLATEX_OPT=-output-directory $(LOG_DIR)
 
 create_log_dir: 

@@ -9,6 +9,7 @@ fi
 
 DIRECTORY=`echo "$1" | sed 's/\(.*\)\/\(.*\)$/\1/'` 
 BARE_FILE=`echo "$1" | sed 's/\(.*\)\/\(.*\)$/\2/'` 
+DESTINATION_DIR=../figures/$DIRECTORY
 CURRENT_DIR=`pwd`
 GNUPLOT_FILE=$BARE_FILE.gnu
 EPS_FILE=$BARE_FILE-inc.eps
@@ -41,4 +42,6 @@ pdflatex $TEX_FILE
 
 cleanup
 cd $CURRENT_DIR
+
+mv $1.pdf $DESTINATION_DIR
 
