@@ -203,7 +203,7 @@
 
 \DeclareOption{en}{
 \def\thesisheaders{
-\fancyfoot[L]{\small \@shortauthor\quad\textit{\@shorttitleEN}}
+\fancyfoot[L]{\small \@shortauthor}
 }
 }
 
