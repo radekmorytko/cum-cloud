@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 gem 'sinatra', :require => 'sinatra/base'
 gem 'json'
 gem 'redis'
+gem 'amqp'
 
 group :development do
   gem 'rspec'
