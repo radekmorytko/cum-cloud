@@ -1,9 +1,17 @@
 \chapter{Introduction}
 
-
-
 \section{Motivation}
+One of the keys factors that has driven transformation of computing industry in the last years is the perception of computing utilities as a ordinary property, which can be easily accessed and adjusted to a specific needs. That point of view resulted in profusion of different services, often collectively referred as a cloud computing. Similarly to services common to other markets, customers expect them to be accessible on demand and in easy manner, while paying only for the consumed goods. Furthermore, customers are interested in a particular service only when it is eligible to provide appropriate quality of service.
 
+Having that requirements in mind, it is crucial that system which provides services to user is able to auto-adapt itself to meet customer requirements. Due to the complexity of system under consideration, there are different levels where such adaptation is possible:
+\begin{itemize}
+	\item infrastructure
+	\item application platform
+	\item user application
+\end{itemize} 
+However, the fact that single service provider is constrained by his finite amount of resources poses a risk that it may not be able to serve customer all the time. Consequently, it is expected that adaptation at a service provider level is also possible, i.e. provider can offload some traffic to a different provider, as long as it satisfies a customer.
+
+While architectures that enables auto-adaptivity have a long history, none of them has been directly applied to a multi-layered problem that exists in a cloud computing environment. Especially, the research area at the last level of adaptivity, that sizes across different service providers, is new. Although, architecture known as InterCloud investigates problem of cooperation and negotiation at cloud level, it neither has been implemented nor presented in context of layered adaptive system.
 
 
 \section{Contributions}
@@ -23,4 +31,3 @@ We hope that the ideas contained in this work be beneficial to the OpenNebula ec
 \end{itemize}
 What is more, we believe that our successful attempt to implement a simplified variant of an InterCloud architecture will cause its gain in interest and popularity. And finally, the idea of representing each level of an autoscaling subsystem as an autonomic one can be thought-provoking for cloud computing scientists.
 \section{Thesis structure}
-
