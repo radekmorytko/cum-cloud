@@ -2,6 +2,7 @@ SRC_DIR=src
 LOG_DIR=logs
 CHAPTERS_SUBDIR=chapters
 PDFLATEX_ENV=TEXINPUTS=$$TEXINPUTS:classes:assets:assets/figures:$(SRC_DIR)
+BIBINPUTS_ENV=BIBINPUTS=$$BIBINPUTS:../$(SRC_DIR)
 PDFLATEX_OPT=-output-directory $(LOG_DIR)
 
 create_log_dir: 
@@ -16,7 +17,8 @@ $(LOG_DIR)/thesis.pdf: $(SRC_DIR)/thesis.tex
 	@echo -e 'Producing $<'
 	@tput sgr0 
 
-	$(PDFLATEX_ENV) pdflatex $(PDFLATEX_OPT) $< 
+	$(PDFLATEX_ENV) pdflatex $(PDFLATEX_OPT) $<
+	cd $(LOG_DIR) && $(BIBINPUTS_ENV) bibtex thesis.aux
 	@mv $@ .
 
 all: create_log_dir $(LOG_DIR)/thesis.pdf 
