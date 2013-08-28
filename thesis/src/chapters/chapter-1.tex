@@ -16,7 +16,9 @@ What is more, the fact that single service provider is constrained by his finite
 While autonomic computing has a long history, it has not been directly applied to a multi-layered problem that exists in a cloud computing environment. Especially, the research area at the last layer, which sizes across different service providers, is new. Although, architecture known as InterCloud investigates problem of cooperation and negotiation at cloud level, it neither has been implemented nor presented in context of autonomic system.
 
 \subsection{Business}
-The rapid growth of interest in cloud computing in recent years resulted in huge sums of money being invested in the field. Figure \ref{ch1:public-cloud-services-market-size} shows the size of the public cloud services market in 2012 and the forecast of its nearly two times growth in 2016. This data suggests that the subject is attractive for IT industry from the economic point of view. However, higher amounts of money spent on cloud services involves higher expectation of theirs quality.
+The rapid growth of interest in cloud computing in recent years resulted in huge sums of money being invested in the field. Figure \ref{ch1:public-cloud-services-market-size} shows the size of the public cloud services market in 2012 and the forecast of its nearly two times growth in 2016. This data suggests that the subject is attractive for IT industry from the economic point of view. However, higher amounts of money spent on cloud services involve higher expectations of theirs quality from customers. Although the most significant players in cloud computing have been in the field for quite a long time, it is still possible to outline some deficiencies their products have. Additionally, lack of common standards hinder cooperation among different cloud providers. For example it is nearly impossible to create an autoscaling cloud federation with Amazon Web Services (current leader in providing cloud services\footnote{Gartner: Magic Quadrant for Cloud Infrastructure as a Service (Aug 2013)}) and another provider. What is more, Amazon AWS users cannot use more lightweight virtualization methods, such as linux containers. Nevertheless, when compared to other companies especially in terms of autoscaling capabilities, Amazon really shines. OpenShift, RedHat PaaS solution, ensures application scaling but with very limited possibilities of customisation of the process -- the user can only choose if their application should scale and the whole algorithm is solely based on the number of concurrent requests to the application. Users of Heroku, another PaaS solution, have no automation tool that would control the number of instances (\emph{dynos} in Heroku nomenclature) their application is running on -- they can change it manually.
+
+The proposed solution in this dissertation tries to deal with the aforementioned providers problems by outlining an example architecture that enables seamless cooperation among cloud providers and provides auto-scaling capabilities.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -25,9 +27,6 @@ The rapid growth of interest in cloud computing in recent years resulted in huge
   \caption{Public Cloud Services Market Size, 2010-2016 (forecast). Source: \textit{Gartner, 08/2012}}
   \label{ch1:public-cloud-services-market-size}
 \end{figure}
-
-
-\textit{business potential - dobry hajs, wymagania do QoS, lista produktow i ze nie maja pierdolniecia}
 
 \section{Contributions}
 The main contributions of this dissertation are as follows:
