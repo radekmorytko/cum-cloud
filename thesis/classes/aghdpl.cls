@@ -198,12 +198,12 @@
 }
 
 \def\thesisheaders{
-\fancyfoot[L]{\small \@shortauthor\quad\textit{\@shorttitlePL}}
+
 }
 
 \DeclareOption{en}{
 \def\thesisheaders{
-\fancyfoot[L]{\small \@shortauthor}
+
 }
 }
 
@@ -213,9 +213,9 @@
 \renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ #1}{}}
 \renewcommand{\sectionmark}[1]{\markright{\thesection.\ #1}}
 \renewcommand{\headrulewidth}{0.5pt}
-\renewcommand{\footrulewidth}{0.5pt}
+\renewcommand{\footrulewidth}{0pt}
 \fancyhf{}
-\fancyhead{}
+\fancyfoot{}
 \fancyhead[L]{\slshape{\small \rightmark}}
 \fancyhead[R]{\bfseries \thepage}
 
