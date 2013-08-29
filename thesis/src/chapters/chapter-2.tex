@@ -27,28 +27,21 @@ It is commonly agreed that there are two main possible ways the resource can be 
 
 Having that said, common sense dictates that adding resources is only a part of the success - it should be accompanied by tuning application platform configuration. For example, adding supplementary CPUs without increasing thread pool size that handle requests make a little sense. Similarly, we have to increase heap size, in context of a Java application, to make a good use of extra memory. While importance of application tuning cannot be underestimated, its detailed analysis lies outside of the scope of this dissertation.
 
-What makes scaling application particularly interesting are the benefits offered by a cloud computing, especially the illusion of a virtually infinite computing infrastructure \cite{VaRoBu11}. Making use of virtualization technologies, which often underpins cloud computing platform, allows for resource manipulation in a dynamic, on-demand manner.
+What makes scaling application particularly interesting are the benefits offered by a cloud computing, especially the illusion of a virtually infinite computing infrastructure \cite{VaRoBu11}. Making use of virtualization technologies, which often underpins cloud computing platform, allows for resource manipulation in a dynamic, on-demand manner. Although, cloud computing offers additional scaling capabilities, it increases solution complexity since they operate in different layers: server, platform, network as stated in \cite{VaRoBu11}.
 
 With all that said, there is no silver bullet - not matter what underlying mechanism platform provider decides to use, the application developer is still responsible for creating an application with scaling in-mind. This statement has been already proven in 1967 by Amdahl law, which in short states that sequential component of parallel algorithms impacts efficiency for a sufficiently large number processors \cite{Am67}. In other words, adding supplementary resources to a poorly written application (i.e. having a lot of sequential or synchronized components) can be beneficial only to a certain degree.
 
-The rest of this chapter elaborates in details about horizontal and vertical scaling taking into account mechanisms used in Platform-as-a-Service solutions that are available on the market.
+The rest of this chapter elaborates in detail about server, platform and network scaling taking into account mechanisms used in Platform-as-a-Service solutions that are available on the market.
 
-\section{Horizontal scaling}
+\section{Server level}
 
-As it was outlined in a previous section, vital element of horizontal scaling is adding additional resources. In context of an application execution environment, node can be represented by an application server, database or other resources that affect application performance such as network interface \cite{VaRoBu11}. Dynamic capabilities of a cloud computing platform offer a couple of ways this can be done:
-\begin{itemize}
-	\item virtual machine replication
-	\item network slicing
-	\item database replication
-\end{itemize}
+\subsection{Horizontal scaling}
+As outlined in previous section, horizontal scaling is all about adding supplementary nodes to a system. As it is common to cloud computing, nodes are represented as virtual machines and this assumption is used in further discussion. As a consequence, adding server comes down to cloning new virtual machine from a template and possibly installing additional software or reconfiguring it later. While mechanism of creating new virtual machine from a template is offered literally in every IaaS platform currently available (OpenStack, OpenNebula, OpenStack, CloudStack or Eucalyptus to name a few) and is similar in manner, the underlying virtualization mechanism influences how fast provisioning is done. Table 1 describes in details different capabilities of commonly used virtualization technologies.
 
-jebnac mapowanie na warstwy clouda - infr, platform, app
+Provisioning new server is only a first step in scaling an application, it is required to configure some load balancing mechanism to make user of this additional node. 
 
-\subsection{Virtual machine replication}
+\subsection{Vertical scaling}
 
-\subsection{Network slicing}
+\section{Platform level}
 
-\subsection{Database replication}
-
-
-\section{Vertical scaling}
+\section{Network level}
