@@ -2,16 +2,35 @@
 
 \section{Introduction}
 
-The reason why this dissertation treats about scaling application is the fact that it is widely agreed measure for improving application performance, consequently increasing offered Quality-of-Service. Enriching system with capability to scale entails avoiding additional costs that are related to coping with excessive traffic. In some cases, these costs may be caused by not handling extra traffic at all or may involve aspects such as: increased response time, processing overhead, space, memory, or money \cite{Bo00}. 
+The reason why scaling application lies in our area of interest is the fact that it is widely accepted measure for improving application performance, consequently increasing offered Quality-of-Service. Enriching system with capability to scale entails avoiding additional costs that are related to coping with excessive traffic. In some cases, these costs may be caused by not handling extra traffic at all or may involve aspects such as: increased response time, processing overhead, space, memory, or money \cite{Bo00}. 
 
-While scalability is a widely used term, it still lacks a clear and concise definition. Over the time, there were a few attempts to define it, yet not all of them were claimed as successful \cite{Hi90} \cite{DuRoWi06}. Hence, it is necessary to clarify this term before going into further discussion. Instinctively, scalability is perceived as ability of a system to accommodate an increasing number of elements or objects to process. In particular, we can define different aspects of scalability \cite{Bo00}:
+While scalability is a widely used term, it still lacks a clear and concise definition. Over the time, there were a few attempts to define it, yet not all of them were claimed as successful \cite{Hi90} \cite{DuRoWi06}. Hence, it is necessary to clarify this term before going into further discussion. Instinctively, scalability is perceived as ability of a system to accommodate an increasing number of elements or objects to process. In particular, we can point out different types of scalability that are affected by increased number of requests: \cite{Bo00}:
 \begin{itemize}
-	\item Load scalability,
-	\item Space scalability,
-	\item Space-time scalability,
-	\item Structural scalability,
+	\item \textit{load scalability} - ability to work without delays and unproductive resource consumption at light, moderate, or heavy loads while making good use of available resources. Factors that may hinder load scalability include aspects such as: scheduling shared resource, self-expansion, inadequate exploitation of parallelism
+	\item \textit{space scalability} - memory requirements do not grow to intolerable levels as the number of items it supports increases
+	\item \textit{space-time scalability} - system continues to function gracefully as the number of objects it encompasses increases by orders of magnitude
+	\item \textit{structural scalability} - implementation or standards do not impede the growth of the number of objects it encompasses
+\end{itemize}
+Although, all of the aforementioned aspects are crucial for functioning of any healthy application, our work focuses only on the first type of scalability. The reasoning behind this statement is that while all of these scalability types lies in direct responsibility of an application developer, the load scalability can be additionally improved by adding additional resources to a system. This brings us to a question what kind of resources are used by an application or more appropriately to context of this dissertation: \textit{what kind of resources can we add to improve application performance?} Required resources varies from an application to an application. However, among the most common ones we can distinguish:
+\begin{itemize}
+	\item CPU
+	\item memory
+	\item storage
+	\item network bandwidth
 \end{itemize}
 
+It is commonly agreed that there are two main possible ways the resource can be added to a server:
+\begin{itemize}
+	\item \textit{horizontal scaling (scaling out)} - adding more nodes to a system, such as servers in context of distributed application
+	\item \textit{vertical scaling (scaling up)} - increasing capacity of a single node in a system, i.e. adding additional memory, CPU, storage, etc.
+\end{itemize}
 
-With all that said, there is no silver bullet - not matter what underlying mechanism provider decides to use, the application developer is still responsible for creating an application with scaling in-mind. The idea behind this statement has been already proven in 1967 by Amdahl law, which in short states that sequential component of parallel algorithms impacts efficiency for a sufficiently large number processors \cite{Am67}.
+Having that said, common sense dictates that adding resources is only a part of the success - it should be accompanied by tuning application platform configuration. For example, adding supplementary CPUs without increasing thread pools that handle request make a little sense. Similarly, we have to increase heap size, in context of a Java application, to make a good use of extra memory. While importance of application tuning cannot be underestimated, its detailed analysis lies outside of the scope of this dissertation.
 
+With all that said, there is no silver bullet - not matter what underlying mechanism platform provider decides to use, the application developer is still responsible for creating an application with scaling in-mind. This statement has been already proven in 1967 by Amdahl law, which in short states that sequential component of parallel algorithms impacts efficiency for a sufficiently large number processors \cite{Am67}. In other words, adding supplementary resources to a poorly written application (i.e. having a lot of sequential or synchronized components) can be beneficial only to a certain degree.
+
+The rest of this chapter elaborates in details about horizontal, vertical scaling and application tuning taking into account mechanisms used in Platform-as-a-Service solutions that are available on the market.
+
+\section{Horizontal scaling}
+
+\section{Vertical scaling}
