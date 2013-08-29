@@ -56,6 +56,11 @@
 
 %------------------------------------------------------------------------------
 
+\newcommand{\chapterintro}[1] {
+  \emph{#1}
+  \vspace*{0.5cm}
+}
+
 \def\displayauthors{
   {
     \setlength{\baselineskip}{1.5\baselineskip}
