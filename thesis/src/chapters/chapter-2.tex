@@ -60,20 +60,26 @@ LXC &  &  \\
 
 Provisioning new server is only a first step in scaling an application, it is required to configure load balancing mechanism to make use of additional node. Two important aspects that has to be consider are: load-balancing algorithms and scalability.
 
+
 \subsubsection{Load-balancing algorithms}
-Generally, there are two types of load-balancers: hardware and software based. Due to the dynamic nature of system under consideration, we focus only on the latter as it offers a greater deal of flexibility. Among the most common algorithms we can distinguish:
+Generally, there are two types of load-balancers: hardware and software based. Due to the dynamic nature of system under consideration, we focus only on the latter as it offers a greater deal of flexibility. Among the most common algorithms we can distinguish \cite{HaProxyDoc}:
 \begin{itemize}
- \item \textit{round-robin scheduling} - 
- \item \textit{least connection} - 
- \item \textit{source routing} - 
- \item \textit{URI hashing} - 
+ \item \textit{round-robin scheduling} - request are sent to sucessive nodes, according to their weights. This algorithm is fairest when the server's processing time remains equally distributed \cite{HaProxyDoc}
+ \item \textit{least connection} - the server with the lowest number of connections receives the connection
+ \item \textit{source routing} - source IP address is hashed, the same client IP address always reaches the same server
+ \item \textit{URI hashing} - URI that designates resource is hashed and divided by the total weight of the running servers. Such hash designates which server that receives the request. In practice, this algorithm is commonly used with proxy caches and anti-virus proxies in order to maximize the cache hit rate.
 \end{itemize}
 
-Situation gets further complicated when considering real-world web application that sends user information using cookies, what imposes requirement on load-balancer for session stickiness \cite{StBaMa11}. Below are presented one of the most common load-balancers, including their key performance features.
+Situation gets further complicated when considering real-world web application that sends user information using cookies, what imposes requirement on load-balancer for session stickiness \cite{StBaMa11}. 
+
+\subsubsection{Load-balancing scalability}
+Although, it may seem that balancing workloads eliminates problem of a single point of failure (SPOF) among different servers, it is in fact shifted to load-balancing layer. In other words, load-balancer becomes a new SPOF. Therefore, in cases where high availability is required, multi-tiered load balancing architecture should be considered. This, however, seems not to be a case among IaaS or PaaS providers - none of them unequivocally specifies whether their provide redundancy at load-balancer level.
+
+Below are presented one of the most common load-balancers, including their key performance features.
 
 \subsubsection*{HAProxy}
 
-HAProxy \cite{HAProxy} is a load-balancer developed by. Noticeably, it's used by OpenShift \cite{OpenShift} to distribute load among gears (CITE NEEDED). Its key features include:
+HAProxy \cite{HAProxy} is a load-balancer developed by. Noticeably, it's used by OpenShift \cite{OpenShift} to distribute load among gears \cite{OpenShiftScaling}. Its key features include:
 \begin{itemize}
 	\item a single-process, event-driven model reduces the cost of context switch and the memory usage
 	\item O(1) event checker
@@ -84,21 +90,37 @@ HAProxy \cite{HAProxy} is a load-balancer developed by. Noticeably, it's used by
 
 Requests are dispatched accordingly to chosen algorithm:
 \begin{itemize}
- \item \textit{round-robin scheduling}
- \item \textit{least connection}
- \item \textit{source routing}
- \item \textit{URI hashing}
+  \item \textit{round-robin scheduling}
+  \item \textit{least connection}
+  \item \textit{source routing}
+  \item \textit{URI hashing}
 \end{itemize}
 
-\subsubsection*{Apache HTTP with modproxy}
+\subsubsection*{BIG-IP Local Traffic Manager (LTM)}
+BIG-IP Local Traffic Manager is a solution offered by F5 \cite{F5}. Although LTM is a hardware solution, omitted in this section, it also has its virtualized counterpart. Key features offered by LTM are \cite{LTM}:
+\begin{itemize}
+  \item managing at application services level rather than at individual devices and objects
+  \item scripting language that allows administrator to intercept, inspect, transform, and direct application traffic
+  \item built-in firewall protection, application security, and access control
+  \item real-time protocol and traffic management decisions
+\end{itemize}
 
-\subsubsection*{Apache HTTP with mod_jk}
+\subsubsection*{Apache HTTPD}
+Apache HTTPD \cite{ApacheHTTPD} is a popular HTTP server. When enhanced with additional modules, it can behave as a proxy or load-balancer. Over the time, there were serveral attempts to develop such modules: mod\_jk \cite{ApacheModJk}, mod\_proxy\_balancer \cite{ApacheModProxyBalancer}, to name a few. While the former is AJP13 oriented, the latter supports different protocols: HTTP, FTP and AJP13, hence, it is described here.
 
-\subsubsection{Load-balancing scalability}
-Although, it may seem that balancing workloads eliminates problem of a single point of failure (SPOF) among different servers, it is in fact shifted to load-balancing layer. In other words, load-balancer becomes a new SPOF. Therefore, in cases where high availability is required, multi-tiered load balancing architecture should be considered. This, however, seems not to be a case among IaaS or PaaS providers - none of them unequivocally specifies whether their provide redundancy at load-balancer level \textbf{TODO check :)}
+Among the mod\_proxy\_balancer features we may distinguish:
+\begin{itemize}
+ \item support for different load-balancing algorithms:
+    \begin{itemize}
+      \item Request Counting Algorithm - load is distributed the requests among the various workers, ensuring that each gets their configured share of the number of requests
+      \item Weighted Traffic Counting Algorithm - variation of above-mentioned algorithm with a difference that it is focused on bytes rather than number of request
+      \item Pending Request Counting Algorithm - scheduler keeps track of how many requests each worker is assigned at present. A new request is automatically assigned to the worker with the lowest number of active requests
+    \end{itemize}
+
+ \item support for session stickiness by using cookies and URL encoding. This approach \cite{ApacheModProxyBalancer} avoids unequal load distribution if clients are hidden behind proxies and stickyness errors when a client uses a dynamic IP address that changes during a session
+\end{itemize}
 
 \subsection{Vertical scaling}
-
 Essentially, vertical scaling is concentrated upon increasing capacity of single node. Again, when considering technical advancements that comes with cloud computing and virtualization, we can differ two categories of scaling: virtual machine resizing and virtual machines replacement. This distinction is dictated by limitation hypervisors - not all of them are able to resize virtual machine without shutting it down, in that case provisioning new one is a necessity.
 
 \subsubsection*{Virtual machine resizing}
