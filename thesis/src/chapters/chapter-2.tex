@@ -38,7 +38,7 @@ The rest of this chapter elaborates in detail about server, platform and network
 \section{Server level}
 
 \subsection{Horizontal scaling}
-As outlined in previous section, horizontal scaling is all about adding supplementary nodes to a system. As it is common to cloud computing, nodes are represented as virtual machines and this assumption is used in further discussion. As a consequence, adding server comes down to cloning new virtual machine from a template and possibly installing additional software or reconfiguring it later. While mechanism of creating new virtual machine from a template is offered literally in every IaaS platform currently available (OpenStack \cite{OpenStack}, OpenNebula \cite{OpenNebula}, CloudStack \cite{CloudStack} or Eucalyptus \cite{Eucalyptus} to name a few) and is similar in manner, the underlying virtualization mechanism influences how fast provisioning is done. Table \ref{tab:hypervisors-provisioning} describes in details different capabilities of commonly used virtualization technologies.
+As outlined in previous section, horizontal scaling is all about adding supplementary nodes to a system. As it is common to cloud computing, nodes are represented as virtual machines and this assumption is used in further discussion. As a consequence, adding server comes down to cloning new virtual machine from a template and possibly installing additional software or reconfiguring it later. While mechanism of creating new virtual machine from a template is offered literally in every IaaS platform currently available (OpenStack \cite{OpenStack}, OpenNebula \cite{OpenNebula}, CloudStack \cite{CloudStack} or Eucalyptus \cite{Eucalyptus} to name a few) and is similar in manner, the underlying virtualization mechanism determines how fast provisioning is done. Table \ref{tab:hypervisors-provisioning} describes in details different capabilities of commonly used virtualization technologies.
 
 \begin{table}[!htbp]
 \begin{tabularx}{\textwidth}{l | X | X}
@@ -60,31 +60,41 @@ LXC &  &  \\
 
 Provisioning new server is only a first step in scaling an application, it is required to configure load balancing mechanism to make use of additional node. Two important aspects that has to be consider are: load-balancing algorithms and scalability.
 
-\subsubsection*{Load-balancing algorithms}
+\subsubsection{Load-balancing algorithms}
 Generally, there are two types of load-balancers: hardware and software based. Due to the dynamic nature of system under consideration, we focus only on the latter as it offers a greater deal of flexibility. Among the most common algorithms we can distinguish:
 \begin{itemize}
- \item \textit{round-robin scheduling} -
- \item \textit{first in first out} -
- \item \textit{shortest remaining time} -
+ \item \textit{round-robin scheduling} - 
+ \item \textit{least connection} - 
+ \item \textit{source routing} - 
+ \item \textit{URI hashing} - 
 \end{itemize}
 
-Situation gets further complicated when considering real-world web application that sends user information using cookies, what imposes requirement on load-balancer for session stickiness \cite{StBaMa11}. Table \ref{tab:load-balancers} summaries available load-balancing mechanism including their utilization in IaaS products.
+Situation gets further complicated when considering real-world web application that sends user information using cookies, what imposes requirement on load-balancer for session stickiness \cite{StBaMa11}. Below are presented one of the most common load-balancers, including their key performance features.
 
-\begin{table}[!htbp]
-\begin{tabularx}{\textwidth}{l | X | X}
- &  & \\
-\hline 
-HAProxy &  & \\
-\hline
-Apache modproxy &  & \\
-\hline
-... &  & \\
-\end{tabularx}
-\caption{Comparision of load balancers}
-\label{tab:load-balancers}
-\end{table}
+\subsubsection*{HAProxy}
 
-\subsubsection*{Load-balancing scalability}
+HAProxy \cite{HAProxy} is a load-balancer developed by. Noticeably, it's used by OpenShift \cite{OpenShift} to distribute load among gears (CITE NEEDED). Its key features include:
+\begin{itemize}
+	\item a single-process, event-driven model reduces the cost of context switch and the memory usage
+	\item O(1) event checker
+	\item Single-buffering without copying data between reads and writes
+	\item Zero-copy forwarding
+	\item Optimized HTTP header analysis : headers are parsed an interpreted on the fly
+\end{itemize}
+
+Requests are dispatched accordingly to chosen algorithm:
+\begin{itemize}
+ \item \textit{round-robin scheduling}
+ \item \textit{least connection}
+ \item \textit{source routing}
+ \item \textit{URI hashing}
+\end{itemize}
+
+\subsubsection*{Apache HTTP with modproxy}
+
+\subsubsection*{Apache HTTP with mod_jk}
+
+\subsubsection{Load-balancing scalability}
 Although, it may seem that balancing workloads eliminates problem of a single point of failure (SPOF) among different servers, it is in fact shifted to load-balancing layer. In other words, load-balancer becomes a new SPOF. Therefore, in cases where high availability is required, multi-tiered load balancing architecture should be considered. This, however, seems not to be a case among IaaS or PaaS providers - none of them unequivocally specifies whether their provide redundancy at load-balancer level \textbf{TODO check :)}
 
 \subsection{Vertical scaling}
