@@ -4,16 +4,16 @@
 
 \section{Introduction}
 
-The reason why scaling application lies in our area of interest is the fact that it is widely accepted measure for improving application performance, consequently increasing offered Quality-of-Service. Enriching system with capability to scale entails avoiding additional costs that are related to coping with excessive traffic. In some cases, these costs may be caused by not handling extra traffic at all or may involve aspects such as: increased response time, processing overhead, space, memory, or money \cite{Bo00}. 
+The reason why scaling application lies in our area of interest is the fact that it is widely accepted measure for improving application performance, consequently increasing offered Quality-of-Service. Enriching system with capability to scale entails avoiding additional costs that are related to coping with excessive traffic. In some cases, these costs may be caused by not handling extra traffic at all and may involve aspects such as: increased response time, processing overhead, space, memory, or money \cite{Bo00}. 
 
 While scalability is a widely used term, it still lacks a clear and concise definition. Over the time, there were a few attempts to define it, yet not all of them were claimed as successful \cite{Hi90} \cite{DuRoWi06}. Hence, it is necessary to clarify this term before going into further discussion. Instinctively, scalability is perceived as ability of a system to accommodate an increasing number of elements or objects to process. In particular, we can point out different types of scalability that are affected by increased number of requests: \cite{Bo00}:
 \begin{itemize}
-	\item \textit{load scalability} - ability to work without delays and unproductive resource consumption at light, moderate, or heavy loads while making good use of available resources. Factors that may hinder load scalability include aspects such as: scheduling shared resource, self-expansion, inadequate exploitation of parallelism
-	\item \textit{space scalability} - memory requirements do not grow to intolerable levels as the number of items it supports increases
+	\item \textit{load scalability} - ability to work without delays and unproductive resource consumption at light, moderate, or heavy loads while making good use of available resources. Factors that may hinder load scalability include: scheduling shared resource, self-expansion, inadequate exploitation of parallelism
+	\item \textit{space scalability} - memory requirements do not grow to intolerable levels as the number of items system supports increases
 	\item \textit{space-time scalability} - system continues to function gracefully as the number of objects it encompasses increases by orders of magnitude
-	\item \textit{structural scalability} - implementation or standards do not impede the growth of the number of objects it encompasses
+	\item \textit{structural scalability} - implementation or standards do not impede the growth of the number of objects system encompasses
 \end{itemize}
-Although, all of the aforementioned aspects are crucial for functioning of any healthy application, our work focuses only on the first type of scalability. The reasoning behind this statement is that while all of these scalability types lies in direct responsibility of an application developer, the load scalability can be additionally improved by adding additional resources to a system. This brings us to a question what kind of resources are used by an application or more appropriately to context of this dissertation: \textit{what kind of resources can we add to improve application performance?} Required resources varies from an application to an application. However, among the most common ones we can distinguish:
+Although, all of the aforementioned aspects are crucial for functioning of any healthy application, our work focuses only on the first type of scalability. The reasoning behind this statement is that, while all of these scalability types lies in direct responsibility of an application developer, the load scalability can be additionally improved by adding additional resources to a system. This brings us to a question what kind of resources are used by an application or more appropriately to context of this dissertation: \textit{what kind of resources can we add to improve application performance?} Required resources varies from an application to an application. However, among the most common ones we can distinguish:
 \begin{itemize}
 	\item CPU
 	\item memory
@@ -27,41 +27,22 @@ It is commonly agreed that there are two main possible ways the resource can be 
 	\item \textit{vertical scaling (scaling up)} - increasing capacity of a single node in a system, i.e. adding additional memory, CPU, storage, etc.
 \end{itemize}
 
-Having that said, common sense dictates that adding resources is only a part of the success - it should be accompanied by tuning application platform configuration. For example, adding supplementary CPUs without increasing thread pool size that handle requests make a little sense. Similarly, we have to increase heap size, in context of a Java application, to make a good use of extra memory. While importance of application tuning cannot be underestimated, its detailed analysis lies outside of the scope of this dissertation.
+Having that said, common sense dictates that adding resources is only a part of the success - it should be accompanied by tuning application platform configuration. For example, adding supplementary CPUs without increasing thread pool size that handle requests makes a little sense. Similarly, in context of a Java application, we have to increase heap size, , to make a good use of extra memory. While importance of application tuning cannot be underestimated, its detailed analysis lies outside of the scope of this dissertation.
 
-What makes scaling application particularly interesting are the benefits offered by a cloud computing, especially the illusion of a virtually infinite computing infrastructure \cite{VaRoBu11}. Making use of virtualization technologies, which often underpins cloud computing platform, allows for resource manipulation in a dynamic, on-demand manner. Although, cloud computing offers additional scaling capabilities, it increases solution complexity since they operate in different layers: server, platform, network as stated in \cite{VaRoBu11}.
+What makes scaling application particularly interesting are the benefits offered by a cloud computing, especially the illusion of a virtually infinite computing infrastructure \cite{VaRoBu11}. Making use of virtualization technologies, which often underpins cloud computing platform, allows for resource manipulation in a dynamic, on-demand manner. Although, cloud computing offers additional scaling capabilities, it increases solution complexity since they operate in different layers: server, platform, network as stated in \cite{VaRoBu11}. However, since platform containers are often represented either as virtual machines or another isolated environment (e.g. OpenShift leverages SELinux and cgroups) they are similar in nature to server scaling and supports both scaling up and out.
+
+<mapping layer => actions>
 
 With all that said, there is no silver bullet - not matter what underlying mechanism platform provider decides to use, the application developer is still responsible for creating an application with scaling in-mind. This statement has been already proven in 1967 by Amdahl law, which in short states that sequential component of parallel algorithms impacts efficiency for a sufficiently large number processors \cite{Am67}. In other words, adding supplementary resources to a poorly written application (i.e. having a lot of sequential or synchronized components) can be beneficial only to a certain degree.
 
-The rest of this chapter elaborates in detail about server, platform and network scaling taking into account mechanisms used in Platform-as-a-Service solutions that are available on the market.
+The rest of this chapter elaborates in detail about horizontal and vertical scaling taking into account mechanisms used in Platform-as-a-Service solutions that are available on the market.
 
-\section{Server level}
+\section{Horizontal scaling}
+As outlined in previous section, horizontal scaling is about adding supplementary nodes to a system. As it is common to cloud computing, nodes are represented as virtual machines and this assumption is used in further discussion. Consequently, adding server comes down to cloning a new virtual machine from a template and possibly installing additional software and reconfiguring it later. While mechanism of creating new virtual machine from a template is offered literally in every IaaS platform currently available (OpenStack \cite{OpenStack}, OpenNebula \cite{OpenNebula}, CloudStack \cite{CloudStack} or Eucalyptus \cite{Eucalyptus} to name a few) and is similar in manner, the underlying hardware and virtualization mechanism determines how fast provisioning is done. 
 
-\subsection{Horizontal scaling}
-As outlined in previous section, horizontal scaling is all about adding supplementary nodes to a system. As it is common to cloud computing, nodes are represented as virtual machines and this assumption is used in further discussion. As a consequence, adding server comes down to cloning new virtual machine from a template and possibly installing additional software or reconfiguring it later. While mechanism of creating new virtual machine from a template is offered literally in every IaaS platform currently available (OpenStack \cite{OpenStack}, OpenNebula \cite{OpenNebula}, CloudStack \cite{CloudStack} or Eucalyptus \cite{Eucalyptus} to name a few) and is similar in manner, the underlying virtualization mechanism determines how fast provisioning is done. Table \ref{tab:hypervisors-provisioning} describes in details different capabilities of commonly used virtualization technologies.
+Provisioning new server is only a first step in scaling an application, it is required to configure load balancing mechanism to make use of additional node. The two important aspects that have to be consider are: load-balancing algorithms and scalability.
 
-\begin{table}[!htbp]
-\begin{tabularx}{\textwidth}{l | X | X}
- &  & \\
-\hline 
-KVM &  & \\
-\hline
-Xen &  & \\
-\hline
-VMware &  & \\
-\hline
-OpenVZ &  & \\
-\hline
-LXC &  &  \\
-\end{tabularx}
-\caption{Comparison of hypervisors provisioning capabilities}
-\label{tab:hypervisors-provisioning}
-\end{table}
-
-Provisioning new server is only a first step in scaling an application, it is required to configure load balancing mechanism to make use of additional node. Two important aspects that has to be consider are: load-balancing algorithms and scalability.
-
-
-\subsubsection{Load-balancing algorithms}
+\subsection{Load-balancing algorithms}
 Generally, there are two types of load-balancers: hardware and software based. Due to the dynamic nature of system under consideration, we focus only on the latter as it offers a greater deal of flexibility. Among the most common algorithms we can distinguish \cite{HaProxyDoc}:
 \begin{itemize}
  \item \textit{round-robin scheduling} - request are sent to sucessive nodes, according to their weights. This algorithm is fairest when the server's processing time remains equally distributed \cite{HaProxyDoc}
@@ -72,14 +53,11 @@ Generally, there are two types of load-balancers: hardware and software based. D
 
 Situation gets further complicated when considering real-world web application that sends user information using cookies, what imposes requirement on load-balancer for session stickiness \cite{StBaMa11}. 
 
-\subsubsection{Load-balancing scalability}
-Although, it may seem that balancing workloads eliminates problem of a single point of failure (SPOF) among different servers, it is in fact shifted to load-balancing layer. In other words, load-balancer becomes a new SPOF. Therefore, in cases where high availability is required, multi-tiered load balancing architecture should be considered. This, however, seems not to be a case among IaaS or PaaS providers - none of them unequivocally specifies whether their provide redundancy at load-balancer level.
-
 Below are presented one of the most common load-balancers, including their key performance features.
 
 \subsubsection*{HAProxy}
 
-HAProxy \cite{HAProxy} is a load-balancer developed by. Noticeably, it's used by OpenShift \cite{OpenShift} to distribute load among gears \cite{OpenShiftScaling}. Its key features include:
+HAProxy \cite{HAProxy} is a load-balancer initially written by Willy Tarreau. Noticeably, it's used by OpenShift \cite{OpenShift} to distribute load among gears \cite{OpenShiftScaling}. Its key features include:
 \begin{itemize}
 	\item a single-process, event-driven model reduces the cost of context switch and the memory usage
 	\item O(1) event checker
@@ -120,33 +98,57 @@ Among the mod\_proxy\_balancer features we may distinguish:
  \item support for session stickiness by using cookies and URL encoding. This approach \cite{ApacheModProxyBalancer} avoids unequal load distribution if clients are hidden behind proxies and stickyness errors when a client uses a dynamic IP address that changes during a session
 \end{itemize}
 
-\subsection{Vertical scaling}
-Essentially, vertical scaling is concentrated upon increasing capacity of single node. Again, when considering technical advancements that comes with cloud computing and virtualization, we can differ two categories of scaling: virtual machine resizing and virtual machines replacement. This distinction is dictated by limitation hypervisors - not all of them are able to resize virtual machine without shutting it down, in that case provisioning new one is a necessity.
+\subsection{Load-balancing scalability}
+Although, it may seem that balancing workloads eliminates problem of a single point of failure (SPOF) among different servers, it is in fact shifted to load-balancing layer. In other words, load-balancer becomes a new SPOF. Therefore, in cases where high availability is required, multi-tiered load balancing architecture should be considered. This, however, seems not to be a case among IaaS or PaaS providers - none of them unequivocally specifies whether their provide redundancy at load-balancer level.
 
-\subsubsection*{Virtual machine resizing}
+\section{Vertical scaling}
+Essentially, vertical scaling is concentrated upon increasing capacity of single node. Again, when considering technical advancements that comes with cloud computing and virtualization, we can differ two categories of scaling: virtual machine resizing and virtual machines replacement. This distinction is dictated by limitation hypervisors - not all of them are able to resize virtual machine without shutting it down.
 
+\subsection*{Virtual machine resizing}
 
 
 \begin{table}[!htbp]
-\begin{tabularx}{\textwidth}{l | X | X}
- &  & \\
+\begin{tabularx}{\textwidth}{| l | X | X | X |}
+\hline
+ & \textbf{Memory} & \textbf{CPU} & \textbf{Disk} \\
 \hline 
-KVM &  & \\
-\hline
-Xen &  & \\
-\hline
-VMware &  & \\
-\hline
-OpenVZ &  & \\
-\hline
-LXC &  &  \\
+KVM &
+-  & 
+dynamic pinning CPU to a specific virtual machine (depending on underlying hardware)
+& 
+adding a disk to a LVM group
+
+\\ \hline
+Xen & 
+- changing the amount of host physical memory assigned to virtual machine without rebooting it
+
+- start additional virtual machines on a host whose physical memory is currently full, by automatically reducing the memory allocations of existing virtual machines in order to make space
+&
+dynamic pinning CPU to a specific virtual machine (depending on underlying hardware)
+&
+dynamic block attaching, adding a disk to a LVM group
+
+\\ \hline
+VMware ESX &
+hot-plugging memory, ex. using VMware vSphere
+&
+hot-plugging CPU, ex. using VMware vSphere
+&
+adding additional disks to existing virtual machine
+
+\\ \hline
+OpenVZ &
+configurable via user beancounters
+&
+configurable via user beancounters 
+& 
+configurable via user beancounters
+\\ \hline
 \end{tabularx}
 \caption{Comparision of hypervisors resizing capabilities}
 \label{tab:hypervisors-resizing}
 \end{table}
 
-\subsubsection*{Virtual machine replacement}
 
-\section{Platform level}
-
-\section{Network level}
+\subsection*{Virtual machine replacement}
+As it was highlighted in previous section, reasoning behind virtual machine replacement is that, in case when dynamic resizing is not possible, a new virtual machine with a desired configuration can be provisioned and replace the old one. Since this is a basic operation, all above-mentioned hypervisors supports this scenario as long as required resources are available. 
