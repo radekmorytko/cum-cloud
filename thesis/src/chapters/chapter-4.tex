@@ -45,6 +45,24 @@ The other survey, conducted by Rackspace \cite{RackspaceSurvey13}, provides more
 \end{figure}
 
 \section{Federation of clouds -- InterCloud}
+As stated in the previous sections, one of the major obstacles that prevents consumers from adopting cloud solutions is reliability. It appears that these statements are not only imaginary worries of entrepreneurs, but real problems -- there are cases, where some providers temporarily run short of capacity (e.g. because of provisioning too many virtual machines) in the face of hight demand \cite{Lavitt09}. What is more, the more demanding clients require specific QoS to be satisfied by their providers as negotiated in Service Level Agreements.
+In order to meet these challenges there is a need of a completely new approach to the problem of effective management of resources. The new solution should take into account such factors as:
+
+\begin{itemize}
+  \item users' requests priority
+  \item users' QoS requirements (e.g. the deadline by which some jobs have to be executed)
+  \item price that the clients pay for the usage of resources
+\end{itemize}
+
+Computer scientists in the field of cloud computing devised a model \cite{MarketOrientedCC08} in which resources are managed in a market-oriented fashion that enables dynamic regulation of the supply and demand of resources and promotes the mechanisms for their allocation that would take into account their priorities and levels of utilization.
+The extension of this model is a vision of creating the federated cloud computing environment, so called \emph{InterCloud}, that ``facilitates just-in-time, opportunistic, and scalable provisioning of application services, consistently achieving QoS targets under variable workload, resource and network conditions'' \cite{InterCloud10}.
+The elements of the proposed architecture are as follows:
+\begin{itemize}
+  \item Cloud Exchange -- acts as a market maker for bringing together both producers and consumers of services. It allows Cloud Brokers and Cloud Coordinators to match consumers with the fitting offers from providers. Such a market is a step forward towards creating a dynamic infrastructure for trading based on Service Level Agreements.
+  \item Cloud Coordinator -- manages the instance of a cloud and its membership in the overall federation; provides an environment (programming, deployment) for applications
+  \item Cloud Broker -- acts on behalf of the client; communicates with the Cloud Exchange to find the best cloud instances for the application
+\end{itemize}
 
 \subsection{Usage in industry}
+The depicted model has not yet been adopted in the industry, yet some simulations were carried out on a \emph{CloudSim} platform and the obtained results showed that this concept has ``immense potential'' \cite{InterCloud10}.
 
