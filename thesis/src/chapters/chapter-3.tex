@@ -1,2 +1,12 @@
 \chapter{Platform adaptivity}
 
+\chapterintro{This chapter introduces concepts and mechanisms that enhance a platform with adaptivity capabilities, which are often achieved by fusion of rules, policies and scaling techniques.}
+
+\section{Introduction}
+In short, platform adaptivity adds a auto-scaling features to a solution offered by Platform-as-a-Service provider. Key concept is to have a Elasticity Controller which gathers probes from virtual machines and uses that knowledge to execute appropriate action on Cloud instance, indirectly modifying consecutive probes \cite{VaRoBu11}. This concept illustrates diagram (IMAGE).
+
+\section{Policies}
+While auto-scaling is offered by a vast amount of cloud providers (e.g AWS, OpenShift, OpenNebula) it often lack a sophisticated mechanisms allowing for specific scaling policies, limited to only one predefined rule as it is in case of OpenShift for example. 
+
+In a environment consisting of hundred nodes, provisioned and shut down in a dynamic manner, automatization 
+

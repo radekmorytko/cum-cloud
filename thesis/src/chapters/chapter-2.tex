@@ -31,9 +31,15 @@ Having that said, common sense dictates that adding resources is only a part of 
 
 What makes scaling application particularly interesting are the benefits offered by a cloud computing, especially the illusion of a virtually infinite computing infrastructure \cite{VaRoBu11}. Making use of virtualization technologies, which often underpins cloud computing platform, allows for resource manipulation in a dynamic, on-demand manner. Although, cloud computing offers additional scaling capabilities, it increases solution complexity since they operate in different layers: server, platform, network as stated in \cite{VaRoBu11}. However, since platform containers are often represented either as virtual machines or another isolated environment (e.g. OpenShift leverages SELinux and cgroups) they are similar in nature to server scaling and supports both scaling up and out.
 
-<mapping layer => actions>
+With all that said, there is no silver bullet - not matter what underlying mechanism platform provider decides to use, the application developer is still responsible for creating an application with scaling in-mind. This statement has been already proven in 1967 by Amdahl law, which in short states that sequential component of parallel algorithms impacts efficiency for a sufficiently large number processors \cite{Am67} as shown in \ref{ch2:amdahl-lawl}. In other words, adding supplementary resources to a poorly written application (i.e. having a lot of sequential or synchronized components) can be beneficial only to a certain degree.
 
-With all that said, there is no silver bullet - not matter what underlying mechanism platform provider decides to use, the application developer is still responsible for creating an application with scaling in-mind. This statement has been already proven in 1967 by Amdahl law, which in short states that sequential component of parallel algorithms impacts efficiency for a sufficiently large number processors \cite{Am67}. In other words, adding supplementary resources to a poorly written application (i.e. having a lot of sequential or synchronized components) can be beneficial only to a certain degree.
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-2/amdahl-law}
+  \end{center}
+  \caption{Amdahl's law}
+  \label{ch2:amdahl-law}
+\end{figure}
 
 The rest of this chapter elaborates in detail about horizontal and vertical scaling taking into account mechanisms used in Platform-as-a-Service solutions that are available on the market.
 
@@ -90,9 +96,9 @@ Among the mod\_proxy\_balancer features we may distinguish:
 \begin{itemize}
  \item support for different load-balancing algorithms:
     \begin{itemize}
-      \item Request Counting Algorithm - load is distributed the requests among the various workers, ensuring that each gets their configured share of the number of requests
-      \item Weighted Traffic Counting Algorithm - variation of above-mentioned algorithm with a difference that it is focused on bytes rather than number of request
-      \item Pending Request Counting Algorithm - scheduler keeps track of how many requests each worker is assigned at present. A new request is automatically assigned to the worker with the lowest number of active requests
+      \item \textit{request counting algorithm} - load is distributed the requests among the various workers, ensuring that each gets their configured share of the number of requests
+      \item \textit{weighted traffic counting algorithm} - variation of above-mentioned algorithm with a difference that it is focused on bytes rather than number of request
+      \item \textit{pending request counting algorithm} - scheduler keeps track of how many requests each worker is assigned at present. A new request is automatically assigned to the worker with the lowest number of active requests
     \end{itemize}
 
  \item support for session stickiness by using cookies and URL encoding. This approach \cite{ApacheModProxyBalancer} avoids unequal load distribution if clients are hidden behind proxies and stickyness errors when a client uses a dynamic IP address that changes during a session
