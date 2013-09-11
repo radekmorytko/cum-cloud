@@ -1,7 +1,6 @@
 SRC_DIR=src
 LOG_DIR=logs
-CHAPTERS_SUBDIR=chapters
-PDFLATEX_ENV=TEXINPUTS=$$TEXINPUTS:classes:assets:assets/figures:assets/drawings:$(SRC_DIR)
+PDFLATEX_ENV=TEXINPUTS=$$TEXINPUTS:classes:assets:assets/figures:assets/drawings:listings/appendices:$(SRC_DIR)
 BIBINPUTS_ENV=BIBINPUTS=$$BIBINPUTS:../$(SRC_DIR)
 PDFLATEX_OPT=-output-directory $(LOG_DIR)
 
@@ -13,7 +12,8 @@ create_log_dir:
 		tput setaf 2; \
 	 	echo 'Creating logs dir ($(LOG_DIR))'; \
 		tput sgr0; \
-		mkdir -p $(LOG_DIR)/$(CHAPTERS_SUBDIR); fi
+		mkdir -p $(LOG_DIR)/appendices; \
+		mkdir -p $(LOG_DIR)/chapters; fi
 
 thesis:
 	@tput setaf 2 
