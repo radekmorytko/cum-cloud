@@ -1,6 +1,6 @@
 SRC_DIR=src
 LOG_DIR=logs
-PDFLATEX_ENV=TEXINPUTS=$$TEXINPUTS:classes:assets:assets/figures:assets/drawings:listings/appendices:$(SRC_DIR)
+PDFLATEX_ENV=TEXINPUTS=$$TEXINPUTS:classes:assets:assets/figures:assets/drawings:assets/listings:$(SRC_DIR)
 BIBINPUTS_ENV=BIBINPUTS=$$BIBINPUTS:../$(SRC_DIR)
 PDFLATEX_OPT=-output-directory $(LOG_DIR)
 
