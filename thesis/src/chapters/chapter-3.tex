@@ -26,6 +26,18 @@ Having policies defined, their conditions are evaluated against data aquired fro
   \item \textit{integer programming} - autoscaling is reduced to server interger programming problems, which aims to minimize the cost or maximize the computing power with either computing power constraints or
 budget constraints \cite{MaLiHu10}
   \item \textit{prediction error correction} - \cite{ShSuGuWi11}
+  \item \textit{linearized dynamic control} - linearized correction model is based on control equations \cite{AbShBh02}:
+  
+    \begin{equation}
+      x(k+1)=Ax(k)+Bu(k)
+    \end{equation}
+    
+    \begin{equation}
+       y(k) = C x(k) + D u(k) + E z(k)
+    \end{equation}
+    where x denotes the state variable vector and coefficient matrices: A B C D E are fitted to historical data as a regression model - \cite{DiLuFrHePa03}
+
+  \item \textit{markov decision process model} - computes optimal reaction to state changes by using obsercation on the system with assumptions about the rate of changes expected in the future \cite{AbWo02}
 \end{itemize}
 
 \section{Triggered actions}
