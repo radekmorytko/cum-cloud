@@ -158,3 +158,43 @@ configurable via user beancounters
 
 \subsection*{Virtual machine replacement}
 As it was highlighted in previous section, reasoning behind virtual machine replacement is that, in case when dynamic resizing is not possible, a new virtual machine with a desired configuration can be provisioned and replace the old one. Since this is a basic operation, all above-mentioned hypervisors supports this scenario as long as required resources are available. 
+
+\section{Providers comparision}
+
+Table \ref{tab:cloud-providers-scaling} presents a summary of cloud provider scaling capabilites. Interestingly, all of them are focused solely on horizontal scaling, ignoring advantages offered by a fine-grained approach to scaling that leverage scaling up and application tuning.
+
+\begin{table}[!htbp]
+\begin{tabularx}{\textwidth}[]{ X  c  c  c }
+\specialrule{.1em}{.05em}{.05em} 
+
+  & \textbf{Horizontal scaling} & \textbf{Vertical scaling} & \textbf{Application / resource tuning} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+\multicolumn{4}{ l }{\textbf{Infrastructure provider}} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+Carina & \checkmark & $\times$ & $\times$ \\ \hline
+
+OneFlow & \checkmark & $\times$ & $\times$ \\ \hline
+
+AWS EC2 & \checkmark & $\times$ & $\times$ \\ \hline
+
+\multicolumn{4}{ l }{\textbf{Platform provider}} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+CloudFoundry & $\times$ & $\times$ & $\times$ \\ \hline
+
+OpenShift & \checkmark & $\times$ & $\times$ \\ \hline
+
+AppEngine & \checkmark & $\times$ & $\times$ \\ \hline
+
+Azure & \checkmark & $\times$ & $\times$ \\ \hline
+
+Heroku & \checkmark & $\times$ & $\times$ \\ \hline
+\end{tabularx}
+
+\caption{Comparision of cloud providers scaling capabilites}
+\label{tab:cloud-providers-scaling}
+
+\end{table}
+
