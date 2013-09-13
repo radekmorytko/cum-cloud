@@ -14,11 +14,11 @@ While auto-scaling is offered by a vast amount of cloud providers (e.g AWS, Open
  
 Policy denotes a condition which, when satisfied, triggers an action that is supposed to harness cloud instance in a way that future evaluations of condition will be unsuccessful. Typically condition itself is accompanied by a minimal and maximal number of node instances, allowing for ensuring minimal QoS and controlling maximal costs. Currently, industry leaders supports two main kind of policies \cite{AmazonAutoScaling}:
 \begin{itemize}
- \item \textit{expression based} - allows to define how you to scale application in response to changing conditions, which can include factors such as memory, cpu usage, cost or some indirect, calulated metrics
- \item \textit{scheduled} - allows you to scale your application in response to predictable load changes. For example, traffic increases during the weekends and decreases on working days. Hence, we may use that predictable traffic patterns to scale application based on current time.
+ \item \textit{expression based} - allows to define how you to scale application in response to changing conditions, which include factors such as memory, CPU usage, cost or some indirect, calculated metrics
+ \item \textit{scheduled} - allows to scale an application in response to predictable load changes. For example, traffic increases during the weekends and decreases on working days. Hence, that predictable traffic patterns is used to scale application based on current time.
 \end{itemize}
 
-Technically, policies are expressed in some human-readable format such as JSON, XML as it is in case of AWS EC2 or custom expression used for example by Carina. Appendinx \ref{app:scaling-policies} presents example configuration used by AWS E2 Auto-Scaling.
+Technically, policies are expressed in some human-readable format such as JSON, XML as it is in case of AWS EC2 or custom expression used for example by Carina. Appendix \ref{app:scaling-policies} presents example configuration used by AWS E2 Auto-Scaling.
 
 \section{Data analysis}
 Having policies defined, their conditions are evaluated against data acquired from sensors. In a simplest case this evaluation can be based on a Threshold Model \cite{LiWoZh05}, which defines a valid range. In cases when given metric violates that condition (i.e. value is either smaller than minimal or bigger than maximal acceptable) corresponding resource is properly adjusted. While trivial in its form, cases of AWS, OpenShift, Carina, OneCloud proves it is useful in a real-world scenarios. Having that said, more sophisticated algorithms also exists:
@@ -42,7 +42,7 @@ budget constraints \cite{MaLiHu10}
 \end{itemize}
 
 \section{Triggered actions}
-Actions that are being triggered by a elasticity controller are focused on application scaling. Problem of scaling an application is described in detail in previous chapter.
+Actions that are being triggered by a elasticity controller are focused on application scaling. Previous chapter described that problem in detail.
 
 \section{Providers comparison}
 
@@ -59,28 +59,35 @@ Table \ref{tab:cloud-providers-adaptivity} summaries chapter with approaches to 
 \specialrule{.1em}{.05em}{.05em} 
 
 Carina & 
-- time frame based
+-- time frame based
 
-- expression based (only for CPU)
+-- expression based (only for CPU)
 &
-- threshold model
+-- threshold model that takes into account minimal and maximal permitted instances of an application as well as application priority
 
 \\ \hline
 
-OneFlow & 
-- time frame based
+OneFlow 4.2 & 
+-- time frame based with customizable padding 
 
-- expression based
+-- expression based build on custom language, where all vm's metrics are supported
+
+-- customizable adjustment padding, cooldown time
 &
-- threshold model
+-- threshold model
+
 \\ \hline
 
 AWS EC2 & 
-- time frame based
+-- time frame based
 
-- expression based, (CloudWatch alarm)
+-- expression based, where expressions corresponds to a AutoScalingGroup
+
+-- actions are triggered by a CloudWatch alarms
+
+-- customizable adjustments paddings, types, cooldown time
 &
-- threshold model
+-- threshold model, takes into account minimal and maximal permitted instances of an application as well as application priority
 \\ \hline
 
 \multicolumn{3}{ l }{\textbf{Platform provider}} \\
@@ -89,8 +96,10 @@ AWS EC2 &
 CloudFoundry & $\times$ & $\times$ \\ \hline
 
 OpenShift & 
-$\times$ &
-single built-in threshold model 
+- single built-in policy
+
+ &
+- single built-in threshold model that scales an application when CPU load is greater than 50\% for a given period
 \\ \hline
 
 AppEngine & ? & ? \\ \hline
