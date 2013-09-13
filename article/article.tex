@@ -74,14 +74,18 @@ Cloud computing, a relatively new concept which denotes offering computing utili
 There are a few noticeable things which can be considered innovative in the way the services are provided. Firstly, clients of such services have no knowledge of the physical location of resources they use. Secondly, they are under illusions of infinite resources that are available. What is more, they pay providers only when they really use their services -- this means they do not need to invest heavily in building and maintaining hardware infrastructure. Last but not least, in order to ease dynamic resource management and manipulation, cloud providers use various virtualization technologies which operate on different levels, e.g. server, network or storage.
 
 \subsection{Service Models}
-Cloud computing classified the delivered services to three categories: Infrastructure as a Service (IaaS), Platform as a Service (PaaS) and Software as a Service (SaaS). They provide the consumer with infrastructure, deployment platform (application ecosystem) and software respectively. The just defined terms are commonly referred to in Cloud community as \emph{service models}.
+Cloud computing classified the delivered services to three categories: Infrastructure as a Service (IaaS), Platform as a Service (PaaS) and Software as a Service (SaaS). They provide the consumer with infrastructure, deployment platform (application ecosystem) and software respectively. The just defined terms are commonly referred to in the Cloud community as \emph{service models}.
 
-\subsection{Deployment models and cloud federation}
+\subsection{Cloud federation -- InterCloud}
+However hard cloud providers would try to fulfill even the most demanding requirements from their clients, it is virtually impossible that resources of one of them would be satisfactory for all users -- firstly, because their resources are finite; secondly, there are providers which specialize in providing services to only one, specific types of clients and which raised the quality of their resources to such a level that other cloud computing companies cannot compete with.
+In particular, the last factor creates a need for a solution that would take into account different QoS expectations from the clients and map them onto the best resources offered by cloud providers. As it is impossible to predict the geographic distribution of consumers, the load coordination should be executed automatically and resources utilization should change in dependence of current load.
+
+Such a model has been devised and named \emph{InterCloud}. In this solution resources are managed in a market-oriented fashion that enables dynamic regulation of the supply and demand of resources and promotes the mechanisms for their allocation that would take into account their priorities and levels of utilization.
 
 \subsection{Application scaling}
 
 
-\section{Cloud providers -- comparison}
+\section{Who is Who in cloud provisioning}
 
 \begin{table*}[!ht]
   \renewcommand{\arraystretch}{2}
