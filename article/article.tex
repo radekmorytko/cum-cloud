@@ -58,7 +58,7 @@
 \maketitle
 
 \begin{abstract}
-In order to retain the lead among its competitors, a software company needs to create a distributed system which is spanned across different geographical locations, vulnerable to sudden variations in demand and has remarkable QoS requirements. Following current trends it chooses Cloud as a deployment platform. Unfortunately, existing cloud providers do not have tools and mechanisms that would enable dynamic load distribution among different data centers to meet aforementioned requirements.
+In order to retain the lead among its competitors, a software company needs to create a distributed system which is spanned across different geographical locations, vulnerable to sudden variations in demand and has remarkable Quality-of-Service requirements. Following current trends it chooses Cloud as a deployment platform. Unfortunately, existing cloud providers do not have tools and mechanisms that would enable dynamic load distribution among different data centers to meet aforementioned requirements.
 In this article we want to outline the architecture of a self-adaptive platform (\emph{Cloud-SAP}) which facilitates scalable provisioning users' applications and fulfills QoS needs under variable conditions. Our solution can be considered a multi-layered environment for users' services as it applies the notion of an autonomic system to its every layer on a which auto scaling can be executed -- application, container, service and cloud. To ensure meeting QoS requirements at the cloud level we use the recent concept of a utility-oriented federation of cloud environments (InterCloud).
 We present and compare current cloud solutions with the emphasis on their scaling capabilities. Finally, we demonstrate our preliminary results of conducted evaluation studies on the CloudSim toolkit. 
 
@@ -83,6 +83,15 @@ In particular, the last factor creates a need for a solution that would take int
 Such a model has been devised and named \emph{InterCloud}. In this solution resources are managed in a market-oriented fashion that enables dynamic regulation of the supply and demand of resources and promotes the mechanisms for their allocation that would take into account their priorities and levels of utilization.
 
 \subsection{Application scaling}
+Scalability is a widely accepted measure for improving application performance, consequently increasing offered Quality-of-Service. Despite the lack of a clear definition, in this article we consider this term an ability to work without delays and unproductive resource consumption at light, moderate, or heavy loads while making good use of available resources (in some works it is referred to as \emph{load scalability}).
+
+Having clarified the term we use, the case of scalability can be reduced to a question: \emph{what kind of resources can we add, remove or change to improve application's performance.}
+
+
+Resources can be managed in two, common agreed-upon ways: \emph{vertical} and \emph{horizontal}. By \emph{vertical} we understand changing the number of nodes a system is comprised, such as servers in the context of distributed application. \emph{Horizontal}, on the other hand, means changing the capacity of a single node in a system, e.g. adding additional memory, CPU, storage, etc.
+
+\paragraph{Horizontal scaling (scaling out)} 
+\paragraph{Vertical scaling (scaling up)}  
 
 
 \section{Who is Who in cloud provisioning}
