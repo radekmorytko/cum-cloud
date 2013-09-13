@@ -52,7 +52,7 @@ Provisioning new server is only a first step in scaling an application, it is re
 \subsection{Load-balancing algorithms}
 Generally, there are two types of load-balancers: hardware and software based. Due to the dynamic nature of system under consideration, we focus only on the latter as it offers a greater deal of flexibility. Among the most common algorithms we can distinguish \cite{HaProxyDoc}:
 \begin{itemize}
- \item \textit{round-robin scheduling} - request are sent to sucessive nodes, according to their weights. This algorithm is fairest when the server's processing time remains equally distributed \cite{HaProxyDoc}
+ \item \textit{round-robin scheduling} - request are sent to successive nodes, according to their weights. This algorithm is fairest when the server's processing time remains equally distributed \cite{HaProxyDoc}
  \item \textit{least connection} - the server with the lowest number of connections receives the connection
  \item \textit{source routing} - source IP address is hashed, the same client IP address always reaches the same server
  \item \textit{URI hashing} - URI that designates resource is hashed and divided by the total weight of the running servers. Such hash designates which server that receives the request. In practice, this algorithm is commonly used with proxy caches and anti-virus proxies in order to maximize the cache hit rate.
@@ -72,10 +72,10 @@ While there are many load-balancers available on the market, following are credi
 \begin{itemize}
  \item \textbf{HAProxy} \cite{HAProxy} - load-balancer initially written by Willy Tarreau. Noticeably, it's used by OpenShift \cite{OpenShift} to distribute load among gears \cite{OpenShiftScaling}
  \item \textbf{BIG-IP Local Traffic Manager (LTM)} - solution offered by F5 \cite{F5}. Although LTM is a hardware solution, omitted in this section, it also has also its virtualized counterpart.
- \item \textbf{Apache HTTPD} \cite{ApacheHTTPD} - popular HTTP server. When enhanced with additional modules, it can behave like a proxy or load-balancer. Over the time, there were serveral attempts to develop such modules: mod\_jk \cite{ApacheModJk}, mod\_proxy\_balancer \cite{ApacheModProxyBalancer}, to name a few. While the former is purely AJP13 oriented, the latter supports different protocols: HTTP, FTP and AJP13. As a consequnce, only mod\_proxy\_balancer was taken into account during comparision.
+ \item \textbf{Apache HTTPD} \cite{ApacheHTTPD} - popular HTTP server. When enhanced with additional modules, it can behave like a proxy or load-balancer. Over the time, there were several attempts to develop such modules: mod\_jk \cite{ApacheModJk}, mod\_proxy\_balancer \cite{ApacheModProxyBalancer}, to name a few. While the former is purely AJP13 oriented, the latter supports different protocols: HTTP, FTP and AJP13. As a consequence, only mod\_proxy\_balancer was taken into account during comparision.
 \end{itemize}
 
-Table \ref{tab:load-balancer-comparision} presents they key performance features and algorithm used to schedule requests.
+Table \ref{tab:load-balancer-comparison} presents they key performance features and algorithm used to schedule requests.
 
 \begin{table}[!htbp]
 \begin{tabularx}{\textwidth}[]{ X  X  X }
@@ -129,8 +129,8 @@ Apache HTTPD &
 
 \end{tabularx}
 
-\caption{Comparision of load balancers}
-\label{tab:load-balancer-comparision}
+\caption{Comparison of load balancers}
+\label{tab:load-balancer-comparison}
 
 \end{table}
 
@@ -180,7 +180,7 @@ OpenVZ &
 -- configurable via user beancounters
 \\ \hline
 \end{tabularx}
-\caption{Comparision of hypervisors resizing capabilities}
+\caption{Comparison of hypervisors resizing capabilities}
 \label{tab:hypervisors-resizing}
 \end{table}
 
@@ -188,9 +188,9 @@ OpenVZ &
 \subsection{Virtual machine replacement}
 As it was highlighted in previous section, reasoning behind virtual machine replacement is that, in case when dynamic resizing is not possible, a new virtual machine with a desired configuration can be provisioned and replace the old one. Since this is a basic operation, all above-mentioned hypervisors supports this scenario as long as required resources are available. 
 
-\section{Providers comparision}
+\section{Providers comparison}
 
-Table \ref{tab:cloud-providers-scaling} presents a summary of cloud provider scaling capabilites. Interestingly, all of them are focused solely on horizontal scaling, ignoring advantages offered by a fine-grained approach to scaling that leverage scaling up and application tuning.
+Table \ref{tab:cloud-providers-scaling} presents a summary of cloud provider scaling capabilities. Interestingly, all of them are focused solely on horizontal scaling, ignoring advantages offered by a fine-grained approach to scaling that leverage scaling up and application tuning.
 
 \begin{table}[!htbp]
 \begin{tabularx}{\textwidth}[]{ X  X  X  X}
@@ -222,7 +222,7 @@ Azure & \checkmark & $\times$ & $\times$ \\ \hline
 Heroku & \checkmark & $\times$ & $\times$ \\ \hline
 \end{tabularx}
 
-\caption{Comparision of cloud providers scaling capabilites}
+\caption{Comparison of cloud providers scaling capabilities}
 \label{tab:cloud-providers-scaling}
 
 \end{table}
