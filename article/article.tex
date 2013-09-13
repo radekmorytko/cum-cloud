@@ -10,6 +10,10 @@
 %
 \usepackage{graphicx}
 \usepackage{amssymb}
+\usepackage{footnote}
+\usepackage{array}
+\newcolumntype{C}{>{\centering\arraybackslash}p{3.4cm}}
+\newcolumntype{L}{>{\arraybackslash}p{2.5cm}}
 
 %
 % \usepackage{mathptmx}      % use Times fonts if available on your TeX system
@@ -33,14 +37,14 @@
 %\titlerunning{Short form of title}        % if too long for running head
 \titlerunning{Cloud-SAP: Self-adaptive platform for scaling users' application in a federation of cloud computing environments}
 
-\author{Dariusz Chrząścik          \and
+\author{Dariusz M. Chrząścik          \and
         Radosław D. Morytko
 }
 
 %\authorrunning{Short form of author list} % if too long for running head
 
 \institute{
-  D. Chrząścik \\
+  D.M. Chrząścik \\
   Chief Technology Officer at Software Mind SA \\
   Enthusiast of gorgeous cars and fast women \\
   Amateur poet, screenwriter and novelist\at
@@ -85,18 +89,59 @@ Such a model has been devised and named \emph{InterCloud}. In this solution reso
 \subsection{Application scaling}
 Scalability is a widely accepted measure for improving application performance, consequently increasing offered Quality-of-Service. Despite the lack of a clear definition, in this article we consider this term an ability to work without delays and unproductive resource consumption at light, moderate, or heavy loads while making good use of available resources (in some works it is referred to as \emph{load scalability}).
 
-Having clarified the term we use, the case of scalability can be reduced to a question: \emph{what kind of resources can we add, remove or change to improve application's performance.}
+Having clarified the term we use, the case of scalability can be reduced to a question: \emph{what kind of resources can we add, remove or change to improve application's performance.} However, it should be stressed that the first step towards effective performance of an application should be its proper tuning and configuration. Otherwise, no matter what kind of and how much resources is added it will not influence the overall application's utilisation.
 
+Resources can be managed in two, common agreed-upon ways: \emph{vertical} and \emph{horizontal}. By \emph{vertical} we understand changing the number of nodes a system is comprised, such as servers in the context of a distributed application. \emph{Horizontal}, on the other hand, means changing the capacity of a single node in a system, e.g. adding additional memory, CPU, storage, etc.
 
-Resources can be managed in two, common agreed-upon ways: \emph{vertical} and \emph{horizontal}. By \emph{vertical} we understand changing the number of nodes a system is comprised, such as servers in the context of distributed application. \emph{Horizontal}, on the other hand, means changing the capacity of a single node in a system, e.g. adding additional memory, CPU, storage, etc.
+\paragraph{Horizontal scaling (scaling out)} As it was stated in the previous paragraph, horizontal scaling refers to managing the number of instances the application runs on. Since provisioning a raw or subtracting an existing virtual machine is a common process which is performed by a hypervisor, the much more interesting one is the configuration of a node that would enable its cooperation among existing ones, e.g. the added instance should be used as a load balancer of the user's service.
 
-\paragraph{Horizontal scaling (scaling out)} 
-\paragraph{Vertical scaling (scaling up)}  
+\paragraph{Vertical scaling (scaling up)} Vertical scaling concentrates on managing the capacity of a single node. Among the most common resources that can be changed in runtime of a machine are (a) CPU, (b) memory and (c) storage.
 
 
 \section{Who is Who in cloud provisioning}
 
-\begin{table*}[!ht]
+
+\begin{table*}[ht]
+  \renewcommand{\arraystretch}{2}
+  \begin{tabular}{p{2.5cm} | *{3}{C}}
+    \multicolumn{1}{c}{} & \textbf{Memory} & \textbf{CPU} & \textbf{Disk} \\ \hline
+
+   \textbf{KVM} & 
+   - &
+   dynamic pinning CPU to a specific VM \footnotemark[1] &
+   adding a disk to a LVM group 
+   \\ \hline
+
+   \textbf{Xen} &
+  - changing the amount of host physical memory assigned to virtual machine without rebooting it
+
+  - start additional virtual machines on a host whose physical memory is currently full, by automatically reducing the memory allocations of existing virtual machines in order to make space &
+  dynamic pinning CPU to a specific VM \footnotemark[1] &
+  dynamic block attaching, adding a disk to a LVM group
+  \\ \hline
+
+  \textbf{VMware ESX} &
+hot-plugging memory \footnotemark[2] & 
+hot-plugging CPU \footnotemark[2]  &
+adding additional disks to an existing VM
+\\ \hline
+
+\textbf{OpenVZ} & configurable via beancounters & configurable via beancounters & configurable via beancounters\\ \hline
+
+%OneFlow & \checkmark & $\times$ & $\times$ & \\ \hline
+
+%AWS EC2 & \checkmark & $\times$ & $\times$ & \\ \hline
+
+\end{tabular}
+
+\caption{Comparision of hypervisors' resizing capabilites}
+\label{tab:hypervisors-resizing}
+
+\end{table*}
+\footnotetext[1]{Depending on the underlying hardware}
+\footnotetext[2]{For example using VMware vSphere}
+
+\begin{table*}[ht]
   \renewcommand{\arraystretch}{2}
 \begin{tabular}{ l | c | c | c c }
   \hline 
