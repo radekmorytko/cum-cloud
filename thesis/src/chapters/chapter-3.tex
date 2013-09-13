@@ -25,8 +25,8 @@ Having policies defined, their conditions are evaluated against data acquired fr
 \begin{itemize}
   \item \textit{integer programming} - auto scaling is reduced to server integer programming problems, which aims to minimize the cost or maximize the computing power with either computing power constraints or
 budget constraints \cite{MaLiHu10}
-  \item \textit{burst based padding} -  \cite{ShSuGuWi11}
-  \item \textit{remedial padding} - \cite{ShSuGuWi11}
+  \item \textit{burst based padding} - employs a signal processing technique based on fast Fourier transform, burst pattern is extracted and used to calculate a padding value. Coefficients that represents the amplitude of each frequency component are used to calculate burst density. Depending of that value (i.e. is higher than 50\%) appropriate percentile of the burst values are used \cite{ShSuGuWi11}  
+  \item \textit{remedial padding} - padding errors are being recorded and used in successive padding evaluations. In other words, let $e_1, e_2, ... e_k$ denote the recent prediction errors, next the weighted moving average is calculated. Actual applied padding is either padding itself or weighted average, depending which one is greater \cite{ShSuGuWi11}    
   \item \textit{linearised dynamic control} - linearised correction model is based on control equations \cite{AbShBh02}:
   
     \begin{equation}
