@@ -13,7 +13,7 @@ While scalability is a widely used term, it still lacks a clear and concise defi
 	\item \textit{space-time scalability} - system continues to function gracefully as the number of objects it encompasses increases by orders of magnitude
 	\item \textit{structural scalability} - implementation or standards do not impede the growth of the number of objects system encompasses
 \end{itemize}
-Although, all of the aforementioned aspects are crucial for functioning of any healthy application, our work focuses only on the first type of scalability. The reasoning behind this statement is that, while all of these scalability types lies in direct responsibility of an application developer, the load scalability can be additionally improved by adding additional resources to a system. This brings us to a question what kind of resources are used by an application or more appropriately to context of this dissertation: \textit{what kind of resources can we add to improve application performance?} Required resources varies from an application to an application. However, among the most common ones we can distinguish:
+Although, all of the aforementioned aspects are vital for any application, our work focuses solely on the first type of scalability. The reasoning behind this statement is that, while all of these scalability types lies in direct responsibility of an application developer, the load scalability can be additionally improved by adding additional resources to a system. This brings us to a question what kind of resources are used by an application or more appropriately in context of this dissertation: \textit{what kind of resources can we add to improve application performance?} Required resources varies from an application to an application. However, among the most common ones we can distinguish:
 \begin{itemize}
 	\item CPU
 	\item memory
@@ -31,7 +31,7 @@ Having that said, common sense dictates that adding resources is only a part of 
 
 What makes scaling application particularly interesting are the benefits offered by a cloud computing, especially the illusion of a virtually infinite computing infrastructure \cite{VaRoBu11}. Making use of virtualization technologies, which often underpins cloud computing platform, allows for resource manipulation in a dynamic, on-demand manner. Although, cloud computing offers additional scaling capabilities, it increases solution complexity since they operate in different layers: server, platform, network as stated in \cite{VaRoBu11}. However, since platform containers are often represented either as virtual machines or another isolated environment (e.g. OpenShift leverages SELinux and cgroups) they are similar in nature to server scaling and supports both scaling up and out.
 
-With all that said, there is no silver bullet - not matter what underlying mechanism platform provider decides to use, the application developer is still responsible for creating an application with scaling in-mind. This statement has been already proven in 1967 by Amdahl law, which in short states that sequential component of parallel algorithms impacts efficiency for a sufficiently large number processors \cite{Am67} as shown in Figure \ref{ch2:amdahl-law}. In other words, adding supplementary resources to a poorly written application (i.e. having a lot of sequential or synchronized components) can be beneficial only to a certain degree.
+With all that said, there is no silver bullet - not matter what underlying mechanism platform provider decides to use, the application developer is still responsible for creating an application with scaling in-mind. This statement has been already proven in 1967 by Amdahl law, which in short states that sequential component of a parallel algorithm impacts efficiency for a sufficiently large number processors \cite{Am67} as shown in Figure \ref{ch2:amdahl-law}. In other words, adding supplementary resources to a poorly written application (i.e. having a lot of sequential or synchronized components) can be beneficial only to a certain degree.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -43,6 +43,7 @@ With all that said, there is no silver bullet - not matter what underlying mecha
 
 The rest of this chapter elaborates in detail about horizontal and vertical scaling taking into account mechanisms used in Platform-as-a-Service solutions that are available on the market.
 
+\newpage
 \section{Horizontal scaling}
 As outlined in previous section, horizontal scaling is about adding supplementary nodes to a system. As it is common to cloud computing, nodes are represented as virtual machines and this assumption is used in further discussion. Consequently, adding server comes down to cloning a new virtual machine from a template and possibly installing additional software and reconfiguring it later. While mechanism of creating new virtual machine from a template is offered literally in every IaaS platform currently available (OpenStack \cite{OpenStack}, OpenNebula \cite{OpenNebula}, CloudStack \cite{CloudStack} or Eucalyptus \cite{Eucalyptus} to name a few) and is similar in manner, the underlying hardware and virtualization mechanism determines how fast provisioning is done. 
 
@@ -55,100 +56,128 @@ Generally, there are two types of load-balancers: hardware and software based. D
  \item \textit{least connection} - the server with the lowest number of connections receives the connection
  \item \textit{source routing} - source IP address is hashed, the same client IP address always reaches the same server
  \item \textit{URI hashing} - URI that designates resource is hashed and divided by the total weight of the running servers. Such hash designates which server that receives the request. In practice, this algorithm is commonly used with proxy caches and anti-virus proxies in order to maximize the cache hit rate.
+ \item \textit{request counting algorithm} - load is distributed the requests among the various workers, ensuring that each gets their configured share of the number of requests
+ \item \textit{weighted traffic counting algorithm} - variation of above-mentioned algorithm with a difference that it is focused on bytes rather than number of request
+ \item \textit{pending request counting algorithm} - scheduler keeps track of how many requests each worker is assigned at present. A new request is automatically assigned to the worker with the lowest number of active requests
 \end{itemize}
 
 Situation gets further complicated when considering real-world web application that sends user information using cookies, what imposes requirement on load-balancer for session stickiness \cite{StBaMa11}. 
 
-Below are presented one of the most common load-balancers, including their key performance features.
-
-\subsubsection*{HAProxy}
-
-HAProxy \cite{HAProxy} is a load-balancer initially written by Willy Tarreau. Noticeably, it's used by OpenShift \cite{OpenShift} to distribute load among gears \cite{OpenShiftScaling}. Its key features include:
-\begin{itemize}
-	\item a single-process, event-driven model reduces the cost of context switch and the memory usage
-	\item O(1) event checker
-	\item Single-buffering without copying data between reads and writes
-	\item Zero-copy forwarding
-	\item Optimized HTTP header analysis : headers are parsed an interpreted on the fly
-\end{itemize}
-
-Requests are dispatched accordingly to chosen algorithm:
-\begin{itemize}
-  \item \textit{round-robin scheduling}
-  \item \textit{least connection}
-  \item \textit{source routing}
-  \item \textit{URI hashing}
-\end{itemize}
-
-\subsubsection*{BIG-IP Local Traffic Manager (LTM)}
-BIG-IP Local Traffic Manager is a solution offered by F5 \cite{F5}. Although LTM is a hardware solution, omitted in this section, it also has its virtualized counterpart. Key features offered by LTM are \cite{LTM}:
-\begin{itemize}
-  \item managing at application services level rather than at individual devices and objects
-  \item scripting language that allows administrator to intercept, inspect, transform, and direct application traffic
-  \item built-in firewall protection, application security, and access control
-  \item real-time protocol and traffic management decisions
-\end{itemize}
-
-\subsubsection*{Apache HTTPD}
-Apache HTTPD \cite{ApacheHTTPD} is a popular HTTP server. When enhanced with additional modules, it can behave as a proxy or load-balancer. Over the time, there were serveral attempts to develop such modules: mod\_jk \cite{ApacheModJk}, mod\_proxy\_balancer \cite{ApacheModProxyBalancer}, to name a few. While the former is AJP13 oriented, the latter supports different protocols: HTTP, FTP and AJP13, hence, it is described here.
-
-Among the mod\_proxy\_balancer features we may distinguish:
-\begin{itemize}
- \item support for different load-balancing algorithms:
-    \begin{itemize}
-      \item \textit{request counting algorithm} - load is distributed the requests among the various workers, ensuring that each gets their configured share of the number of requests
-      \item \textit{weighted traffic counting algorithm} - variation of above-mentioned algorithm with a difference that it is focused on bytes rather than number of request
-      \item \textit{pending request counting algorithm} - scheduler keeps track of how many requests each worker is assigned at present. A new request is automatically assigned to the worker with the lowest number of active requests
-    \end{itemize}
-
- \item support for session stickiness by using cookies and URL encoding. This approach \cite{ApacheModProxyBalancer} avoids unequal load distribution if clients are hidden behind proxies and stickyness errors when a client uses a dynamic IP address that changes during a session
-\end{itemize}
-
 \subsection{Load-balancing scalability}
 Although, it may seem that balancing workloads eliminates problem of a single point of failure (SPOF) among different servers, it is in fact shifted to load-balancing layer. In other words, load-balancer becomes a new SPOF. Therefore, in cases where high availability is required, multi-tiered load balancing architecture should be considered. This, however, seems not to be a case among IaaS or PaaS providers - none of them unequivocally specifies whether their provide redundancy at load-balancer level.
 
+\subsection{Load-balancer comparision}
+
+While there are many load-balancers available on the market, following are credited to be most popular:
+\begin{itemize}
+ \item \textbf{HAProxy} \cite{HAProxy} - load-balancer initially written by Willy Tarreau. Noticeably, it's used by OpenShift \cite{OpenShift} to distribute load among gears \cite{OpenShiftScaling}
+ \item \textbf{BIG-IP Local Traffic Manager (LTM)} - solution offered by F5 \cite{F5}. Although LTM is a hardware solution, omitted in this section, it also has also its virtualized counterpart.
+ \item \textbf{Apache HTTPD} \cite{ApacheHTTPD} - popular HTTP server. When enhanced with additional modules, it can behave like a proxy or load-balancer. Over the time, there were serveral attempts to develop such modules: mod\_jk \cite{ApacheModJk}, mod\_proxy\_balancer \cite{ApacheModProxyBalancer}, to name a few. While the former is purely AJP13 oriented, the latter supports different protocols: HTTP, FTP and AJP13. As a consequnce, only mod\_proxy\_balancer was taken into account during comparision.
+\end{itemize}
+
+Table \ref{tab:load-balancer-comparision} presents they key performance features and algorithm used to schedule requests.
+
+\begin{table}[!htbp]
+\begin{tabularx}{\textwidth}[]{ X  X  X }
+\specialrule{.1em}{.05em}{.05em} 
+
+  & \textbf{Performance features} & \textbf{Scheduling algorithms} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+HAProxy & 
+-- a single-process, event-driven model reduces the cost of context switch and the memory usage
+ 
+-- O(1) event checker
+ 
+-- single-buffering without copying data between reads and writes
+ 
+-- zero-copy forwarding
+ 
+-- optimized HTTP header analysis: headers are parsed an interpreted on the fly
+ 
+&
+-- round-robin scheduling
+
+-- least connection
+
+-- source routing
+
+-- URI hashing
+\\ \hline
+
+BIG-IP Local Traffic Manager &
+-- managing at application services level rather than at individual devices and objects
+
+-- scripting language that allows administrator to intercept, inspect, transform, and direct application traffic
+
+-- built-in firewall protection, application security, and access control
+
+-- real-time protocol and traffic management decisions
+& 
+
+\\ \hline
+
+Apache HTTPD & 
+-- support for session stickiness by using cookies and URL encoding. This approach \cite{ApacheModProxyBalancer} avoids unequal load distribution if clients are hidden behind proxies and stickyness errors when a client uses a dynamic IP address that changes during a session
+& 
+-- request counting algorithm
+
+-- weighted traffic counting algorithm
+
+-- pending request counting algorithm
+\\ \hline
+
+\end{tabularx}
+
+\caption{Comparision of load balancers}
+\label{tab:load-balancer-comparision}
+
+\end{table}
+
+\newpage
 \section{Vertical scaling}
 Essentially, vertical scaling is concentrated upon increasing capacity of single node. Again, when considering technical advancements that comes with cloud computing and virtualization, we can differ two categories of scaling: virtual machine resizing and virtual machines replacement. This distinction is dictated by limitation hypervisors - not all of them are able to resize virtual machine without shutting it down.
 
-\subsection*{Virtual machine resizing}
+\subsection{Virtual machine resizing}
 
 
 \begin{table}[!htbp]
-\begin{tabularx}{\textwidth}{| l | X | X | X |}
-\hline
+\begin{tabularx}{\textwidth}{ l  X  X  X }
+\specialrule{.1em}{.05em}{.05em} 
  & \textbf{Memory} & \textbf{CPU} & \textbf{Disk} \\
-\hline 
+\specialrule{.1em}{.05em}{.05em} 
+
 KVM &
--  & 
-dynamic pinning CPU to a specific virtual machine (depending on underlying hardware)
+  & 
+-- dynamic pinning CPU to a specific virtual machine (depending on underlying hardware)
 & 
-adding a disk to a LVM group
+-- adding a disk to a LVM group
 
 \\ \hline
 Xen & 
-- changing the amount of host physical memory assigned to virtual machine without rebooting it
+-- changing the amount of host physical memory assigned to virtual machine without rebooting it
 
-- start additional virtual machines on a host whose physical memory is currently full, by automatically reducing the memory allocations of existing virtual machines in order to make space
+-- start additional virtual machines on a host whose physical memory is currently full, by automatically reducing the memory allocations of existing virtual machines in order to make space
 &
-dynamic pinning CPU to a specific virtual machine (depending on underlying hardware)
+-- dynamic pinning CPU to a specific virtual machine (depending on underlying hardware)
 &
-dynamic block attaching, adding a disk to a LVM group
+-- dynamic block attaching, adding a disk to a LVM group
 
 \\ \hline
 VMware ESX &
-hot-plugging memory, ex. using VMware vSphere
+-- hot-plugging memory, ex. using VMware vSphere
 &
-hot-plugging CPU, ex. using VMware vSphere
+-- hot-plugging CPU, ex. using VMware vSphere
 &
-adding additional disks to existing virtual machine
+-- adding additional disks to existing virtual machine
 
 \\ \hline
 OpenVZ &
-configurable via user beancounters
+-- configurable via user beancounters
 &
-configurable via user beancounters 
+-- configurable via user beancounters 
 & 
-configurable via user beancounters
+-- configurable via user beancounters
 \\ \hline
 \end{tabularx}
 \caption{Comparision of hypervisors resizing capabilities}
@@ -156,7 +185,7 @@ configurable via user beancounters
 \end{table}
 
 
-\subsection*{Virtual machine replacement}
+\subsection{Virtual machine replacement}
 As it was highlighted in previous section, reasoning behind virtual machine replacement is that, in case when dynamic resizing is not possible, a new virtual machine with a desired configuration can be provisioned and replace the old one. Since this is a basic operation, all above-mentioned hypervisors supports this scenario as long as required resources are available. 
 
 \section{Providers comparision}
@@ -164,10 +193,10 @@ As it was highlighted in previous section, reasoning behind virtual machine repl
 Table \ref{tab:cloud-providers-scaling} presents a summary of cloud provider scaling capabilites. Interestingly, all of them are focused solely on horizontal scaling, ignoring advantages offered by a fine-grained approach to scaling that leverage scaling up and application tuning.
 
 \begin{table}[!htbp]
-\begin{tabularx}{\textwidth}[]{ X  c  c  c }
+\begin{tabularx}{\textwidth}[]{ X  X  X  X}
 \specialrule{.1em}{.05em}{.05em} 
 
-  & \textbf{Horizontal scaling} & \textbf{Vertical scaling} & \textbf{Application / resource tuning} \\
+  & \textbf{Horizontal scaling} & \textbf{Vertical scaling} & \textbf{Application tuning} \\
 \specialrule{.1em}{.05em}{.05em} 
 
 \multicolumn{4}{ l }{\textbf{Infrastructure provider}} \\

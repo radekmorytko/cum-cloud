@@ -45,3 +45,62 @@ Actions that are being triggered by a elasticity controller are focused on appli
 
 \section{Providers comparision}
 
+Table \ref{tab:cloud-providers-adaptivity} summaries chapter with approaches to adaptivity taken by different cloud providers. Section 'triggered action' is omited for brevity - it was described extensively in previous chapter.
+
+\begin{table}[!htbp]
+\begin{tabularx}{\textwidth}[]{ X  X X }
+\specialrule{.1em}{.05em}{.05em} 
+
+  & \textbf{Policies} & \textbf{Data analysis} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+\multicolumn{3}{ l }{\textbf{Infrastructure provider}} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+Carina & 
+- time frame based
+
+- expression based (only for CPU)
+&
+- threshold model
+
+\\ \hline
+
+OneFlow & 
+- time frame based
+
+- expression based
+&
+- threshold model
+\\ \hline
+
+AWS EC2 & 
+- time frame based
+
+- expression based, (CloudWatch alarm)
+&
+- threshold model
+\\ \hline
+
+\multicolumn{3}{ l }{\textbf{Platform provider}} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+CloudFoundry & $\times$ & $\times$ \\ \hline
+
+OpenShift & 
+$\times$ &
+single built-in threshold model 
+\\ \hline
+
+AppEngine & ? & ? \\ \hline
+
+Azure & ? & ? \\ \hline
+
+Heroku & ? & ? \\ \hline
+\end{tabularx}
+
+\caption{Comparision of cloud providers approach to adaptivity}
+\label{tab:cloud-providers-adaptivity}
+
+\end{table}
+
