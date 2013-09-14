@@ -27,7 +27,17 @@ Policy denotes a condition which, when satisfied, triggers an action that is sup
 Technically, policies are expressed in some human-readable format such as JSON, XML as it is in case of AWS EC2 or custom expression used for example by Carina. Appendix \ref{app:scaling-policies} presents example configuration used by AWS E2 Auto-Scaling.
 
 \section{Data analysis}
-Having policies defined, their conditions are evaluated against data acquired from sensors. In a simplest case this evaluation can be based on a Threshold Model \cite{LiWoZh05}, which defines a valid range. In cases when given metric violates that condition (i.e. value is either smaller than minimal or bigger than maximal acceptable) corresponding resource is properly adjusted. While trivial in its form, cases of AWS, OpenShift, Carina, OneCloud proves it is useful in a real-world scenarios. Having that said, more sophisticated algorithms also exists:
+Having policies defined, their conditions are evaluated against data acquired from sensors. In a simplest case this evaluation can be based on a Threshold Model \cite{LiWoZh05}, which defines a valid range. In cases when given metric violates that condition (i.e. value is either smaller than minimal or bigger than maximal acceptable) corresponding resource is properly adjusted - figure \ref{ch3:threshold-model} illustrates that idea.
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-3/threshold-model}
+  \end{center}
+  \caption{Threshold model}
+  \label{ch3:threshold-model}
+\end{figure}
+
+While trivial in its form, cases of AWS, OpenShift, Carina, OneCloud proves it is useful in a real-world scenarios. Having that said, more sophisticated algorithms also exists:
 \begin{itemize}
   \item \textit{integer programming} - auto scaling is reduced to server integer programming problems, which aims to minimize the cost or maximize the computing power with either computing power constraints or
 budget constraints \cite{MaLiHu10}
