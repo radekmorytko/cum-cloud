@@ -98,8 +98,8 @@ Resources can be managed in two, common agreed-upon ways: \emph{vertical} and \e
 \paragraph{Vertical scaling (scaling up)} Vertical scaling concentrates on managing the capacity of a single node. Among the most common resources that can be changed in runtime of a machine are (a) CPU, (b) memory and (c) storage.
 
 
-\section{Who is Who in cloud provisioning}
 
+\paragraph{Hypervisors} Being able to scale resources vertically requires hypervisors to have such possibilities. Table \ref{tab:hypervisors-resizing} presents resizing capabilities of common hypervisors.
 
 \begin{table*}[ht]
   \renewcommand{\arraystretch}{2}
@@ -141,6 +141,12 @@ adding additional disks to an existing VM
 \footnotetext[1]{Depending on the underlying hardware}
 \footnotetext[2]{For example using VMware vSphere}
 
+
+\section{Who is Who in cloud provisioning}
+In the context of this article, the main point of interest are providers which offer features related to resource management, monitoring and utilization. In general, current key providers include Amazon \emph{Web Services}, \emph{Microsoft Azure}, Google \emph{AppEngine} and \emph{Heroku}. Despite not all of them operate on the same level of abstraction, it is possible to compare them as they expose functionalities which can be classified as PaaS. For example, on top of its infrastructure services, Amazon has such products as \emph{Elastic Load Balancer}, \emph{Cloud Watch} and \emph{Auto Scaling} which, to some extent, matches our needs.
+
+Table \ref{tab:cloud-providers-scaling} presents comparison of some Cloud providers with the emphasis on their scaling capabilities. Interestingly, all of them are focused solely on horizontal scaling, ignoring advantages offered by a fine-grained approach to scaling that leverage scaling up and application tuning.
+
 \begin{table*}[ht]
   \renewcommand{\arraystretch}{2}
   \begin{tabular}{ p{4cm} | C | C | C }
@@ -173,6 +179,7 @@ Heroku & \checkmark & $\times$ & $\times$ \\ \hline
 
 \end{table*}
 
+\section{Adaptivity}
 \section{Architecture of SAP-Cloud}
 
 \section{Preliminary test results}
