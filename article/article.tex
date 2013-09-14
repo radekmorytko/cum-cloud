@@ -42,7 +42,6 @@
 }
 
 %\authorrunning{Short form of author list} % if too long for running head
-
 \institute{
   D.M. Chrząścik \\
   Chief Technology Officer at Software Mind SA \\
@@ -183,6 +182,61 @@ Heroku & \checkmark & $\times$ & $\times$ \\ \hline
 \section{Architecture of SAP-Cloud}
 
 \section{Preliminary test results}
+
+As the proposed platform has not been implemented yet, we decided to evaluate the proposed model using the \emph{CloudSim} framework.
+
+\paragraph{First test case} The aim of the first test scenario is to prove that the proposed system delivers better performance when compared to current, non market-oriented and self-adaptive solutions. Preconditions are that there are 3 cloud providers and one consumer who deployed their application and as a result of shortage of resources of the current provider, the application must be migrated to another one. This involves (a) creating a clone of the virtual machine at the other provider (b) provisioning VM with the technology stack which needs to be pre-installed to ensure that the application will run correctly (c) performing a migration -- installing the application and configuring it so that any it cooperates with the other parts, if any.
+
+There are 20 instances of the application. Each one is deployed on a separate instance of the VM in two scenarios: the one involving Cloud-SAP and the other without it.
+
+The results of the test are shown in table \ref{tab:test1-results} -- turn-around time for each instance of the application and the overall makespan for the service. Moreover, we added the row containing information of the collected revenue to stress the business aspect of the model.
+
+The test case shows that using of the proposed platform reduced the average turn-around time by more than 30 percent and total makespan by over 20 percent. This means a considerable improvement to the user's application performance.
+
+\begin{table*}[ht]
+  \renewcommand{\arraystretch}{2}
+  \begin{tabular}{ | C | C | C | C | }
+  \hline 
+  \textbf{Performance metrics} & \textbf{With Cloud-SAP} & {\textbf{Without Cloud-SAP}} & \textbf{Improvement} \\ \hline
+  
+  Average turn-around time (s) &
+  1671 &
+  2217 &
+  over 30\% \\ \hline
+
+  Makespan (s) &
+  5721 &
+  7038 &
+  over 20\% \\ \hline
+
+  Revenue from scaling capabilities (\$) &
+  (depends on the pricing) &
+  - &
+  proportional to the number of deployed nodes \\ \hline
+\end{tabular}
+\caption{Results of the first test case scenario}
+\label{tab:test1-results}
+\end{table*}
+
+\paragraph{Second test case}
+The second test case aims at drawing attention to the potential income earned by adopting the proposed platform. There are two scenarios: the first one involves the depicted solution, the other one not. In both of them, two clients want to use the same cloud resources of the one provider, but each of them has different QoS requirements and different budget -- client B can spend more money on the same service than the client A. Resources are limited -- the provider can provision as many as 18 virtual machines.
+
+The test scenario is as follows: in the beginning, client A and B have instantiated 10 and 3 virtual machines respectively. As the time goes by, there is a variation in load in customers' applications and to handle it additional resources need to be provided. In the scenario which does not assume usage of the Cloud-SAP, requests are not prioritized which results in generating lower income, what is shown in the figure \ref{fig:hor-scaling-no-prioritization}. In the second one is quite on the contrary -- as requests are not considered the same, the platform chooses the most profitable options for the provider (see figure \ref{fig:hor-scaling-with-prioritization}).
+
+This could raise a lot of question regarding handling the need of resources by the client A. It is worth noticing that because of the adoption of market-oriented federation, this request can be caught and processed by another provider. The main disadvantage in this case is the time burden.
+
+\begin{figure}
+  \includegraphics[width=0.47\textwidth]{figures/request-priority-revenue-1}
+\caption{Horizontal scaling without  requests' prioritization}
+\label{fig:hor-scaling-no-prioritization}       % Give a unique label
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=0.47\textwidth]{figures/request-priority-revenue-2}
+\caption{Horizontal scaling with requests' prioritization}
+\label{fig:hor-scaling-with-prioritization}       % Give a unique label
+\end{figure}
+
 
 \section{Summary and conclusion}
 
