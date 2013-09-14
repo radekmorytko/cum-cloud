@@ -112,15 +112,31 @@ AWS EC2 &
 CloudFoundry & $\times$ & $\times$ \\ \hline
 
 OpenShift & 
-- single built-in policy
+-- single built-in policy
 
  &
-- single built-in threshold model that scales an application when CPU load is greater than 50\% for a given period
+-- single built-in threshold model that scales an application when CPU load is greater than 50\% for a given period
 \\ \hline
 
-AppEngine & ? & ? \\ \hline
+AppEngine & 
 
-Azure & ? & ? \\ \hline
+-- built-in policy based on request queue length
+
+-- adjustable minimal, maximal number of application instances, pending latency
+
+ &
+-- queue-based, new instance is provisioned if queue length got too long 
+  \\ \hline
+
+Azure & 
+-- time frame based
+
+-- expression based, where expression can involve either CPU usage or Queue length
+
+-- customizable adjustments paddings, types, cooldown time
+&
+-- threshold model, that takes into account minimal and maximal allowed instances
+ \\ \hline
 
 Heroku & $\times$ & $\times$ \\ \hline
 \end{tabularx}
