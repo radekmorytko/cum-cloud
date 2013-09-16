@@ -180,6 +180,14 @@ Heroku & \checkmark & $\times$ & $\times$ \\ \hline
 \end{table*}
 
 \section{Adaptivity}
+Platform adaptivity adds auto-scaling features to a solution offered by a Platform-as-a-Service provider. The key concept is to have a Elasticity Controller which gathers probes from virtual machines and uses that knowledge to execute appropriate action on cloud instance, indirectly modifying consecutive probes \cite{VaRoBu11}.
+
+\paragraph{Policies} Policy denotes a condition which, when satisfied, triggers an action that is supposed to harness cloud instance in a way that future evaluations of condition will be unsuccessful. Typically condition itself is accompanied by a minimal and maximal number of node instances, allowing for ensuring minimal QoS and controlling maximal costs. Currently, industry leaders supports two main kind of policies: \emph{expression based} and \emph{scheduled}. \emph{Expression-based} policy allows to define how to scale the application in response to changing conditions, which include factors such as memory, CPU usage, cost or some indirect, calculated metrics, while \emph{expression-based} scale the service according to load changes; for example, traffic increases during the weekends and decreases on working days. Hence, that predictable traffic patterns is used to scale application based on current time.
+
+\paragraph{Data analysis}
+Once the policies are defined, their conditions are evaluated against data acquired from sensors. In the simplest case this evaluation can be based on a Threshold Model \cite{LiWoZh05}, which defines a valid range. In cases when given metric violates that condition (i.e. value is either smaller than minimal or bigger than maximal acceptable) corresponding resource is properly adjusted.
+
+
 \section{Architecture of SAP-Cloud}
 
 \section{Preliminary test results}
@@ -330,6 +338,12 @@ Our future work will concentrate on implementing the proposed solution and testi
   {Heroku}, {\url{https://www.heroku.com}}, last access: 16/09/2013 
 \bibitem{Azure}
   {Windows Azure}, {\url{www.windowsazure.com/}}, last access: 16/09/2013 
+\bibitem{VaRoBu11}
+  {Vaquero, L., Rodero-Merino, L. and Buyya, R.},{Dynamically Scaling Applications in the Cloud}, {ACM SIGCOMM Computer Communication Review}, vol.41, 2011
+\bibitem{LiWoZh05}
+ {Litoiu, M. and Woodside, M. and Zheng, T.}, {Hierarchical Model-based Autonomic Control of Software Systems}, {Design and evolution of autonomic application software}, 2005
+
+
 % Format for Journal Reference
 %Author, Article title, Journal, Volume, page numbers (year)
 % Format for books
