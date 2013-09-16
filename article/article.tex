@@ -11,6 +11,7 @@
 \usepackage{graphicx}
 \usepackage{amssymb}
 \usepackage{footnote}
+\usepackage{url}
 \usepackage{array}
 \newcolumntype{C}{>{\centering\arraybackslash}p{3.4cm}}
 \newcolumntype{L}{>{\arraybackslash}p{2.5cm}}
@@ -72,21 +73,21 @@ We present and compare current cloud solutions with the emphasis on their scalin
 
 \section{Introduction}
 \label{intro}
-Cloud computing, a relatively new concept which denotes offering computing utilities on demand in a pay-as-you-go manner like any other services available in today's society, has already started the process of transforming IT industry, making an impact on the way the software/hardware is produced and perceived. Because of its widespread presence in the IT community, this model makes computing resources more and more attractive for broader audience, especially in diverse branches of business, e.g. pharmaceutical or construction.
+Cloud computing, a relatively new concept which denotes offering computing utilities on demand in a pay-as-you-go manner like any other services available in today's society, has already started the process of transforming IT industry, making an impact on the way the software/hardware is produced and perceived. Because of its widespread presence in the IT community, this model makes computing resources more and more attractive for broader audience, especially in diverse branches of business, e.g. pharmaceutical or construction \cite{PharmaComputation}.
 
-There are a few noticeable things which can be considered innovative in the way the services are provided. Firstly, clients of such services have no knowledge of the physical location of resources they use. Secondly, they are under illusions of infinite resources that are available. What is more, they pay providers only when they really use their services -- this means they do not need to invest heavily in building and maintaining hardware infrastructure. Last but not least, in order to ease dynamic resource management and manipulation, cloud providers use various virtualization technologies which operate on different levels, e.g. server, network or storage.
+There are a few noticeable things which can be considered innovative in the way the services are provided. Firstly, clients of such services have no knowledge of the physical location of resources they use. Secondly, they are under illusions of infinite resources that are available \cite{ScalingInDaCloud}. What is more, they pay providers only when they really use their services -- this means they do not need to invest heavily in building and maintaining hardware infrastructure. Last but not least, in order to ease dynamic resource management and manipulation, cloud providers use various virtualization technologies which operate on different levels, e.g. server, network or storage.
 
 \subsection{Service Models}
-Cloud computing classified the delivered services to three categories: Infrastructure as a Service (IaaS), Platform as a Service (PaaS) and Software as a Service (SaaS). They provide the consumer with infrastructure, deployment platform (application ecosystem) and software respectively. The just defined terms are commonly referred to in the Cloud community as \emph{service models}.
+Cloud computing classified the delivered services to three categories: Infrastructure as a Service (IaaS), Platform as a Service (PaaS) and Software as a Service (SaaS). They provide the consumer with infrastructure, deployment platform (application ecosystem) and software respectively. The just defined terms are commonly referred to in the Cloud community as \emph{service models} \cite{NIST}.
 
 \subsection{Cloud federation -- InterCloud}
 However hard cloud providers would try to fulfill even the most demanding requirements from their clients, it is virtually impossible that resources of one of them would be satisfactory for all users -- firstly, because their resources are finite; secondly, there are providers which specialize in providing services to only one, specific types of clients and which raised the quality of their resources to such a level that other cloud computing companies cannot compete with.
 In particular, the last factor creates a need for a solution that would take into account different QoS expectations from the clients and map them onto the best resources offered by cloud providers. As it is impossible to predict the geographic distribution of consumers, the load coordination should be executed automatically and resources utilization should change in dependence of current load.
 
-Such a model has been devised and named \emph{InterCloud}. In this solution resources are managed in a market-oriented fashion that enables dynamic regulation of the supply and demand of resources and promotes the mechanisms for their allocation that would take into account their priorities and levels of utilization.
+Such a model has been devised and named \emph{InterCloud} \cite{InterCloud}. In this solution resources are managed in a market-oriented \cite{MarketOriented} fashion that enables dynamic regulation of the supply and demand of resources and promotes the mechanisms for their allocation that would take into account their priorities and levels of utilization.
 
 \subsection{Application scaling}
-Scalability is a widely accepted measure for improving application performance, consequently increasing offered Quality-of-Service. Despite the lack of a clear definition, in this article we consider this term an ability to work without delays and unproductive resource consumption at light, moderate, or heavy loads while making good use of available resources (in some works it is referred to as \emph{load scalability}).
+Scalability is a widely accepted measure for improving application performance, consequently increasing offered Quality-of-Service. Despite the lack of a clear definition, in this article we consider this term an ability to work without delays and unproductive resource consumption at light, moderate, or heavy loads while making good use of available resources \cite{ScalabilityTerm} (in some works it is referred to as \emph{load scalability}).
 
 Having clarified the term we use, the case of scalability can be reduced to a question: \emph{what kind of resources can we add, remove or change to improve application's performance.} However, it should be stressed that the first step towards effective performance of an application should be its proper tuning and configuration. Otherwise, no matter what kind of and how much resources is added it will not influence the overall application's utilisation.
 
@@ -142,7 +143,7 @@ adding additional disks to an existing VM
 
 
 \section{Who is Who in cloud provisioning}
-In the context of this article, the main point of interest are providers which offer features related to resource management, monitoring and utilization. In general, current key providers include Amazon \emph{Web Services}, \emph{Microsoft Azure}, Google \emph{AppEngine} and \emph{Heroku}. Despite not all of them operate on the same level of abstraction, it is possible to compare them as they expose functionalities which can be classified as PaaS. For example, on top of its infrastructure services, Amazon has such products as \emph{Elastic Load Balancer}, \emph{Cloud Watch} and \emph{Auto Scaling} which, to some extent, matches our needs.
+In the context of this article, the main point of interest are providers which offer features related to resource management, monitoring and utilization. In general, current key providers include Amazon \emph{Web Services} \cite{AWS}, \emph{Microsoft Azure} \cite{Azure}, Google \emph{AppEngine} \cite{GoogleAppEngine} and \emph{Heroku} \cite{Heroku}. Despite not all of them operate on the same level of abstraction, it is possible to compare them as they expose functionalities which can be classified as PaaS. For example, on top of its infrastructure services, Amazon has such products as \emph{Elastic Load Balancer}, \emph{Cloud Watch} and \emph{Auto Scaling} which, to some extent, matches our needs.
 
 Table \ref{tab:cloud-providers-scaling} presents comparison of some Cloud providers with the emphasis on their scaling capabilities. Interestingly, all of them are focused solely on horizontal scaling, ignoring advantages offered by a fine-grained approach to scaling that leverage scaling up and application tuning.
 
@@ -247,17 +248,13 @@ We hope our work will be of a great benefit to computer scientists and engineers
 
 Our future work will concentrate on implementing the proposed solution and testing it in real-world hardware against business use cases.
 
-\section{Section title}
-\label{sec:1}
-Text with citations \cite{RefB} and \cite{RefJ}.
-\subsection{Subsection title}
-\label{sec:2}
-as required. Don't forget to give each section
-and subsection a unique label (see Sect.~\ref{sec:1}).
-\paragraph{Paragraph headings} Use paragraph headings as needed.
-\begin{equation}
-a^2+b^2=c^2
-\end{equation}
+%\section{Section title}
+%\label{sec:1}
+%Text with citations \cite{RefB} and \cite{RefJ}.
+%\subsection{Subsection title}
+%\label{sec:2}
+%as required. Don't forget to give each section
+%and subsection a unique label (see Sect.~\ref{sec:1}).
 
 % For one-column wide figures use
 %\begin{figure}
@@ -313,12 +310,30 @@ a^2+b^2=c^2
 % and use \bibitem to create references. Consult the Instructions
 % for authors for reference list style.
 %
-\bibitem{RefJ}
+\bibitem{NIST}
+  {Mell, P. and Grance, T.}, {The NIST Definition of Cloud Computing}, 2011
+\bibitem{InterCloud}
+  {Buyya, R. Ranjan, R. and Calheiros, R.}, {InterCloud: Scaling of Applications across multiple Cloud Computing Environments}, 2010
+\bibitem{MarketOriented}
+  {Buyyaa, R., Yeoa, C., Venugopala, S., d Broberga, J. and Brandicc, I.}, {Cloud computing and emerging IT platforms: Vision, hype, and reality for delivering computing as the 5th utility}, {Future Generation Computer Systems}, vol.25, 2009
+\bibitem{ScalingInDaCloud}
+  {Vaquero, L., Rodero-Merino, L. and Buyya, R.}, {Dynamically Scaling Applications in the Cloud}, {ACM SIGCOMM Computer Communication Review}, vol.41, 2011
+\bibitem{ScalabilityTerm}
+  Bondi, A., {Characteristics of Scalability and Their Impact on Performance}, 2000
+\bibitem{PharmaComputation}
+  Jon Brodkin, \emph{\$1,279-per-hour, 30,000-core cluster built on Amazon EC2 cloud}, {\emph{Ars Technica}, \url{http://arstechnica.com/business/2011/09/30000-core-cluster-built-on-amazon-ec2-cloud/}}, last access: 16/09/2013
+\bibitem{AWS}
+  {Amazon Elastic Compute Cloud (EC2)}, {\url{http://aws.amazon.com/}}, last access: 16/09/2013 
+\bibitem{GoogleAppEngine}
+  {Google App Engine}, {\url{https://appengine.google.com/}}, last access: 16/09/2013 
+\bibitem{Heroku}
+  {Heroku}, {\url{https://www.heroku.com}}, last access: 16/09/2013 
+\bibitem{Azure}
+  {Windows Azure}, {\url{www.windowsazure.com/}}, last access: 16/09/2013 
 % Format for Journal Reference
-Author, Article title, Journal, Volume, page numbers (year)
+%Author, Article title, Journal, Volume, page numbers (year)
 % Format for books
-\bibitem{RefB}
-Author, Book title, page numbers. Publisher, place (year)
+%Author, Book title, page numbers. Publisher, place (year)
 % etc
 \end{thebibliography}
 
