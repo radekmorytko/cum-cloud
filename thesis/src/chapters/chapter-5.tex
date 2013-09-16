@@ -20,9 +20,25 @@ To begin with, different scalability models were introduced. Noticeably, they op
 \end{itemize}
 Consequently, it is expected that proposed solution's architecture reflects that multi-layered model, which, as Table \ref{tab:cloud-providers-scaling} illustrates, hasn't been yet introduced to the marked. Additionally, each layer has to be characterized by an ability to adapt to a given application usage. As previous chapter stated, this can be achieved by adding a elasticity controller to each layer. This observation is a foundation of proposed architecture.
 
-One of the first models that ensured system adaptivity is an autonomic component, concept based on a feed-back loop, initially proposed by IBM \cite{IBM06}. Figure () depicts that architecture. 
+One of the first models that ensured system adaptivity is an autonomic component, concept based on a feed-back loop, initially proposed by IBM \cite{IBM06}. Figure \ref{ch5:autonomic-component} depicts that architecture. 
 
-Since designed platform operates on multiple layers, we can extend that model by using concept of a multi-hierarchical autonomic system \cite{LiWoZh05}. Figure () illustrates that hierarchy, were each level represents a different perspective at application scaling. Using terminology characteristic to a autonomic system, first three hierarchy levels (application tuning, single-server, multi-server) are centralized and controlled by single elasticity controller at each level, while the last inter-cloud level is a decentralized one - each cloud instance is fully independent.
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-5/autonomic-component}
+  \end{center}
+  \caption{Autonomic component}
+  \label{ch5:autonomic-component}
+\end{figure}
+
+Since designed platform operates on multiple layers, we can extend that model by using concept of a multi-hierarchical autonomic system \cite{LiWoZh05}. Figure \ref{ch5:hierarchical-autonomic-system} illustrates that hierarchy, were each level represents a different perspective at application scaling. Using terminology characteristic to a autonomic system, first three hierarchy levels (application tuning, single-server, multi-server) are centralized and controlled by single elasticity controller at each level, while the last inter-cloud level is a decentralized one - each cloud instance is fully independent.
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-5/hierarchical-autonomic-system}
+  \end{center}
+  \caption{Hierarchical autonomic system}
+  \label{ch5:hierarchical-autonomic-system}
+\end{figure}
 
 As \cite{IBM06} states, each autonomic component has modules that are responsible for:
 \begin{itemize}
