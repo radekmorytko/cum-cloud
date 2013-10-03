@@ -4,12 +4,16 @@ require 'logger'
 require 'executor/service_executor'
 
 module AutoScaling
+  class InsufficientResources < Exception
+  end
+
   class ServicePlanner
 
     @@logger = Logger.new(STDOUT)
 
-    def initialize(executor)
+    def initialize(executor, cloud_controller)
       @executor = executor
+      @cloud_controller = cloud_controller
     end
 
     def plan_deployment(service)
@@ -36,7 +40,14 @@ module AutoScaling
 
       data.each do |stack, conclusions|
         conclusions.each do |conclusion|
-          self.send(conclusion, stack)
+          begin
+            self.send(conclusion, stack)
+          rescue InsufficientResources => msg
+            @@logger.info msg
+            @@logger.info 'Delegating execution to a cloud-controller'
+
+            @cloud_controller.forward stack
+          end
         end
       end
     end
@@ -44,6 +55,9 @@ module AutoScaling
     private
     def insufficient_slaves(stack)
       # TODO reserve resources
+      if !@executor.reserve?(stack)
+        raise InsufficientResources.new("There is not enough resources to deploy a stack: #{stack}")
+      end
 
       @executor.deploy_container(stack)
     end

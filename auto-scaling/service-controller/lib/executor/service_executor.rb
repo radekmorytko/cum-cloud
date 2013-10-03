@@ -91,6 +91,10 @@ module AutoScaling
       configure(container) if container.master?
     end
 
+    def reserve?(stack)
+      true
+    end
+
     private
     # Updates model, so it reflects actual configuration
     #
