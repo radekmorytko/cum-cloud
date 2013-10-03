@@ -17,6 +17,7 @@ module AutoScaling
 
       @cloud_provider = cloud_provider
       @mappings = mappings
+      @capacity = cloud_provider.capacity()
     end
 
     # * *Args* :
@@ -89,10 +90,6 @@ module AutoScaling
       container = ::AutoScaling::Container.get(container_id)
 
       configure(container) if container.master?
-    end
-
-    def reserve?(stack)
-      true
     end
 
     private

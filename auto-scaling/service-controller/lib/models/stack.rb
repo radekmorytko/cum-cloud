@@ -10,6 +10,7 @@ module AutoScaling
     belongs_to :service
 
     property :type, Enum[ :invalid, :java ], :default => :invalid
+    property :state, Enum[ :invalid, :queued, :pending, :deployed ], :default => :invalid
     # add name when handling a multiple stacks scenario (identifies deployed app)
     #property :name, String
     property :data, String

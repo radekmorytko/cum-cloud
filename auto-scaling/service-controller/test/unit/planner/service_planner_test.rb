@@ -37,7 +37,7 @@ module AutoScaling
         stack_2 => [:redundant]
       }
 
-      @executor.expects(:reserve?).with(stack_1).returns(true)
+      @executor.expects(:reserve).with(stack_1).returns(true)
       @executor.expects(:deploy_container).with(stack_1)
       @executor.expects(:delete_container).with(stack_2)
 
@@ -51,7 +51,7 @@ module AutoScaling
       }
 
       @executor.expects(:reserve?).with(stack_1).returns(false)
-      @cloud_controller.expects(:forward).with(stack_1)
+      @cloud_controller.expects(:forward).with(:insufficient_slaves, stack_1)
 
       @planner.plan(data)
     end

@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'logger'
-
 require 'executor/service_executor'
 
 module AutoScaling
@@ -11,9 +10,10 @@ module AutoScaling
 
     @@logger = Logger.new(STDOUT)
 
-    def initialize(executor, cloud_controller)
+    def initialize(executor, cloud_controller, reservation_manager)
       @executor = executor
       @cloud_controller = cloud_controller
+      @reservation_manager = reservation_manager
     end
 
     def plan_deployment(service)
@@ -46,7 +46,7 @@ module AutoScaling
             @@logger.info msg
             @@logger.info 'Delegating execution to a cloud-controller'
 
-            @cloud_controller.forward stack
+            @cloud_controller.forward(conclusion, stack)
           end
         end
       end
@@ -55,9 +55,7 @@ module AutoScaling
     private
     def insufficient_slaves(stack)
       # TODO reserve resources
-      if !@executor.reserve?(stack)
-        raise InsufficientResources.new("There is not enough resources to deploy a stack: #{stack}")
-      end
+      raise InsufficientResources.new("There is not enough resources to deploy a stack: #{stack}")
 
       @executor.deploy_container(stack)
     end

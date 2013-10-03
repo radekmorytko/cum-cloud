@@ -28,7 +28,6 @@ endpoints:
                         appflow: http://one:2474
       monitoring_keys:
                         - CPU
-                        - MEMORY
   test:
     opennebula:
       username: bolek
