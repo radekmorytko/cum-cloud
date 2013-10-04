@@ -7,6 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 include_recipe "opennebula::common"
+package "glusterfs-server"
 
 # depdendency for openvz-one
 rake_pkg_name = value_for_platform(
@@ -28,7 +29,6 @@ package_provider = value_for_platform(
   "ubuntu" => { "default" => Chef::Provider::Package::Dpkg },
   "centos" => { "default" => Chef::Provider::Package::Yum }
 )
-
 
 opennebula_pkg_dst = "/var/chef/cache/#{opennebula_pkg_name}"
 

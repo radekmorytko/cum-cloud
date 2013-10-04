@@ -11,6 +11,8 @@ package "ruby"
 package "rubygems"
 package "unzip"
 package "screen"
+package "iscsi-initiator-utils"
+package "glusterfs"
 
 # oneadmin user
 one_username = node[:opennebula][:user]

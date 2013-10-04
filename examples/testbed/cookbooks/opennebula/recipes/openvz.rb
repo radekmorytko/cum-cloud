@@ -8,6 +8,7 @@
 #
 
 include_recipe "opennebula::common"
+package "glusterfs-fuse"
 
 # datastore directory
 one_username = node[:opennebula][:user]
@@ -61,4 +62,10 @@ interfaces.each do |interface|
         subscribes :restart, resources("template[#{interface}]"), :immediately
     end
 end
+
+execute "echo 'frontend-08:/datastores	/vz/one/datastores	glusterfs defaults,_netdev 0 0' >> etc/fstab" do
+	not_if { File.readlines("etc/fstab").grep(/frontend/).any? }
+end
+
+execute "mount -a"
 
