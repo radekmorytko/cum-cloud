@@ -17,7 +17,6 @@ module AutoScaling
 
       @cloud_provider = cloud_provider
       @mappings = mappings
-      @capacity = cloud_provider.capacity()
     end
 
     # * *Args* :

@@ -60,6 +60,10 @@ module AutoScaling
       ServiceRenderer::render(service, bindings)
     end
 
+    def capacity()
+      @frontend.capacity
+    end
+
   end
 
 end

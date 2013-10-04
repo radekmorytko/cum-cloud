@@ -103,5 +103,9 @@ eos
       assert_equal expected, actual
     end
 
+    def test_shall_retrieve_capacity
+      fail 'Not yet implemented'
+    end
+
   end
 end

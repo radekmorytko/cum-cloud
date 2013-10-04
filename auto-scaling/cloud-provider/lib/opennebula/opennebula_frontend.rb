@@ -75,6 +75,10 @@ module AutoScaling
       data
     end
 
+    def capacity
+
+    end
+
     private
     # Extra variables that needs to be added to handle base image initialization
     def container_variables(service_id)

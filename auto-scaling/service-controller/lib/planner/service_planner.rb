@@ -1,10 +1,9 @@
 require 'rubygems'
 require 'logger'
 require 'executor/service_executor'
+require 'planner/reservation_manager'
 
 module AutoScaling
-  class InsufficientResources < Exception
-  end
 
   class ServicePlanner
 
@@ -55,13 +54,16 @@ module AutoScaling
     private
     def insufficient_slaves(stack)
       # TODO reserve resources
-      raise InsufficientResources.new("There is not enough resources to deploy a stack: #{stack}")
+      resources = {:cpu => 5, :memory => 5}
+      @reservation_manager.reserve(resources)
 
       @executor.deploy_container(stack)
     end
 
     def redundant(stack)
       # TODO free resources
+      resources = {:cpu => 5, :memory => 5}
+      @reservation_manager.free(resources)
 
       @executor.delete_container(stack)
     end

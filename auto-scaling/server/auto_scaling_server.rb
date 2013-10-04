@@ -46,7 +46,7 @@ module AutoScaling
       # TODO specify model as a part of policy
       set :analyzer, ServiceAnalyzer.new(ThresholdModel.new(30, 80))
       set :executor, ServiceExecutor.new(settings.cloud_provider, settings.mappings[settings.cloud_provider_name])
-      set :planner, ServicePlanner.new(settings.executor)
+      set :planner, ServicePlanner.new(settings.executor, settings.cloud_controller, settings.reservation_manager)
 
       set :controller, ServiceController.new(settings.monitor, settings.analyzer, settings.planner)
     end
