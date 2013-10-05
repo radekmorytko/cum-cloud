@@ -104,7 +104,11 @@ eos
     end
 
     def test_shall_retrieve_capacity
-      fail 'Not yet implemented'
+      actual = @opennebula_client.capacity()
+
+      actual.each do |key, value|
+        assert_equal true, value > 0
+      end
     end
 
   end

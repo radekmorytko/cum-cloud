@@ -76,7 +76,22 @@ module AutoScaling
     end
 
     def capacity
+      host_pool = ::OpenNebula::HostPool.new(@client)
+      data = host_pool.monitoring( ['HOST_SHARE/FREE_CPU', 'HOST_SHARE/FREE_MEM'] )
+      raise(RuntimeError, data.message) if OpenNebula.is_error?(data)
 
+      capacity = {:cpu => 0, :memory => 0}
+      key_mapping = {'HOST_SHARE/FREE_CPU' => :cpu, 'HOST_SHARE/FREE_MEM' => :memory}
+      data.each do |host_id, host|
+        host.each do |probe_key, probes|
+          key = key_mapping[probe_key]
+          capacity[key] += probes.last[1].to_i
+        end
+      end
+
+      @@logger.debug "Got capacity aggregated into #{capacity} using #{data}"
+
+      capacity
     end
 
     private
