@@ -11,10 +11,13 @@ require 'yaml'
 
 require 'cloud-provider/cloud_provider'
 require 'service-controller/service_controller'
+require 'cloud-controller/cloud_controller'
 
 ENV['RACK_ENV'] = 'development'
 
 module AutoScaling
+
+
 
   class AutoScalingServer < Sinatra::Base
     register Sinatra::ConfigFile
@@ -40,15 +43,10 @@ module AutoScaling
 
     # setup components
     configure do
-      set :cloud_provider, OpenNebulaClient.new(settings.endpoints[settings.cloud_provider_name])
+      cloud_provider = OpenNebulaClient.new(settings.endpoints[settings.cloud_provider_name])
 
-      set :monitor, ServiceMonitor.new(settings.cloud_provider)
-      # TODO specify model as a part of policy
-      set :analyzer, ServiceAnalyzer.new(ThresholdModel.new(30, 80))
-      set :executor, ServiceExecutor.new(settings.cloud_provider, settings.mappings[settings.cloud_provider_name])
-      set :planner, ServicePlanner.new(settings.executor, settings.cloud_controller, settings.reservation_manager)
-
-      set :controller, ServiceController.new(settings.monitor, settings.analyzer, settings.planner)
+      set :cloud_controller, CloudController.build()
+      set :service_controller, ServiceController.build(cloud_provider, settings.cloud_controller, settings.mappings[settings.cloud_provider_name])
     end
 
     # Deploys new service.
@@ -74,10 +72,10 @@ module AutoScaling
 
       begin
         @@logger.debug "Planning deployment of: #{service_data}"
-        service = settings.planner.plan_deployment(service_data)
+        service = settings.service_controller.plan_deployment(service_data)
         @@logger.debug "Deployed service #{service.to_json}"
 
-        settings.controller.schedule(service, settings.scheduler['interval'])
+        settings.service_controller.schedule(service, settings.scheduler['interval'])
         @@logger.debug "Scheduled job execution for a service: #{service.to_json}"
       rescue RuntimeError => e
         @@logger.error e
@@ -103,7 +101,7 @@ module AutoScaling
       logger.debug("Attempt to converge container #{container_id} (service: #{service.id})")
 
       begin
-        settings.executor.converge(service, container_id)
+        settings.service_controller.converge(service, container_id)
         logger.debug("Container #{container_id} (service: #{service.id}) successfully converged")
         status 200
       rescue RuntimeError => e
