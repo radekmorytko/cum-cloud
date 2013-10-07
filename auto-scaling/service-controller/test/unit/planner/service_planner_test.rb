@@ -40,6 +40,7 @@ module AutoScaling
 
       @reservation_manager.expects(:reserve).with(:cpu => 5, :memory => 5).returns(true)
       @executor.expects(:deploy_container).with(stack_1)
+      @reservation_manager.expects(:free).with(:cpu => 5, :memory => 5)
       @executor.expects(:delete_container).with(stack_2)
 
       @planner.plan(data)

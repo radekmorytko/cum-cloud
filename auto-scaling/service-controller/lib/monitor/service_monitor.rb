@@ -34,6 +34,7 @@ module AutoScaling
         data[stack] = {}
 
         stack.containers.each do |container|
+          @@logger.debug "Checking container: #{container}"
           probes = monitor_container(container)
           data[stack][container] = collect_values(probes)
         end

@@ -131,6 +131,8 @@ module AutoScaling
         case response.code
           when 200
             @@logger.debug "Successfully sent configuration #{response}"
+            # this is simplification - master not necessarily is the last deployed container
+            container.stack.state = :deployed
             response
           else
             raise RuntimeError, "An error occurred during sending configuration, status: #{response.code}"
