@@ -26,7 +26,7 @@ task :package do
   NAME="#{PACKAGE_NAME}_#{VERSION}.#{PACKAGE_TYPE}"
 
   # clean
-  FileUtils.remove_dir 'pkg'
+  FileUtils.rm_rf 'pkg'
 
   # prepare absolute structure
   FileUtils.mkdir_p('pkg/opt')
