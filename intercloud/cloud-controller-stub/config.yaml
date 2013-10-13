@@ -1,0 +1,3 @@
+amqp:
+  host: <%= ENV['AMQP_HOST'] || '127.0.0.1' %>
+  port: <%= ENV['AMQP_PORT'] || 5672 %>

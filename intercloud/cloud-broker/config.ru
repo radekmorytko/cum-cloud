@@ -8,6 +8,7 @@ require 'yaml'
 require 'amqp'
 require 'thread'
 require 'json'
+require 'erb'
 
 require 'sinatra'
 require 'sinatra/base'
@@ -18,7 +19,7 @@ require 'cloud_broker'
 # sinatra app
 require 'app.rb'
 
-config        = YAML.load_file('config/config.yaml')
+config        = YAML.load(ERB.new(File.read('config/config.yaml')).result)
 message_queue = Queue.new
 
 rest_thread = Thread.new do
@@ -39,7 +40,7 @@ end
 
 wait_thread.join
 
-Intercloud::MessageProcessor.new(message_queue).run
+Intercloud::MessageProcessor.new(message_queue, config).run
 
 
 

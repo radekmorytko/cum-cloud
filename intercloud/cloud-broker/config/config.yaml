@@ -1,9 +1,9 @@
 redis:
-  host: 127.0.0.1
-  port: 6379
+  host: <%= ENV['REDIS_HOST'] || '127.0.0.1' %>
+  port: <%= ENV['REDIS_PORT'] || 6379 %>
 
 amqp:
-  host: 127.0.0.1
-  port: 5672
-  exchange_name: sample.fanout
-  routing_key: rkey
+  host: <%= ENV['AMQP_HOST'] || '127.0.0.1' %>
+  port: <%= ENV['AMQP_PORT'] || 5672 %>
+  exchange_name: <%= ENV['AMQP_EXCHANGE_NAME'] || 'sample.fanout' %>
+  routing_key: <%= ENV['AMQP_ROUTING_KEY'] || 'rkey' %>

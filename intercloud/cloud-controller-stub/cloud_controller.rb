@@ -3,12 +3,17 @@
 require 'pp'
 require 'rubygems'
 require 'bundler/setup'
+require 'yaml'
+require 'erb'
 
 require 'amqp'
 
 
+config = YAML.load(ERB.new(File.read('config.yaml')).result)
+
+
 EM.run do
-  AMQP.connect('amqp://localhost:5672') do |connection|
+  AMQP.connect('amqp://' + config['amqp']['host'] + ':' + config['amqp']['port'].to_s) do |connection|
     channel = AMQP::Channel.new(connection)
 
     ##

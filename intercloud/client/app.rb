@@ -27,7 +27,7 @@ client = Intercloud::Client.new(Intercloud::ClientSender.new(Intercloud::HttpSen
 case options[:command]
   when 'deploy'
     filename = options[:arguments]
-    raise 'File with the environment does not exist!' unless File.exists?(filename)
+    raise "File with the environment '#{filename}' does not exist!" unless (filename && File.exists?(filename))
     service_specification = JSON.parse(File.read(filename))
     client.deploy(service_specification)
   else

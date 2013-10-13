@@ -2,6 +2,7 @@ require 'rubygems'
 require 'bundler/setup'
 
 require 'yaml'
+require 'erb'
 
 module Intercloud
 
@@ -25,7 +26,7 @@ module Intercloud
     end
 
     def config
-      @config ||= YAML.load_file('config/config.yaml')
+      @config ||= YAML.load(ERB.new(File.read('config/config.yaml')).result)
     end
 
   end
