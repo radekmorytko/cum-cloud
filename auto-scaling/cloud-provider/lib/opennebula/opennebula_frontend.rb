@@ -37,7 +37,7 @@ module AutoScaling
       res = template.info
 
       # add required variables
-      raise(RuntimeError, template.message) if OpenNebula.is_error?(res)
+      raise(RuntimeError, res.message) if OpenNebula.is_error?(res)
       t = add_required_variables(template, container_variables(service_id))
 
       # instantiate it
@@ -75,6 +75,7 @@ module AutoScaling
       data
     end
 
+    # Returns capacity of an opennebula
     def capacity
       host_pool = ::OpenNebula::HostPool.new(@client)
       data = host_pool.monitoring( ['HOST_SHARE/FREE_CPU', 'HOST_SHARE/FREE_MEM'] )

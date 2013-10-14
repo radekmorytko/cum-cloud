@@ -18,8 +18,8 @@ module AutoScaling
     @@logger = Logger.new(STDOUT)
     attr_reader :monitor, :analyzer, :planner
 
-    def initialize(monitor, analyzer, planner, scheduler = nil)
-      @monitor, @analyzer, @planner = monitor, analyzer, planner
+    def initialize(monitor, analyzer, planner, executor, scheduler = nil)
+      @monitor, @analyzer, @planner, @executor = monitor, analyzer, planner, executor
       scheduler ||= Rufus::Scheduler.new
 
       @scheduler = scheduler
@@ -52,14 +52,24 @@ module AutoScaling
     # - +cloud_controller+ -> an instance of CloudController
     # - +reservation_manager+ -> an instance of ReservationManager
     # - +mappings+ -> an instance of hashmap, used to configure ServiceExecutor
-    def self.build(cloud_provider, cloud_controller, mappings)
+    def self.build(cloud_provider, settings)
+      # shortcuts
+      cloud_controller = settings.cloud_controller
+      mappings = settings.mappings[settings.cloud_provider_name]
+
+      # mapek model
       monitor = ServiceMonitor.new(cloud_provider)
       analyzer = ServiceAnalyzer.new(ThresholdModel.new(30, 80))
       executor = ServiceExecutor.new(cloud_provider, mappings)
-      reservation_manager = ReservationManager.new(cloud_provider)
+
+      capacity = {}
+      if settings.endpoints[settings.cloud_provider_name].key?('capacity')
+        capacity = settings.endpoints[settings.cloud_provider_name]['capacity']
+      end
+      reservation_manager = ReservationManager.new(cloud_provider, capacity)
       planner = ServicePlanner.new(executor, cloud_controller, reservation_manager)
 
-      ServiceController.new(monitor, analyzer, planner)
+      ServiceController.new(monitor, analyzer, planner, executor)
     end
 
   end

@@ -24,6 +24,8 @@ module AutoScaling
     end
 
     def setup
+      ENV['RACK_ENV'] = 'test'
+
       config = YAML.load_file('config/config.yaml')
       @settings = config['endpoints'][ENV['RACK_ENV']]['opennebula']
     end

@@ -46,7 +46,7 @@ module AutoScaling
       cloud_provider = OpenNebulaClient.new(settings.endpoints[settings.cloud_provider_name])
 
       set :cloud_controller, CloudController.build()
-      set :service_controller, ServiceController.build(cloud_provider, settings.cloud_controller, settings.mappings[settings.cloud_provider_name])
+      set :service_controller, ServiceController.build(cloud_provider, settings)
     end
 
     # Deploys new service.

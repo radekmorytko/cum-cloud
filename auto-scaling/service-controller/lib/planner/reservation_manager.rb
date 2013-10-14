@@ -7,13 +7,17 @@ module AutoScaling
 
   class ReservationManager
 
-    def initialize(cloud_provider)
+    def initialize(cloud_provider, capacity = {})
       # map that stores available resources, e.g. {:cpu => 4, :memory => 3}
       # note:
       # - currently units are ignored
       # - reservation is in fact approximation - we don't known at this stage how cloud-provider scheduler
       #   behaves, hence, it we can't predict if resources are in fact sufficient
-      @capacity = cloud_provider.capacity()
+      if capacity == {}
+        @capacity = cloud_provider.capacity()
+      else
+        @capacity = capacity
+      end
 
       @reservation = Mutex.new
     end

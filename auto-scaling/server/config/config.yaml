@@ -28,14 +28,18 @@ endpoints:
                         appflow: http://one:2474
       monitoring_keys:
                         - CPU
+
   test:
     opennebula:
       username: bolek
       password: lolek
       endpoints:
-                        opennebula: http://cloud.com:2633/RPC2
-                        appflow: http://cloud.com:2474
+                        opennebula: http://my.domain.cloud.test.com:2633/RPC2
+                        appflow: http://my.domain.cloud.test.com:2474
       monitoring_keys:
                         - CPU
                         - MEMORY
                         - NET_RX
+      capacity:
+                        cpu: 100
+                        memory: 1000
