@@ -5,6 +5,7 @@ require 'rubygems'
 require 'bundler/setup'
 require 'yaml'
 require 'erb'
+require 'json'
 
 require 'amqp'
 
@@ -22,9 +23,8 @@ EM.run do
     exchange = channel.fanout('sample.fanout')
     channel.queue('').bind(exchange).subscribe do |metadata, payload|
       puts 'message received'
-      puts 'payload: '
-      pp payload
-      channel.default_exchange.publish('reply', :routing_key => 'rkey')
+      message = JSON.parse(payload)
+      channel.default_exchange.publish('reply', :routing_key => message['record']['routing_key'])
     end
 
     ## publishing

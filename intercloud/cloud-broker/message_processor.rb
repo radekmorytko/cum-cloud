@@ -1,6 +1,6 @@
 module Intercloud
   class MessageProcessor
-    def initialize(queue, config = YAML.load_file('config/config.yaml'))
+    def initialize(queue, config)
       @config = config
       @queue  = queue
     end

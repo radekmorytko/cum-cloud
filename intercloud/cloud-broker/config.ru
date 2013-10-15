@@ -25,8 +25,10 @@ message_queue = Queue.new
 rest_thread = Thread.new do
   Intercloud::CloudBrokerClientEndpoint.run!(
       :db           => (db = Redis.new(:host => config['redis']['host'], :port => config['redis']['port'])),
-      :cloud_broker => Intercloud::CloudBroker.new(:db => db, :message_queue => message_queue),
-      :port => 33331
+      :cloud_broker => Intercloud::CloudBroker.new(:db => db,
+                                                   :message_queue => message_queue,
+                                                   :routing_key => config['amqp']['routing_key']),
+      :port => config['port']
   )
 end
 

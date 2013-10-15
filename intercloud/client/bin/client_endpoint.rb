@@ -6,6 +6,7 @@ require 'rubygems'
 require 'bundler/setup'
 require 'redis'
 require 'yaml'
+require 'erb'
 require 'pp'
 require 'sinatra/base'
 
@@ -13,8 +14,8 @@ require 'sinatra/base'
 module Intercloud
   class ClientEndpoint < Sinatra::Base
 
-    set :config, YAML.load_file('config/client_endpoint.yaml')
-    set :port, config['port']
+    set :config, YAML.load(ERB.new(File.read('config/config.yaml')).result)
+    set :port, config['endpoint']['port']
     set :environment, ENV['INTERCLOUD_ENV'] || ENV['RACK_ENV'] || :development
     set :db, Redis.new(:host => config['redis']['host'], :port => config['redis']['port'])
 

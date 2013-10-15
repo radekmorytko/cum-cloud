@@ -4,11 +4,16 @@ module Intercloud
     def initialize(options = {})
       @database      = options[:db]
       @message_queue = options[:message_queue]
+      @routing_key   = options[:routing_key]
     end
 
     def deploy(service_spec, client_endpoint)
-      id = save_deploy_request(service_spec, client_endpoint)
-      @message_queue << {:id => id, :service_spec => service_spec}.to_json
+      deploy_request = prepare_database_record(
+          :service_spec    => service_spec,
+          :client_endpoint => client_endpoint
+      )
+      save_deploy_request(deploy_request)
+      @message_queue << deploy_request.to_json
       id
     end
 
@@ -18,13 +23,9 @@ module Intercloud
 
     private
 
-    def save_deploy_request(service_spec, client_endpoint)
-      database_record = prepare_database_record(
-          :service_spec    => service_spec,
-          :client_endpoint => client_endpoint
-      )
-      @database.set(database_record[:id], database_record[:record])
-      database_record[:id]
+    def save_deploy_request(deploy_request)
+      @database.set(deploy_request[:id], deploy_request[:record])
+      deploy_request[:id]
     end
 
     def generate_id(seed)
@@ -33,11 +34,12 @@ module Intercloud
 
     def prepare_database_record(options)
       {
-          :id => generate_id(options[:client_endpoint] + options[:service_spec]),
-          :record => JSON.generate({
+          :id => generate_id(options[:client_endpoint] + options[:service_spec].to_s),
+          :record => {
+            :routing_key     => @routing_key,
             :client_endpoint => options[:client_endpoint],
             :service_spec    => options[:service_spec]
-          })
+          }
       }
     end
   end

@@ -41,7 +41,7 @@ module Intercloud
 
     post '/service' do #, :provides => :json do
       return 400 if not env['HTTP_IC_RETURN_ENDPOINT'] or not request.accept? 'application/json'
-      request_body = request.body.read
+      request_body = JSON.parse(request.body.read)
       cloud_broker = settings.cloud_broker
 
       return 400 unless cloud_broker.valid?(request_body)

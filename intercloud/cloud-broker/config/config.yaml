@@ -1,3 +1,5 @@
+port: <%= ENV['ENDPOINT_PORT'] || 33331 %>
+
 redis:
   host: <%= ENV['REDIS_HOST'] || '127.0.0.1' %>
   port: <%= ENV['REDIS_PORT'] || 6379 %>
