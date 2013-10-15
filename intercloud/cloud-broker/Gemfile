@@ -5,6 +5,8 @@ gem 'sinatra', :require => 'sinatra/base'
 gem 'json'
 gem 'redis'
 gem 'amqp'
+gem 'data_mapper'
+gem 'dm-redis-adapter'
 
 group :development do
   gem 'rspec'

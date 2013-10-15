@@ -2,7 +2,7 @@
 module Intercloud
   class Publisher
     def initialize(options = {})
-      @config = options[:config] || YAML.load_file('config/config.yaml')
+      @config = options[:config]
     end
 
     def publish(message, options)

@@ -24,11 +24,8 @@ EM.run do
     channel.queue('').bind(exchange).subscribe do |metadata, payload|
       puts 'message received'
       message = JSON.parse(payload)
-      channel.default_exchange.publish('reply', :routing_key => message['record']['routing_key'])
+      channel.default_exchange.publish('reply', :routing_key => message['routing_key'])
     end
-
-    ## publishing
-    #channel.default_exchange.publish('reply', :routing_key => 'rkey')
 
     Signal.trap('INT') {
       connection.close {
