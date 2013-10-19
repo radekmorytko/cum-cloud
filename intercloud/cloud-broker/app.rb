@@ -39,16 +39,26 @@ module Intercloud
     #  set :cloud_broker, Intercloud::CloudBroker.new(settings.db)
     #end
 
+    helpers do
+
+      def prepare_service_spec_request(service_spec)
+        message = service_spec.attributes
+        message[:offers_routing_key] = settings.offers_routing_key
+        message.delete(:client_endpoint)
+        message.to_json
+      end
+    end
+
     post '/service' do #, :provides => :json do
       return 400 if not env['HTTP_IC_RETURN_ENDPOINT'] or not request.accept? 'application/json'
 
-      service_specification                   = JSON.parse(request.body.read)
-      service_specification[:client_endpoint] = env['HTTP_IC_RETURN_ENDPOINT']
+      service_specification_attributes                   = JSON.parse(request.body.read)
+      service_specification_attributes[:client_endpoint] = env['HTTP_IC_RETURN_ENDPOINT']
 
-      cloud_broker = settings.cloud_broker
-
-      id = cloud_broker.deploy(service_specification)
-      id.to_s
+      service_specification = ServiceSpecification.create!(service_specification_attributes)
+      settings.schedule_message_queue << prepare_service_spec_request(service_specification)
+      status 201
+      service_specification.id
     end
 
     get '/service/:id' do

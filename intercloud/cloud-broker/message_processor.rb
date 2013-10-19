@@ -1,31 +1,43 @@
 module Intercloud
   class MessageProcessor
-    def initialize(queue, config)
-      @config = config
-      @queue  = queue
+    def initialize(schedule_queue, config)
+      @config          = config
+      @schedule_queue  = schedule_queue
     end
 
     def run
       EM.run do
         AMQP.connect('amqp://' + @config['amqp']['host'] + ':' + @config['amqp']['port'].to_s) do |connection|
           channel = AMQP::Channel.new(connection)
-          exchange = channel.fanout(@config['amqp']['exchange_name'])
 
-          channel.queue(@config['amqp']['routing_key']).subscribe do |metadata, payload|
-            puts "Received message with type: #{metadata.type} and payload: #{payload}"
+          offers_exchange = channel.fanout(@config['amqp']['offers_exchange_name'])
+
+          channel.queue(@config['amqp']['offers_routing_key']).subscribe do |metadata, payload|
+            puts "Got an offer! #{metadata.type} and payload: #{payload}"
+            message = JSON.parse(payload)
+
+            puts 'Adding the offer to db'
+            # add the offer to the DB
+            service_specification = ServiceSpecification.get(message['id'])
+            service_specification.offers.create(
+                :controller_id => message['controller_routing_key'],
+                :price         => message['offer']['price'],
+                :memory        => message['offer']['memory']
+            )
+            service_specification.save!
+
+            # to change
+            channel.default_exchange.publish("I'm accepting your offer", :routing_key => message['controller_routing_key'])
           end
 
           EM.add_periodic_timer(1) do
-            #puts 'sending: ' + queue.pop while not queue.empty?
-            while not @queue.empty?
-              puts 'sending a message: ' + (msg = @queue.pop).to_s
-              exchange.publish(msg)
+
+            # getting offers from clouds
+            while not @schedule_queue.empty?
+              puts 'sending a message: ' + (msg = @schedule_queue.pop).to_s
+              offers_exchange.publish(msg)
             end
           end
-
-          # sending a message to cloud controllers
-          #exchange = channel.fanout(@config['amqp']['exchange_name'])
-          #exchange.publish('test')
 
           Signal.trap('INT') {
             puts 'Closing AMQP connection'

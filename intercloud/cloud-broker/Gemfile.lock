@@ -26,6 +26,8 @@ GEM
     diff-lcs (1.2.4)
     dm-aggregates (1.2.0)
       dm-core (~> 1.2.0)
+    dm-cli (1.2.0)
+      dm-core (~> 1.2.0)
     dm-constraints (1.2.0)
       dm-core (~> 1.2.0)
     dm-core (1.2.1)
@@ -126,6 +128,7 @@ PLATFORMS
 DEPENDENCIES
   amqp
   data_mapper
+  dm-cli
   dm-redis-adapter
   guard-rspec
   json

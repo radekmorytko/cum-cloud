@@ -1,3 +1,5 @@
 amqp:
   host: <%= ENV['AMQP_HOST'] || '127.0.0.1' %>
   port: <%= ENV['AMQP_PORT'] || 5672 %>
+  offers_exchange_name: <%= ENV['AMQP_OFFERS_EXCHANGE_NAME'] || 'default.offers_exchange.fanout' %>
+  controller_routing_key: <%= ENV['AMQP_CONTROLLER_ROUTING_KEY'] || SecureRandom.base64  %>
