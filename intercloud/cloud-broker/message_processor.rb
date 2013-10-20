@@ -12,6 +12,7 @@ module Intercloud
 
           offers_exchange = channel.fanout(@config['amqp']['offers_exchange_name'])
 
+          # Getting offers from clouds
           channel.queue(@config['amqp']['offers_routing_key']).subscribe do |metadata, payload|
             puts "Got an offer! #{metadata.type} and payload: #{payload}"
             message = JSON.parse(payload)
@@ -24,18 +25,48 @@ module Intercloud
                 :price         => message['offer']['price'],
                 :memory        => message['offer']['memory']
             )
-            service_specification.save!
-
-            # to change
-            channel.default_exchange.publish("I'm accepting your offer", :routing_key => message['controller_routing_key'])
+            service_specification.save
+            service_specification.offers.reload
           end
 
-          EM.add_periodic_timer(1) do
 
-            # getting offers from clouds
+          # Publishing offers to clouds
+          EM.add_periodic_timer(1) do
             while not @schedule_queue.empty?
               puts 'sending a message: ' + (msg = @schedule_queue.pop).to_s
               offers_exchange.publish(msg)
+            end
+          end
+
+          # select services to deploy
+          EM.add_periodic_timer(5) do
+            ServiceSpecification.all(:deployed => false).each do |service|
+
+              # I did not figure it out yet, but this is done deliberately
+              # Otherwise offers are not retrieved :/
+              service = ServiceSpecification.get(service.id)
+
+              next if service.offers.count == 0
+
+              latest_offer = service.offers.max_by { |o| o.received_at }
+
+              #if the last offer was received more than X seconds ago - choose the appropriate offer and deploy
+              #threshold value is 10 seconds
+              if (DateTime.now - latest_offer.received_at).to_f * 24 * 60 * 60 > 10
+                p "Choosing among the offers for a service (id: #{service.id})"
+
+                # TODO create the real mechanism for selection
+                chosen_offer = service.offers.choice
+
+                p "Chosen offer: #{chosen_offer}"
+
+                # notify the cloud
+                channel.default_exchange.publish("I'm accepting your offer", :routing_key => chosen_offer.controller_id)
+
+                # mark as deployed
+                service.deployed = true
+                service.save
+              end
             end
           end
 

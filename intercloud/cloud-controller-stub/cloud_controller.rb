@@ -24,8 +24,6 @@ EM.run do
     channel.queue('').bind(offers_exchange).subscribe do |metadata, payload|
       message = JSON.parse(payload)
 
-      require 'pp'
-
       p 'Got an offer request: '
       pp message
 
@@ -45,8 +43,8 @@ EM.run do
       channel.default_exchange.publish(reply.to_json, :routing_key => message['offers_routing_key'])
     end
 
+    # messages that are addressed directly to this controller
     channel.queue(config['amqp']['controller_routing_key']).subscribe do |metadata, payload|
-      require 'pp'
       pp payload
       puts 'Deploying a service'
     end

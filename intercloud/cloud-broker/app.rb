@@ -57,8 +57,7 @@ module Intercloud
 
       service_specification = ServiceSpecification.create!(service_specification_attributes)
       settings.schedule_message_queue << prepare_service_spec_request(service_specification)
-      status 201
-      service_specification.id
+      Rack::Response.new(service_specification.id.to_s, 201)
     end
 
     get '/service/:id' do

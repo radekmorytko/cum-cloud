@@ -9,6 +9,8 @@ module Intercloud
     property :name, String
     property :client_endpoint, String
 
+    property :deployed, Boolean, :default => false
+
     has n, :offers
 
   end
