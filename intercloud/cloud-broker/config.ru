@@ -38,7 +38,8 @@ rest_thread = Thread.new do
   Intercloud::CloudBrokerClientEndpoint.run!(
       :schedule_message_queue => schedule_message_queue,
       :offers_routing_key     => config['amqp']['offers_routing_key'],
-      :port                   => config['port']
+      :port                   => config['port'],
+      :broker_id              => config['broker_id']
   )
 end
 

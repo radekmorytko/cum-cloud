@@ -4,6 +4,8 @@ module Intercloud
 
     property :id, Serial
 
+    property :broker_id, String
+
     property :stack, String
     property :instances, Integer
     property :name, String

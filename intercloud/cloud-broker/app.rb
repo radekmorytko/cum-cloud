@@ -54,6 +54,7 @@ module Intercloud
 
       service_specification_attributes                   = JSON.parse(request.body.read)
       service_specification_attributes[:client_endpoint] = env['HTTP_IC_RETURN_ENDPOINT']
+      service_specification_attributes[:broker_id]       = settings.broker_id
 
       service_specification = ServiceSpecification.create!(service_specification_attributes)
       settings.schedule_message_queue << prepare_service_spec_request(service_specification)

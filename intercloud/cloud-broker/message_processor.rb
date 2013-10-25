@@ -40,7 +40,8 @@ module Intercloud
 
           # select services to deploy
           EM.add_periodic_timer(5) do
-            ServiceSpecification.all(:deployed => false).each do |service|
+            p 'Checking for services to deploy'
+            ServiceSpecification.all(:deployed => false, :broker_id => @config['broker_id']).each do |service|
 
               # I did not figure it out yet, but this is done deliberately
               # Otherwise offers are not retrieved :/
