@@ -90,7 +90,7 @@ module AutoScaling
         end
       end
 
-      @@logger.debug "Got capacity aggregated into #{capacity} using #{data}"
+      @@logger.debug "Got capacity aggregated into #{capacity}"
 
       capacity
     end

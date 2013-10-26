@@ -3,6 +3,10 @@ require 'rake/testtask'
 
 task :default => :package
 
+task :deploy do
+
+end
+
 task :package do
   PACKAGE_NAME='${PACKAGE_NAME:-auto_scaling}'
   PACKAGE_TYPE='${PACKAGE_TYPE:-rpm}'
@@ -15,10 +19,9 @@ task :package do
 
   # prepare absolute structure
   FileUtils.mkdir_p('pkg/opt')
-  FileUtils.cp_r 'cloud-controller', 'pkg/opt/'
-  FileUtils.cp_r 'cloud-provider', 'pkg/opt/'
-  FileUtils.cp_r 'server', 'pkg/opt/'
-  FileUtils.cp_r 'service-controller', 'pkg/opt/'
+  %w(cloud-controller cloud-provider server service-controller).each do |dir|
+    FileUtils.cp_r(dir, 'pkg/opt/auto-scaling')
+  end
 
   # create package
   cwd = File.dirname(File.expand_path(__FILE__))
