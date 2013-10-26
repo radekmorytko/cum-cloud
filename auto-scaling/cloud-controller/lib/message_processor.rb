@@ -10,8 +10,7 @@ require 'securerandom'
 
 require 'amqp'
 
-
-config = YAML.load(ERB.new(File.read('config.yaml')).result)
+config = YAML.load(ERB.new(File.read('config/config.yaml')).result)
 
 EM.run do
   AMQP.connect('amqp://' + config['amqp']['host'] + ':' + config['amqp']['port'].to_s) do |connection|
@@ -29,14 +28,14 @@ EM.run do
 
       ## TODO get the cloud offer
       mock_offer = {
-        :memory => SecureRandom.random_number(4096),
-        :price => SecureRandom.random_number(200) # /h
+          :memory => SecureRandom.random_number(4096),
+          :price => SecureRandom.random_number(200) # /h
       }
 
       reply = {
-        :id    => message['id'], # service id
-        :controller_routing_key => config['amqp']['controller_routing_key'], # controller id
-        :offer => mock_offer
+          :id    => message['id'], # service id
+          :controller_routing_key => config['amqp']['controller_routing_key'], # controller id
+          :offer => mock_offer
       }
 
       p 'Sending a mock offer'

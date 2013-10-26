@@ -6,6 +6,8 @@ module AutoScaling
   class CloudController
     @@logger = Logger.new(STDOUT)
 
+    @@instances_cnt = 0
+
     # Handle request passed from lower layer (service-controller)
     #
     # * *Args* :
@@ -16,7 +18,14 @@ module AutoScaling
     end
 
     def self.build
+      if @@instances_cnt == 1
+        raise 'There can be only one instance of CloudController'
+      end
+      @@instances_cnt += 1
       CloudController.new
+      Thread.start do
+        require 'lib/message_processor'
+      end
     end
 
   end
