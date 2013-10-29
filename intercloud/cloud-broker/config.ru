@@ -1,5 +1,11 @@
-$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__)) + '/lib'
-$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__)) + '/model'
+%w(
+  /lib
+  /lib/resource-mapping
+  /lib/resource-mapping/strategies
+  /model
+).each do |path|
+  $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__)) + path
+end
 
 require 'rubygems'
 require 'bundler/setup'
@@ -12,8 +18,11 @@ require 'json'
 require 'erb'
 require 'dm-core'
 require 'dm-redis-adapter'
-require 'offer'
-require 'service_specification'
+require 'all_models'
+
+# offers matching
+require 'offers_matcher'
+require 'flat_strategy'
 
 require 'sinatra'
 require 'sinatra/base'
@@ -22,10 +31,6 @@ require 'redis'
 
 # sinatra app
 require 'app.rb'
-
-# finalize the models
-Intercloud::ServiceSpecification.finalize
-Intercloud::Offer.finalize
 
 config                 = YAML.load(ERB.new(File.read('config/config.yaml')).result)
 # queue for messages

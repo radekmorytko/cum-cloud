@@ -3,6 +3,7 @@ module Intercloud
     def initialize(schedule_queue, config)
       @config          = config
       @schedule_queue  = schedule_queue
+      @offers_matcher  = initialize_offers_matcher
     end
 
     def run
@@ -57,7 +58,7 @@ module Intercloud
                 p "Choosing among the offers for a service (id: #{service.id})"
 
                 # TODO create the real mechanism for selection
-                chosen_offer = service.offers.choice
+                chosen_offer = @offers_matcher.match(service, service.offers)
 
                 p "Chosen offer: #{chosen_offer}"
 
@@ -79,7 +80,18 @@ module Intercloud
           }
         end
       end
+    end
 
+    private
+
+    def initialize_offers_matcher
+      class_name        = prepare_offers_match_classname(@config['offers_matching']['strategy'])
+      matching_startegy = Intercloud::const_get(class_name).new
+      OffersMatcher.new(matching_startegy)
+    end
+
+    def prepare_offers_match_classname(offers_matching_strategy)
+      offers_matching_strategy.capitalize + 'Strategy'
     end
   end
 end

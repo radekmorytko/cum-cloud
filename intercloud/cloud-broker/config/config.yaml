@@ -10,3 +10,6 @@ amqp:
   port: <%= ENV['AMQP_PORT'] || 5672 %>
   offers_exchange_name: <%= ENV['AMQP_OFFERS_EXCHANGE_NAME'] || 'default.offers_exchange.fanout' %>
   offers_routing_key: <%= ENV['AMQP_OFFERS_ROUTING_KEY'] || 'offers.routing_key' %>
+
+offers_matching:
+  strategy: 'flat'
