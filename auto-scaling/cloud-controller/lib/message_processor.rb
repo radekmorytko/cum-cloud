@@ -28,8 +28,13 @@ EM.run do
 
       ## TODO get the cloud offer
       mock_offer = {
-          :memory => SecureRandom.random_number(4096),
-          :price => SecureRandom.random_number(200) # /h
+          :cpu_specification =>
+              [
+                  {
+                      :time_span => { :from => '00', :to => '00'},
+                      :price => 20
+                  }
+              ]
       }
 
       reply = {

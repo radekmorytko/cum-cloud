@@ -2,7 +2,7 @@
   /lib
   /lib/resource-mapping
   /lib/resource-mapping/strategies
-  /model
+  /lib/model
 ).each do |path|
   $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__)) + path
 end
@@ -18,6 +18,7 @@ require 'json'
 require 'erb'
 require 'dm-core'
 require 'dm-redis-adapter'
+require 'dm-types'
 require 'all_models'
 
 # offers matching

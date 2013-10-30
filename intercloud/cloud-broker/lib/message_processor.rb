@@ -23,8 +23,7 @@ module Intercloud
             service_specification = ServiceSpecification.get(message['id'])
             service_specification.offers.create(
                 :controller_id => message['controller_routing_key'],
-                :price         => message['offer']['price'],
-                :memory        => message['offer']['memory']
+                :cpu_specification => message['offer']['cpu_specification']
             )
             service_specification.save
             service_specification.offers.reload
