@@ -21,10 +21,10 @@ module Intercloud
 
     def cpu_cost # a day
       # check hours
-      hours = cpu_specification.reduce(0) { |sum, cpu_spec| sum + (cpu_spec[:time_span][:to] == '00' ? '24' : cpu_spec[:time_span][:to]).to_i - cpu_spec[:time_span][:from].to_i }
+      hours = cpu_specification[:schedule].reduce(0) { |sum, cpu_spec| sum + (cpu_spec[:time_span][:to] == '00' ? '24' : cpu_spec[:time_span][:to]).to_i - cpu_spec[:time_span][:from].to_i }
       raise InvalidOfferTimeRange unless hours == 24
 
-      cpu_specification.reduce(0) do |cost, cpu_spec|
+      cpu_specification[:schedule].reduce(0) do |cost, cpu_spec|
         hours = (cpu_spec[:time_span][:to] == '00' ? '24' : cpu_spec[:time_span][:to]).to_i - cpu_spec[:time_span][:from].to_i
         cost + cpu_spec[:price] * hours
       end

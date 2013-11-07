@@ -28,13 +28,15 @@ EM.run do
 
       ## TODO get the cloud offer
       mock_offer = {
-          :cpu_specification =>
-              [
+          :cpu_specification => {
+              :schedule => [
                   {
                       :time_span => { :from => '00', :to => '00'},
                       :price => 20
                   }
-              ]
+              ],
+              :unit => 1400
+          }
       }
 
       reply = {

@@ -61,6 +61,8 @@ module Intercloud
 
                 p "Chosen offer: #{chosen_offer}"
 
+                next if chosen_offer.nil?
+
                 # notify the cloud
                 channel.default_exchange.publish("I'm accepting your offer", :routing_key => chosen_offer.controller_id)
 
