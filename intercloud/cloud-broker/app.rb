@@ -62,7 +62,8 @@ module Intercloud
     end
 
     get '/service/:id' do
-      puts 'dziffka'
+      service_specification = ServiceSpecification.get(params[:id])
+      Rack::Response.new(service_specification.attributes.to_json, 200)
     end
 
   end

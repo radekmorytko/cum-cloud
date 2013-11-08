@@ -3,13 +3,13 @@ require 'bundler/setup'
 
 require 'trollop'
 
-COMMANDS = %w(deploy)
+COMMANDS = %w(deploy info)
 
 module Intercloud
   class CommandLineParser
     def self.parse
       Trollop::options do
-        banner "Deploy an environment using `deploy`"
+        banner "Deploy an environment using `deploy -e <env spec>` or show env info using `info -s <service id>`"
         stop_on COMMANDS
       end
 
@@ -21,6 +21,11 @@ module Intercloud
             opt :environment, "Specification of an environment", :type => :string, :short => '-e'
           end
           arguments = o[:environment]
+        when "info"
+          o = Trollop::options do
+            opt :'service-id', "Service ID", :type => :string, :short => '-s'
+          end
+          arguments = o[:'service-id']
         else
           Trollop::die "Unknown command #{action.inspect}"
       end

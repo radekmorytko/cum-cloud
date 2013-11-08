@@ -30,6 +30,10 @@ case options[:command]
     raise "File with the environment '#{filename}' does not exist!" unless (filename && File.exists?(filename))
     service_specification = JSON.parse(File.read(filename))
     client.deploy(service_specification)
+  when 'info'
+    service_id   = options[:arguments].to_i
+    service_info = client.check_status(service_id)
+    pp service_info
   else
     puts 'Unknown command'
 end

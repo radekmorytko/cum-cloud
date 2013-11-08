@@ -61,7 +61,10 @@ module Intercloud
 
                 p "Chosen offer: #{chosen_offer}"
 
-                next if chosen_offer.nil?
+                if chosen_offer.nil?
+                  p "There is no appropriate offer for the service requirements"
+                  next
+                end
 
                 # notify the cloud
                 channel.default_exchange.publish("I'm accepting your offer", :routing_key => chosen_offer.controller_id)

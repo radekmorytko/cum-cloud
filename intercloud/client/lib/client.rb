@@ -17,12 +17,15 @@ module Intercloud
 
     def deploy(service_spec)
       msg        = @sender.prepare_deploy_message(config, service_spec)
-      service_id = @sender.send(msg)
+      service_id = @sender.send('/service', msg)
+      p 'Service ID: ' + service_id.to_s
       @database.set('service_id', service_id)
     end
 
+    # returns hash containing service info
     def check_status(service_id)
-
+      msg = @sender.prepare_check_status_message(config)
+      @sender.get_info('/service/' + service_id.to_s, msg)
     end
 
     def config

@@ -9,9 +9,9 @@ module Intercloud
 
     describe 'when the offers has only CPU' do
       before {
-        @offer1 = Offer.new(:cpu_specification => { :schedule => [{:time_span => {:from => '00', :to => '00'}, :price => 15.41}], :unit => 1400 })
-        @offer2 = Offer.new(:cpu_specification => { :schedule => [{:time_span => {:from => '00', :to => '00'}, :price => 16}], :unit => 1200})
-        @offer3 = Offer.new(:cpu_specification => { :schedule => [{:time_span => {:from => '00', :to => '00'}, :price => 9.3}], :unit => 1500})
+        @offer1 = Offer.new(:cpu_specification => { :schedule => [{:time_span => {:from => '00', :to => '00'}, :price => 15.41}], 'unit' => 1400 })
+        @offer2 = Offer.new(:cpu_specification => { :schedule => [{:time_span => {:from => '00', :to => '00'}, :price => 16}], 'unit' => 1200})
+        @offer3 = Offer.new(:cpu_specification => { :schedule => [{:time_span => {:from => '00', :to => '00'}, :price => 9.3}], 'unit' => 1500})
         @offers = [@offer1, @offer2, @offer3]
       }
       it 'chooses the cheapest one' do
