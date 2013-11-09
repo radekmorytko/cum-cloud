@@ -30,6 +30,7 @@ module AutoScaling
       RestClient.log = Logger.new(STDOUT)
       enable :logging
       enable :dump_error
+      set :bind, '0.0.0.0'
     end
 
     # setup database

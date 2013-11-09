@@ -8,3 +8,5 @@ thesis/logs
 
 # ignore vim temporary files
 *.swp
+
+trash

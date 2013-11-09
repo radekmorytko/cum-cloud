@@ -15,17 +15,17 @@ mappings:
   opennebula:
     stacks:
       java:
-        master: 7
-        slave:  7
+        master: 3
+        slave:  3
 
 endpoints:
   development:
     opennebula:
       username: oneadmin
-      password: password
+      password: 8425350dac7d9e85eab2854618639cde
       endpoints:
-                        opennebula: http://one:2633/RPC2
-                        appflow: http://one:2474
+                        opennebula: http://192.168.0.32:2633/RPC2
+                        appflow: http://192.168.0.32:2474
       monitoring_keys:
                         - CPU
 
