@@ -7,7 +7,6 @@
 # All rights reserved - Do Not Redistribute
 #
 include_recipe "opennebula::common"
-package "glusterfs-server"
 
 # depdendency for openvz-one
 rake_pkg_name = value_for_platform(
@@ -33,19 +32,19 @@ package_provider = value_for_platform(
 opennebula_pkg_dst = "/var/chef/cache/#{opennebula_pkg_name}"
 
 File.exist?(opennebula_pkg_dst) do
-	cookbook_file opennebula_pkg_dst do
-	        source opennebula_pkg_name
-	        mode "0444"
-	end
+        cookbook_file opennebula_pkg_dst do
+                source opennebula_pkg_name
+                mode "0444"
+        end
 
-	package opennebula_pkg_name do
-        	provider package_provider
-	        source opennebula_pkg_dst
-        	action :install
-	end
+        package opennebula_pkg_name do
+                provider package_provider
+                source opennebula_pkg_dst
+                action :install
+        end
 
-	# autostart opennebula
-	execute "chkconfig --add opennebula"
+        # autostart opennebula
+        execute "chkconfig --add opennebula"
 end
 
 # opennebula configuration
@@ -58,7 +57,7 @@ end
 one_username = node[:opennebula][:user]
 
 opennebula_archive "one-ovz-driver" do
-	url "https://github.com/dchrzascik/one-ovz-driver/archive/master.zip"
+	url "https://github.com/radekmorytko/one-ovz-driver/archive/master.zip"
 	type "zip"
 	owner "root"
 	group "root"
@@ -69,3 +68,4 @@ opennebula_archive "one-ovz-driver" do
 	
 	action :install
 end
+

@@ -11,7 +11,9 @@ package "ruby"
 package "rubygems"
 package "unzip"
 package "screen"
-package "iscsi-initiator-utils"
+package "wget"
+execute "wget -P /etc/yum.repos.d http://download.gluster.org/pub/gluster/glusterfs/LATEST/CentOS/glusterfs-epel.repo"
+
 package "glusterfs"
 
 # oneadmin user

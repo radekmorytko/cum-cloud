@@ -7,5 +7,15 @@ run_list(
 override_attributes({
   :opennebula => {
     :home => "/var/lib/one"
-  }
+  },
+      :authorization => {
+      :sudo => {
+        :passwordless => true,
+        :users => [
+          "oneadmin",
+          "ubuntu"
+        ]
+      }
+   }
+
 })

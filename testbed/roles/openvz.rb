@@ -1,7 +1,7 @@
 name "openvz"
 
 run_list(
-  'recipe[opennebula::openvz]',
+  'recipe[opennebula::openvz]','recipe[sudo]'
 )
 
 override_attributes({

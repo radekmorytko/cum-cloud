@@ -63,9 +63,5 @@ interfaces.each do |interface|
     end
 end
 
-execute "echo 'frontend-08:/datastores	/vz/one/datastores	glusterfs defaults,_netdev 0 0' >> etc/fstab" do
-	not_if { File.readlines("etc/fstab").grep(/frontend/).any? }
-end
-
 execute "mount -a"
 
