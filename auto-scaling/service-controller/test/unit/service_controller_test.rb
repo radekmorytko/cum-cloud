@@ -27,7 +27,7 @@ module AutoScaling
       scheduled_job = @controller.schedule service, '1s'
 
       # give some time to finish job and then pause scheduler
-      sleep 2; scheduled_job.pause
+      sleep 2;
     end
 
   end

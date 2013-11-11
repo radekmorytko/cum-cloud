@@ -12,11 +12,11 @@ module AutoScaling
         # supported stacks
         'stacks' => {
             'java' => {
-                'master' => 10,
-                'slave' => 11
+                'master' => 3,
+                'slave' => 3
             },
             'bootstrap' => {
-                'base' => 7
+                'base' => 3
             }
         }
     }
@@ -46,10 +46,10 @@ eos
     def setup
       options = {
           'username' => 'oneadmin',
-          'password' => 'password',
+          'password' => '8425350dac7d9e85eab2854618639cde',
           'endpoints' =>  {
-            'opennebula' => 'http://one:2633/RPC2',
-            'appflow' => 'http://one:2474'
+            'opennebula' => 'http://frontend1:2633/RPC2',
+            'appflow' => 'http://frontend1:2474'
           },
           'monitoring_keys' => ['CPU', 'MEMORY']
       }
@@ -90,14 +90,14 @@ eos
 
     def test_shall_show_image
       # note that you need to have image_ids on backend
-      assert_not_nil @opennebula_client.image_name(0)
+      assert_not_nil @opennebula_client.image_name(8)
       assert_nil @opennebula_client.image_name(1000)
     end
 
     def test_shall_extract_ip
 
       expected = '192.168.122.104'
-      configuration = OpenNebulaGenerator.show_vm(ShowVm.new(100, expected))
+      configuration = OpenNebulaGenerator.show_vm(:vm_id => 100, :ip => expected)
       actual = @opennebula_client.frontend.send(:extract_ip, configuration)
 
       assert_equal expected, actual

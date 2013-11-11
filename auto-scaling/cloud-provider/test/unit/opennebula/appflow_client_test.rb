@@ -31,11 +31,12 @@ module AutoScaling
       }
 
       response = OpenNebulaGenerator.show_service(
-          ShowService.new(
-              service_id, 2,
-              expected['master'][0][:id], expected['master'][0][:ip],
-              expected['slave'][0][:id], expected['slave'][0][:ip]
-          )
+              :service_id => service_id,
+              :state => 2,
+              :master_id => expected['master'][0][:id],
+              :master_ip => expected['master'][0][:ip],
+              :slave_id => expected['slave'][0][:id],
+              :slave_ip => expected['slave'][0][:ip]
       )
       FakeWeb.register_uri(:get, url(service_id), [{:body => response, :times => 2}, {:body => response}])
 
@@ -52,11 +53,12 @@ module AutoScaling
           "master"=>[{:ip=>"192.168.122.100", :id=>"138"}]
       }
       response = OpenNebulaGenerator.show_service(
-          ShowService.new(
-              service_id, 1,
-              expected['master'][0][:id], expected['master'][0][:ip],
-              expected['slave'][0][:id], expected['slave'][0][:ip]
-          )
+          :service_id => service_id,
+          :state => 1,
+          :master_id => expected['master'][0][:id],
+          :master_ip => expected['master'][0][:ip],
+          :slave_id => expected['slave'][0][:id],
+          :slave_ip => expected['slave'][0][:ip]
       )
 
       FakeWeb.register_uri(:get, url(service_id), {:body => response, :times => 4})

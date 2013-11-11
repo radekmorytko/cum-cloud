@@ -6,6 +6,7 @@ task :default => :integration_tests
 # tests
 def test(t, files)
   t.test_files = FileList.new(files)
+  t.libs = %W(. test ..)
 end
 
 task :integration_tests do
@@ -14,3 +15,4 @@ task :integration_tests do
     test(t, "test/integration/**/*_test.rb")
   end
 end
+

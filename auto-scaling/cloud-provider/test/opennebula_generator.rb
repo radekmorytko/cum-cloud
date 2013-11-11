@@ -3,11 +3,9 @@ require 'logger'
 require 'erb'
 require 'htmlentities'
 require 'nokogiri'
+require 'ostruct'
 
 module AutoScaling
-
-  ShowService = Struct.new(:service_id, :state, :master_id, :master_ip, :slave_id, :slave_ip)
-  ShowVm = Struct.new(:vm_id, :ip)
 
   MonitorVmData = Struct.new(:vm_id)
   MonitorVm = Struct.new(:data)
@@ -18,8 +16,8 @@ module AutoScaling
   # Helper that is used to generate opennebula-like response
   class OpenNebulaGenerator
 
-    def self.show_service(service_template)
-      self.render(service_template, 'show_service.erb')
+    def self.show_service(service)
+      self.render(service, 'show_service.erb')
     end
 
     def self.show_vm(vm_template)
@@ -45,11 +43,11 @@ module AutoScaling
     end
 
     private
-    def self.render(template, file_name)
+    def self.render(data, file_name)
       template_path = File.join(File.dirname(File.expand_path(__FILE__)), 'templates', file_name)
       template_erb = File.read(template_path)
 
-      ERB.new(template_erb).result(template.send(:binding))
+      ERB.new(template_erb).result(OpenStruct.new(data).instance_eval { binding })
     end
 
   end
