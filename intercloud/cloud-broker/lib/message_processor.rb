@@ -67,7 +67,9 @@ module Intercloud
                 end
 
                 # notify the cloud
-                channel.default_exchange.publish("I'm accepting your offer", :routing_key => chosen_offer.controller_id)
+                attrs = service.attributes
+                msg = [:stack, :instances, :name].reduce({}) { |acc, e| acc[e] = attrs[e]; acc }
+                channel.default_exchange.publish(msg.to_json, :routing_key => chosen_offer.controller_id)
 
                 # mark as deployed
                 service.deployed = true

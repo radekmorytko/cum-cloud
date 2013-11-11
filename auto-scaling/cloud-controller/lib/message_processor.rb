@@ -1,12 +1,13 @@
 #!/usr/bin/env ruby
 
-require 'pp'
 require 'rubygems'
 require 'bundler/setup'
 require 'yaml'
 require 'erb'
 require 'json'
 require 'securerandom'
+require 'net/http'
+require 'pp'
 
 require 'amqp'
 
@@ -53,6 +54,8 @@ EM.run do
     channel.queue(config['amqp']['controller_routing_key']).subscribe do |metadata, payload|
       pp payload
       puts 'Deploying a service'
+
+      Net::HTTP.new(config['service_controller']['host'], config['service_controller']['port']).request_post('/service', payload, {})
     end
 
 
