@@ -41,8 +41,11 @@ module AutoScaling
       @planner.plan_deployment(service_data)
     end
 
-    def converge(service, container_id)
-      @executor.converge(service, container_id)
+    def converge(service)
+      service.stacks.each do |stack|
+        master = Container.master(stack)
+        @executor.converge(master.id)
+      end
     end
 
     # Build a service-controller instance

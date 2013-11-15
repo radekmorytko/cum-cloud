@@ -11,7 +11,8 @@ module AutoScaling
     CLIENT = {
         :user_agent => "auto-scaling",
         :timeout => 100,
-        :retries => 3
+        :retries => 10,
+        :sleep => 30
     }
 
     RESOURCES = {
@@ -90,11 +91,14 @@ module AutoScaling
       retry_count = 0
 
       begin
+        @@logger.debug "Trying to get a service #{instance_id} configuration"
+
         resource = client("#{RESOURCES[:service]}/#{instance_id}").get
         document_hash = JSON.parse(resource)
         template = document_hash['DOCUMENT']['TEMPLATE']['BODY']
 
         retry_count += 1
+        sleep CLIENT[:sleep]
 
       end while retry_count <= CLIENT[:retries] and template['state'].to_i < 2
 

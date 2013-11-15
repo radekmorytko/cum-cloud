@@ -33,7 +33,6 @@ module AutoScaling
       # create appflow template
       # but first we need to have appflow service-representation
 
-
       service_definition = @cloud_provider.render service, @mappings
       template_id = @cloud_provider.create_template service_definition
 
@@ -46,11 +45,15 @@ module AutoScaling
         :type => service['stack']
       )]
 
-      Service.create(
+      service = Service.create(
         :id => instance_id.to_i,
         :name => service['name'],
         :stacks => stacks
       )
+
+      update(service)
+
+      service
     end
 
     def deploy_container(stack)
@@ -84,10 +87,8 @@ module AutoScaling
       configure(Container.master(stack))
     end
 
-    def converge(service, container_id)
-      update(service) if(service.status != :converged)
+    def converge(container_id)
       container = ::AutoScaling::Container.get(container_id)
-
       configure(container) if container.master?
     end
 

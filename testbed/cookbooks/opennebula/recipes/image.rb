@@ -1,5 +1,17 @@
 package "ruby"
+package "ruby-dev"
 package "rubygems"
+package "libopenssl-ruby"
+package "curl"
+package "apache2" do
+  action :purge
+end
+
+execute "service apache2 stop"
+
+gem_package "mime-types" do
+  version '1.16'
+end
 
 # chef-solo is installed implicitly
 

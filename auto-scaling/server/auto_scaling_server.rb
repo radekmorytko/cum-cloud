@@ -7,6 +7,7 @@ require 'logger'
 require 'sinatra'
 require 'sinatra/config_file'
 require 'rest-client'
+require 'thread'
 require 'yaml'
 
 require 'cloud-provider/cloud_provider'
@@ -16,8 +17,6 @@ require 'cloud-controller/cloud_controller'
 ENV['RACK_ENV'] = 'development'
 
 module AutoScaling
-
-
 
   class AutoScalingServer < Sinatra::Base
     register Sinatra::ConfigFile
@@ -46,6 +45,8 @@ module AutoScaling
     configure do
       cloud_provider = OpenNebulaClient.new(settings.endpoints[settings.cloud_provider_name])
 
+
+      set :lock, Mutex.new
       set :cloud_controller, CloudController.build()
       set :service_controller, ServiceController.build(cloud_provider, settings)
     end
@@ -54,7 +55,7 @@ module AutoScaling
     #
     # Request should contain a proper JSON body in form:
     # {
-    #   'stack' => 'tomcat',
+    #   'stack' => 'java',
     #   'instances' => 2,
     #   'name' => 'enterprise-app'
     # }
@@ -72,12 +73,15 @@ module AutoScaling
       end
 
       begin
+        service = {}
         @@logger.debug "Planning deployment of: #{service_data}"
         service = settings.service_controller.plan_deployment(service_data)
         @@logger.debug "Deployed service #{service.to_json}"
 
-        settings.service_controller.schedule(service, settings.scheduler['interval'])
-        @@logger.debug "Scheduled job execution for a service: #{service.to_json}"
+        settings.service_controller.converge(service)
+
+        #settings.service_controller.schedule(service, settings.scheduler['interval'])
+        #@@logger.debug "Scheduled job execution for a service: #{service.to_json}"
       rescue RuntimeError => e
         @@logger.error e
         status 503
@@ -90,25 +94,6 @@ module AutoScaling
     delete '/service/:id' do |service_id|
       @@logger.info("Attempt to delete a service: #{service_id}")
       error 400
-    end
-
-    # Converges container - ie. sends appropriate configuration
-    #
-    # - service_id -> id of a service to which container belongs
-    # - container_id -> id of a container
-    post '/service/:service_id/container/:container_id' do |service_id, container_id|
-      service = Service.get(service_id)
-
-      logger.debug("Attempt to converge container #{container_id} (service: #{service.id})")
-
-      begin
-        settings.service_controller.converge(service, container_id)
-        logger.debug("Container #{container_id} (service: #{service.id}) successfully converged")
-        status 200
-      rescue RuntimeError => e
-        status 503
-      end
-
     end
 
     run! if app_file == $0

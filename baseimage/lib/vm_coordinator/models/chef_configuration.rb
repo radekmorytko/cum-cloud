@@ -22,7 +22,6 @@ class ChefConfiguration
     )
 
     make_config_dirs
-    move_cookbooks
     save_config_file
   end
 
@@ -45,16 +44,6 @@ class ChefConfiguration
       @@logger.debug("Directory: #{d}")
       FileUtils.mkdir_p(d)
     }
-  end
-
-  def move_cookbooks
-    if !File.exists?(CONTEXT_COOKBOOKS_DIR)
-      @@logger.debug("There are no cookbooks under: #{CONTEXT_COOKBOOKS_DIR}")
-      return
-    end
-
-    @@logger.debug("Moving cookbooks from #{CONTEXT_COOKBOOKS_DIR} to: #{@conf_template.dir}")
-    FileUtils.cp_r(CONTEXT_COOKBOOKS_DIR, @conf_template.dir)
   end
 
   def save_config_file

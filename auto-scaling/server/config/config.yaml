@@ -15,8 +15,8 @@ mappings:
   opennebula:
     stacks:
       java:
-        master: 3
-        slave:  3
+        master: 4
+        slave:  5
 
 endpoints:
   development:
