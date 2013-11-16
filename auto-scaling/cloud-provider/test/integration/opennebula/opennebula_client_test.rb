@@ -16,7 +16,7 @@ module AutoScaling
                 'slave' => 3
             },
             'bootstrap' => {
-                'base' => 3
+                'base' => 4
             }
         }
     }
@@ -90,7 +90,7 @@ eos
 
     def test_shall_show_image
       # note that you need to have image_ids on backend
-      assert_not_nil @opennebula_client.image_name(8)
+      assert_not_nil @opennebula_client.image_name(17)
       assert_nil @opennebula_client.image_name(1000)
     end
 

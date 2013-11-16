@@ -82,8 +82,8 @@ module AutoScaling
 
     # Returns configuration of a service as a list of roles and corresponding vms, ex:
     # {
-    #   "loadbalancer" => [{:ip=>"192.168.122.100", :id=>"138"}],
-    #   "worker" => [{:ip=>"192.168.122.101", :id=>"139"}]
+    #   "master" => [{:ip=>"192.168.122.100", :id=>"138"}],
+    #   "slave" => [{:ip=>"192.168.122.101", :id=>"139"}]
     # }
     #
     # Note: method is blocking

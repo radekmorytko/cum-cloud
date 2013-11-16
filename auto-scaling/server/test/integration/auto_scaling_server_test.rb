@@ -45,38 +45,39 @@ module AutoScaling
           "instances" => 1,
           "stack" => "java"
       }
+      service_id = 144
+      master = {:id => 200, :ip => '192.168.122.100'}
+      slave = {:id => 201, :ip => '192.168.122.101'}
+      response = OpenNebulaGenerator.show_service(
+          :service_id => service_id,
+          :state => 2,
+          :master_id => master[:id],
+          :master_ip => master[:ip],
+          :slave_id => slave[:id],
+          :slave_ip => slave[:ip]
+      )
 
       template_id = 120
-      service_id = 144
+
       puts "Using url: #{url}"
+      FakeWeb.register_uri(:get, "#{url}/service/#{service_id}", {:body => response, :times => 5})
       FakeWeb.register_uri(:post, "#{url}/service_template", :body => '{ "DOCUMENT": { "ID": "120" } }')
       FakeWeb.register_uri(:post, "#{url}/service_template/#{template_id}/action", :body => '{ "DOCUMENT": { "ID": "144" } }')
 
-      post '/service', msg.to_json
-      assert last_response.ok?
-
       # convergence
-      master = {:id => 200, :ip => '192.168.122.100'}
-      slave = {:id => 201, :ip => '192.168.122.101'}
-      response = OpenNebulaGenerator.show_service(ShowService.new(service_id, 2, master[:id], master[:ip], slave[:id], slave[:ip]))
-      FakeWeb.register_uri(:get, "#{url}/service/#{service_id}", {:body => response, :times => 2})
       FakeWeb.register_uri(:post, "http://#{master[:ip]}:4567/chef", :status => ["200", "OK"])
       FakeWeb.register_uri(:post, "http://#{slave[:ip]}:4567/chef", :status => ["200", "OK"])
 
-      post "/service/#{service_id}/container/#{master[:id]}"
+      post '/service', msg.to_json
       assert last_response.ok?
-
-      post "/service/#{service_id}/container/#{slave[:id]}"
-      assert last_response.ok?
-
       service = Service.get(service_id)
       assert_equal :converged, service.status
 
       # monitoring data
       # note that it is quite hard to mock xmlrpc (one endpoint is common to all request)
       # hence, i use rotating response and assume that master is probed first
-      master[:response] = OpenNebulaGenerator.monitor_vm(MonitorVmData.new(master[:id]))
-      slave[:response] = OpenNebulaGenerator.monitor_vm(MonitorVmData.new(slave[:id]))
+      master[:response] = OpenNebulaGenerator.monitor_vm(:master_id => master[:id])
+      slave[:response] = OpenNebulaGenerator.monitor_vm(:slave_id => slave[:id])
       response = OpenNebulaGenerator.template_info(::AutoScaling::Template.new('ubuntu'))
       FakeWeb.register_uri(:post,
                            "#{@settings['endpoints']['opennebula']}",

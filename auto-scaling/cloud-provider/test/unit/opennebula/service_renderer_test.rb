@@ -11,7 +11,6 @@ module AutoScaling
 <<-eos
 {
     "name": "service-name",
-    "deployment": "straight",
     "roles": [
         {
             "name": "master",

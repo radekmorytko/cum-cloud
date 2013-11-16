@@ -63,9 +63,15 @@ module AutoScaling
 
       template_id = 100
       instance_id = 69
+      configuration = {
+         "master" => [{:ip=>"192.168.122.100", :id=>"138"}],
+         "slave" => [{:ip=>"192.168.122.101", :id=>"139"}]
+      }
+
       @cloud_provider.expects(:render).with(service, MAPPINGS).returns(service_template)
       @cloud_provider.expects(:create_template).with(service_template).returns(template_id)
       @cloud_provider.expects(:instantiate_template).with(template_id).returns(instance_id)
+      @cloud_provider.expects(:configuration).with(instance_id).returns(configuration)
 
       @executor.deploy_service service
     end
@@ -130,7 +136,7 @@ module AutoScaling
                            "http://192.168.122.200:4567/chef",
                            :status => ["200", "OK"])
 
-      @executor.converge(service, Container.master(stack).id)
+      @executor.converge(Container.master(stack).id)
     end
 
     def test_shall_deploy_new_container
