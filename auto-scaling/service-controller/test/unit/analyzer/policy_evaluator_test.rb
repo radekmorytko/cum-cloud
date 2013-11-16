@@ -7,7 +7,7 @@ require 'utils'
 require 'analyzer/policy_evaluator'
 
 module AutoScaling
-  class ThresholdModelTest < Test::Unit::TestCase
+  class PolicyEvaluatorTest < Test::Unit::TestCase
 
     def setup
       Utils::setup_database

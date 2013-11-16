@@ -9,6 +9,7 @@ require 'planner/reservation_manager'
 require 'executor/service_executor'
 require 'monitor/service_monitor'
 require 'analyzer/service_analyzer'
+require 'analyzer/policy_evaluator'
 require 'models/models'
 
 module AutoScaling
@@ -62,7 +63,7 @@ module AutoScaling
 
       # mapek model
       monitor = ServiceMonitor.new(cloud_provider)
-      analyzer = ServiceAnalyzer.new(ThresholdModel.new(30, 80))
+      analyzer = ServiceAnalyzer.new(PolicyEvaluator.new)
       executor = ServiceExecutor.new(cloud_provider, mappings)
 
       capacity = {}

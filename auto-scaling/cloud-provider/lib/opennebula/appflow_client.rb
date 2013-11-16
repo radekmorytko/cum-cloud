@@ -9,7 +9,6 @@ module AutoScaling
   class AppflowClient
 
     CLIENT = {
-        :user_agent => "auto-scaling",
         :timeout => 100,
         :retries => 10,
         :sleep => 30
@@ -98,9 +97,9 @@ module AutoScaling
         template = document_hash['DOCUMENT']['TEMPLATE']['BODY']
 
         retry_count += 1
-        sleep CLIENT[:sleep]
+        sleep @options['sleep'].to_i
 
-      end while retry_count <= CLIENT[:retries] and template['state'].to_i < 2
+      end while retry_count <= @options['retries'].to_i and template['state'].to_i < 2
 
       raise RuntimeError, "Can't get service confiugration - it is still pending" if template['state'].to_i < 2
 

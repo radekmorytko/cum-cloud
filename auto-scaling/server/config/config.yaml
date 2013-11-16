@@ -28,6 +28,9 @@ endpoints:
                         appflow: http://192.168.0.32:2474
       monitoring_keys:
                         - CPU
+      timeout:  5
+      retries:  5
+      sleep:    30
 
   test:
     opennebula:
@@ -43,3 +46,6 @@ endpoints:
       capacity:
                         cpu: 100
                         memory: 1000
+      timeout:  5
+      retries:  3
+      sleep:    2

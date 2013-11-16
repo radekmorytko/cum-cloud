@@ -11,8 +11,8 @@ module AutoScaling
 
     def setup
       Utils::setup_database
-      @model = mock()
-      @analyzer = ServiceAnalyzer.new @model
+      @evaluator = mock()
+      @analyzer = ServiceAnalyzer.new @evaluator
 
       instance_id = 69
 
@@ -36,9 +36,12 @@ module AutoScaling
         )
       ]
 
+      @policy_set = mock()
+
       @stack = Stack.create(
           :type => 'java',
-          :containers => @containers
+          :containers => @containers,
+          :policy_set => @policy_set
       )
 
       @service = Service.create(
@@ -72,8 +75,13 @@ module AutoScaling
         }
       }
 
-      responses = {@containers[0] => :greater, @containers[1] => :greater, @containers[2] => :fits, @containers[3] => :greater}
-      data[@stack].each {|container, metrics| @model.expects(:analyze).with(data[@stack][container]["CPU"]).returns(responses[container])}
+      policy = mock()
+      @policy_set.expects(:policies).returns([policy])
+
+      responses = {@containers[0] => :insufficient_slaves, @containers[1] => :insufficient_slaves, @containers[2] => :insufficient_slaves, @containers[3] => :overloaded_master}
+      data[@stack].each do |container, metrics|
+        @evaluator.expects(:evaluate).with(policy, container, data[@stack][container]["CPU"]).returns(responses[container])
+      end
 
       conclusion = @analyzer.analyze(data)
       expected = { @stack => [:insufficient_slaves, :overloaded_master].to_set }

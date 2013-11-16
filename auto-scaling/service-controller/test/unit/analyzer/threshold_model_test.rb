@@ -12,12 +12,12 @@ module AutoScaling
     MAX = 50
 
     def setup
-      @model = ThresholdModel.new(MIN, MAX)
+      @model = ThresholdModel.new(:min => MIN, :max => MAX)
     end
 
     def test_shall_validate_arguments
       assert_raise ArgumentError do
-        ThresholdModel.new(10, 1)
+        ThresholdModel.new(:min => 10, :max => 1)
       end
     end
 

@@ -24,3 +24,6 @@ task :integration_tests do
     test(t, "test/integration/**/*_test.rb")
   end
 end
+
+task :test => [:unit_tests, :integration_tests]
+

@@ -44,7 +44,7 @@ module AutoScaling
           containers.each do |container, metrics|
 
             metrics.each do |key, values|
-              conclusion = @policy_evaluator.evaluate(policy, values)
+              conclusion = @policy_evaluator.evaluate(policy, container, values)
               @@logger.debug "Concluded that currently #{container} is #{conclusion} (by key: #{key})"
 
               conclusions[stack] << conclusion
