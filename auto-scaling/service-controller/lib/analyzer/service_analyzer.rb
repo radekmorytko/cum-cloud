@@ -10,8 +10,8 @@ module AutoScaling
 
     @@logger = Logger.new(STDOUT)
 
-    def initialize(model)
-      @model = model
+    def initialize(policy_evaluator)
+      @policy_evaluator = policy_evaluator
     end
 
     # Analyzes data using supplied model
@@ -39,15 +39,18 @@ module AutoScaling
       data.each do |stack, containers|
         # we are interested only in unique problems
         conclusions[stack] = Set.new
-        containers.each do |container, metrics|
 
-          metrics.each do |key, values|
-            conclusion = analyze_values(container, values)
-            @@logger.debug "Concluded that currently #{container} is #{conclusion} (by key: #{key})"
+        stack.policy_set.policies.each do |policy|
+          containers.each do |container, metrics|
 
-            conclusions[stack] << conclusion
+            metrics.each do |key, values|
+              conclusion = @policy_evaluator.evaluate(policy, values)
+              @@logger.debug "Concluded that currently #{container} is #{conclusion} (by key: #{key})"
+
+              conclusions[stack] << conclusion
+            end
+
           end
-
         end
       end
 
@@ -59,33 +62,6 @@ module AutoScaling
 
       conclusions
     end
-
-    private
-    def analyze_values(container, probes)
-      result = @model.analyze(probes)
-
-      @@logger.debug "Model claims that: #{result} (container: #{container}, probes: #{probes}"
-
-      mappings = {
-        :master => {
-          :greater => :overloaded_master,
-          :lesser => :healthy,
-          :fits => :healthy
-        },
-
-        :slave => {
-          :greater => :insufficient_slaves,
-          :lesser => :redundant,
-          :fits => :healthy
-        }
-      }
-
-      role = container.master? ? :master : :slave
-      conclusion = mappings[role][result]
-
-      return conclusion
-    end
-
 
   end
 end

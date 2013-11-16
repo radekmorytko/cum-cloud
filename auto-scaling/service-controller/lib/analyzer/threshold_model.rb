@@ -4,11 +4,11 @@ module AutoScaling
 
     @@logger = Logger.new(STDOUT)
 
-    def initialize(min, max)
-      raise ArgumentError, "min: #{min} has to be lesser or equal than max: #{max}" if min > max
+    def initialize(arguments)
+      @min = arguments[:min]
+      @max = arguments[:max]
 
-      @min = min
-      @max = max
+      raise ArgumentError, "min: #{@min} has to be lesser or equal than max: #{@max}" if @min > @max
     end
 
     # Analyzes data using threshold model
@@ -32,5 +32,6 @@ module AutoScaling
 
       raise RuntimeError, "Supplied data (#{data}) cannot be matched against model #{@min} / #{@max}"
     end
+
   end
 end

@@ -14,6 +14,7 @@ module AutoScaling
     # add name when handling a multiple stacks scenario (identifies deployed app)
     #property :name, String
     property :data, String
+    property :policy_set, Object
 
     has n, :containers
 

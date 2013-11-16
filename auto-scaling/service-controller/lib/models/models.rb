@@ -1,6 +1,8 @@
 require 'models/container'
 require 'models/stack'
 require 'models/service'
+require 'models/policy'
+require 'models/policy_set'
 
 DataMapper.finalize
 
