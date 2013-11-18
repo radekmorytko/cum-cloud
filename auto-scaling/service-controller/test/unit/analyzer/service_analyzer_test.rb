@@ -36,7 +36,7 @@ module AutoScaling
         )
       ]
 
-      @policy_set = mock()
+      @policy_set = PolicySet.create()
 
       @stack = Stack.create(
           :type => 'java',
@@ -75,7 +75,7 @@ module AutoScaling
         }
       }
 
-      policy = mock()
+      policy = Policy.create( :name => 'name' )
       @policy_set.expects(:policies).returns([policy])
 
       responses = {@containers[0] => :insufficient_slaves, @containers[1] => :insufficient_slaves, @containers[2] => :insufficient_slaves, @containers[3] => :overloaded_master}

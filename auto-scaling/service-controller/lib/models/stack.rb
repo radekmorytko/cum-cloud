@@ -14,15 +14,12 @@ module AutoScaling
     # add name when handling a multiple stacks scenario (identifies deployed app)
     #property :name, String
     property :data, String
-    property :policy_set, Object
-
+    has 1, :policy_set
     has n, :containers
 
     def to_s
       JSON.pretty_generate(self)
     end
 
-    # TODO who should have information about where stack is deployed (ex. opennebula endpoint?)
-    # -> probably cloud controller who scales to different cloud
   end
 end

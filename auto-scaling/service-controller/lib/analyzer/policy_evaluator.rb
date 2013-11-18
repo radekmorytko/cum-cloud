@@ -10,7 +10,7 @@ module AutoScaling
       # instantiate model that corresponds to policy
       model_name = get_model_name(policy.name)
       clazz = "AutoScaling::#{model_name}".split('::').inject(Object) {|o,c| o.const_get c}
-      model = clazz.new(policy.parameters)
+      model = clazz.new(policy.arguments)
 
       # evaluate results
       result = model.analyze(values)

@@ -7,10 +7,9 @@ module AutoScaling
     include DataMapper::Resource
 
     property :id, Integer, :key => true
-    belongs_to :policy_set
+    property :name, String
 
-    property :name, String, :required => true
-    property :parameters, Object
+    property :arguments, Object
 
     def to_s
       JSON.pretty_generate(self)

@@ -56,9 +56,14 @@ module AutoScaling
       eos
 
       service = {
-          'stack' => 'java',
-          'instances' => 2,
-          'name' => 'service-name'
+        'stack' => 'java',
+        'instances' => 2,
+        'name' => 'service-name',
+        'policy_set' => {
+            'min_vms' => 0,
+            'max_vms' => 2,
+            'policies' => [{'name' => 'threshold_model', 'parameters' => {'min' => '5', 'max' => '50'} }]
+        }
       }
 
       template_id = 100

@@ -9,16 +9,30 @@ module AutoScaling
   class ReservationManagerTest < Test::Unit::TestCase
 
     def setup
-      @cloud_provider = mock()
-      @cloud_provider.expects(:capacity).returns({:cpu => 5, :memory => 5})
-
-      @reservation_manager = ReservationManager.new(@cloud_provider)
+      requirements = {
+        'stacks' => {
+          'boot' => {
+            'requirements' => {
+              'cpu' => '0.3',
+              'memory' => '256'
+            }
+          }
+        }
+      }
+      @reservation_manager = ReservationManager.new(@cloud_provider, {:cpu => 5, :memory => 5}, requirements['stacks'])
     end
 
     def test_shall_reserve_resources
       @reservation_manager.reserve({:cpu => 5, :memory => 2})
       @reservation_manager.free(:memory => 2)
       @reservation_manager.reserve(:memory => 5)
+    end
+
+    def test_shall_return_resource_requirements
+      expected = {:cpu => 0.3, :memory => 256.0}
+      actual = @reservation_manager.resources('boot')
+
+      assert_equal expected, actual
     end
 
     def test_shall_raise_insufficient_resources

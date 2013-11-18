@@ -9,9 +9,8 @@ module AutoScaling
     property :id, Integer, :key => true
     belongs_to :stack
 
-    property :max_vms, Integer
-    property :min_vms, Integer, :default => 0
-
+    property :max_vms, Integer, :required => true
+    property :min_vms, Integer, :required => true
     has n, :policies
 
     def to_s

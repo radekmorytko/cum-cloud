@@ -5,8 +5,8 @@ module AutoScaling
     @@logger = Logger.new(STDOUT)
 
     def initialize(arguments)
-      @min = arguments[:min]
-      @max = arguments[:max]
+      @min = arguments['min']
+      @max = arguments['max']
 
       raise ArgumentError, "min: #{@min} has to be lesser or equal than max: #{@max}" if @min > @max
     end

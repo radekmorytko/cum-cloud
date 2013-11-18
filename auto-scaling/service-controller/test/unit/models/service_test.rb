@@ -29,10 +29,26 @@ module AutoScaling
         )
       ]
 
+      policy_set = PolicySet.create(
+        :min_vms => 1,
+        :max_vms => 3,
+        :policies => [
+          Policy.create(
+            :name => 'threshold_model',
+            :arguments => {:min => 2, :max =>3}
+          ),
+          Policy.create(
+              :name => 'threshold_model_non_existing',
+              :arguments => {:min => 2, :max =>3, :turbo => 69}
+          )
+        ]
+      )
+
       @stack = Stack.create(
         :type => :java,
         :data => 'http://jenkins.com/path/to/my/app.war',
-        :containers => containers
+        :containers => containers,
+        :policy_set => policy_set
       )
 
       @service = ::AutoScaling::Service.create(

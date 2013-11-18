@@ -17,6 +17,9 @@ mappings:
       java:
         master: 4
         slave:  5
+        requirements:
+          cpu:        0.3
+          memory:     512
 
 endpoints:
   development:

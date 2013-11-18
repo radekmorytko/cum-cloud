@@ -53,16 +53,14 @@ module AutoScaling
 
     private
     def insufficient_slaves(stack)
-      # TODO reserve resources
-      resources = {:cpu => 5, :memory => 5}
+      resources = @reservation_manager.resources(stack.type)
       @reservation_manager.reserve(resources)
 
       @executor.deploy_container(stack)
     end
 
     def redundant(stack)
-      # TODO free resources
-      resources = {:cpu => 5, :memory => 5}
+      resources = @reservation_manager.resources(stack.type)
       @reservation_manager.free(resources)
 
       @executor.delete_container(stack)

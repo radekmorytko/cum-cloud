@@ -7,7 +7,7 @@ module AutoScaling
 
   class ReservationManager
 
-    def initialize(cloud_provider, capacity = {})
+    def initialize(cloud_provider, capacity = {}, requirements = {})
       # map that stores available resources, e.g. {:cpu => 4, :memory => 3}
       # note:
       # - currently units are ignored
@@ -20,6 +20,21 @@ module AutoScaling
       end
 
       @reservation = Mutex.new
+      @requirements = requirements
+    end
+
+    # Checks required resources for a given stack
+    #
+    # * *Args* :
+    # - +stack+ -> hashmap of resources to be reserved
+    # * *Returns* :
+    # {
+    #   :cpu => 0.3,      [vcpus]
+    #   :memory => 256    [MBs]
+    # }
+    def resources(stack_type)
+      requirements = @requirements[stack_type.to_s]['requirements']
+      Hash[requirements.map(){|key, value| [key.to_sym(), value.to_f] }]
     end
 
     # Reserves resources

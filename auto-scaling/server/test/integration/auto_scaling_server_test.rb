@@ -43,8 +43,14 @@ module AutoScaling
       msg = {
           "name" => "myapp",
           "instances" => 1,
-          "stack" => "java"
+          "stack" => "java",
+          'policy_set' => {
+              'min_vms' => 0,
+              'max_vms' => 2,
+              'policies' => [{'name' => 'threshold_model', 'parameters' => {'min' => '5', 'max' => '50'} }]
+          }
       }
+
       service_id = 144
       master = {:id => 200, :ip => '192.168.122.100'}
       slave = {:id => 201, :ip => '192.168.122.101'}

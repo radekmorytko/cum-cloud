@@ -25,6 +25,11 @@ module AutoScaling
     #     'stack' => 'tomcat',
     #     'instances' => 2,
     #     'name' => 'enterprise-app'
+    #     'policy_set' =>
+    #        :min_vms =>  0
+    #        :max_vms =>  2
+    #        :polices => [{'name' => 'threshold_model', :parameters => {'min' => '5', 'max' => '50'}}]
+    #     }
     #   }
     #
     def deploy_service(service)
@@ -39,10 +44,25 @@ module AutoScaling
       # instantiate
       instance_id = @cloud_provider.instantiate_template template_id
 
+      policies = []
+      service['policy_set']['policies'].each do |policy|
+        policies << Policy.create(
+          :name => policy['name'],
+          :arguments => policy['arguments']
+        )
+      end
+
+      policy_set = PolicySet.create(
+        :min_vms => service['policy_set']['min_vms'],
+        :max_vms => service['policy_set']['max_vms'],
+        :policies => policies
+      )
+
       # update data model
       # TODO support for more than one stack
       stacks = [Stack.create(
-        :type => service['stack']
+        :type => service['stack'],
+        :policy_set => policy_set
       )]
 
       service = Service.create(
