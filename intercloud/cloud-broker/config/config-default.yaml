@@ -1,0 +1,23 @@
+broker_id: sap-broker-1
+port: 65401
+
+amqp:
+  host: 127.0.0.1
+  port: 5672
+  offers_select_interval: 6
+  offers_routing_key: offers.routing_key
+  offers_exchange_name: default.offers_exchange.fanout
+
+resource_mapping:
+  strategy: flat
+  offers_wait_interval: 10
+
+### Endpoint-specific configuration file
+# Database
+development:
+  database: ':memory:'
+  database-log-level: info
+test:
+  database: ':memory:'
+  database-log-level: debug
+

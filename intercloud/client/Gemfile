@@ -1,13 +1,5 @@
-ruby '1.8.7'
+ruby '2.0.0'
 source 'https://rubygems.org'
 
-gem 'trollop'
-gem 'json'
-gem 'sinatra', :require => 'sinatra/base'
-gem 'redis'
-
-group :development do
-  gem 'rspec'
-  gem 'guard-rspec'
-end
-
+# Specify your gem's dependencies in client.gemspec
+gemspec

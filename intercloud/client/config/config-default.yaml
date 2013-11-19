@@ -1,0 +1,7 @@
+endpoint:
+  host: 127.0.0.1
+  port: 56791
+
+cloud_broker:
+  host: 127.0.0.1
+  port: 65401

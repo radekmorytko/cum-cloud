@@ -1,0 +1,11 @@
+#!/bin/bash
+
+CB_PATH=lib/cloud_broker.ru
+
+echo "  *** Running SAP-Cloud Broker *** "
+if [ -d bin ]; then
+  rackup $CB_PATH
+else
+  rackup ../$CB_PATH
+fi
+

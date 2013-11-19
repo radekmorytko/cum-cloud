@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+$:.unshift "#{File.dirname(__FILE__)}/../lib"
+
+require 'client'
+require 'client/client_endpoint'
+
+require 'yaml'
+
+## Load config file
+# handle both cases - when the script is invoked from 'bin'
+config = %w(
+            ../config/config.yaml
+            config/config.yaml
+            ../config/config-default.yaml
+            config/config-default.yaml
+           ).detect { |c| File.exists?(c) }
+
+raise 'There is no config file! Exiting' if config.nil?
+config = YAML.load_file(config)
+
+## Run endpoint if is not already up
+is_endpoint_running = %x{netcat #{config['endpoint']['host']} #{config['endpoint']['port']} -w 1 -q 0 </dev/null; echo -n $?} == '0'
+
+ClientEndpoint.run!(:port => config['endpoint']['port']) unless is_endpoint_running
+

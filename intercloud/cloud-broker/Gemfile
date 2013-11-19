@@ -1,17 +1,5 @@
-ruby '1.8.7'
+ruby '2.0.0'
 source 'https://rubygems.org'
 
-gem 'sinatra', :require => 'sinatra/base'
-gem 'json'
-gem 'redis'
-gem 'amqp'
-gem 'data_mapper'
-gem 'dm-redis-adapter'
-gem 'dm-cli'
-
-group :development do
-  gem 'rspec'
-  gem 'rack-test'
-  gem 'sinatra-contrib'
-  gem 'guard-rspec'
-end
+# Specify your gem's dependencies in cloud-broker.gemspec
+gemspec

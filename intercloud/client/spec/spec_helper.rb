@@ -4,10 +4,12 @@
 # loaded once.
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
-ENV['RACK_ENV'] = 'test'
-require 'json'
-require 'data_mapper'
-require 'common/database_utils'
+#
+
+require 'client'
+require 'client/cloud_broker'
+require 'client/rest_messenger'
+require 'client/rest_message_preparer'
 
 RSpec.configure do |config|
   config.treat_symbols_as_metadata_keys_with_true_values = true
@@ -19,5 +21,4 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = 'random'
-  DatabaseUtils.initialize_database
 end

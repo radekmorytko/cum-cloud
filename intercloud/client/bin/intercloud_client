@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+$:.unshift "#{File.dirname(__FILE__)}/../lib"
+
+require 'client'
+require 'client/cloud_broker'
+require 'client/rest_messenger'
+require 'client/rest_message_preparer'
+
+require 'yaml'
+require 'slop'
+
+## Load config file
+# handle both cases - when the script is invoked from 'bin'
+config = %w(
+            ../config/config.yaml
+            config/config.yaml
+            ../config/config-default.yaml
+            config/config-default.yaml
+           ).detect { |c| File.exists?(c) }
+
+raise 'There is no config file! Exiting' if config.nil?
+config = YAML.load_file(config)
+
+## Display error message if the endpoint is not running
+is_endpoint_running = %x{netcat #{config['endpoint']['host']} #{config['endpoint']['port']} -w 1 -q 0 </dev/null; echo -n $?} == '0'
+raise 'The client endpoint is not running! Execute `intercloud_client_endpoint` in the `bin` directory' unless is_endpoint_running
+
+## Parse options
+options = Slop.parse(:banner => 'Tool for managing cloud services. Run with --help for more info.', :help => true) do
+  command 'deploy' do
+    on :e, :environment, 'JSON file containing an environment specification (service specification)' 
+    run do |options, args|
+      if options[:environment].nil?
+        puts 'You must specify an environment file when deploying a new service!'
+        exit 1
+      end
+
+      db = {}
+
+      def db.set(key, val)
+          self[key]= val
+      end
+
+      def db.get(key)
+          self[key]
+      end
+
+
+      cloud_broker = CloudBroker.new(RestMessenger.new, RestMessagePreparer.new)
+      client = Client.new(cloud_broker, db)
+      service_specification = JSON.parse(File.read(args.first))
+      client.deploy(service_specification)
+    end
+  end
+end
+
