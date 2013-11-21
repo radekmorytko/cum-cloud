@@ -21,52 +21,28 @@ module AutoScaling
 
     # * *Args* :
     # - +service+ -> description of a service. An instance of HashMap, ex:
-    #   service = {
-    #     'stack' => 'tomcat',
-    #     'instances' => 2,
-    #     'name' => 'enterprise-app'
-    #     'policy_set' =>
-    #        :min_vms =>  0
-    #        :max_vms =>  2
-    #        :polices => [{'name' => 'threshold_model', :parameters => {'min' => '5', 'max' => '50'}}]
+    #   service =
+    #  {
+    #    'name' => 'youtube',
+    #    'stacks' => [
+    #     {
+    #       'stack' => 'tomcat',
+    #       'instances' => 2,
+    #       'name' => 'enterprise-app'
+    #       'policy_set' =>
+    #          :min_vms =>  0
+    #          :max_vms =>  2
+    #          :polices => [{'name' => 'threshold_model', :parameters => {'min' => '5', 'max' => '50'}}]
     #     }
-    #   }
+    #     ]
+    #  }
     #
     def deploy_service(service)
       @@logger.debug "Deploying service #{service} with mappings: #{@mappings}"
 
-      # create appflow template
-      # but first we need to have appflow service-representation
-
-      service_definition = @cloud_provider.render service, @mappings
-      template_id = @cloud_provider.create_template service_definition
-
-      # instantiate
-      instance_id = @cloud_provider.instantiate_template template_id
-
-      policies = []
-      service['policy_set']['policies'].each do |policy|
-        policies << Policy.create(
-          :name => policy['name'],
-          :arguments => policy['arguments']
-        )
-      end
-
-      policy_set = PolicySet.create(
-        :min_vms => service['policy_set']['min_vms'],
-        :max_vms => service['policy_set']['max_vms'],
-        :policies => policies
-      )
-
-      # update data model
-      # TODO support for more than one stack
-      stacks = [Stack.create(
-        :type => service['stack'],
-        :policy_set => policy_set
-      )]
+      stacks = service['stacks'].collect { |stack| create_stack(stack) }
 
       service = Service.create(
-        :id => instance_id.to_i,
         :name => service['name'],
         :stacks => stacks
       )
@@ -82,7 +58,7 @@ module AutoScaling
 
       # persist data
       container = Container.create(
-          :id => container_info[:id],
+          :correlation_id => container_info[:id],
           :ip => container_info[:ip]
       )
       stack.containers << container
@@ -99,7 +75,7 @@ module AutoScaling
       raise RuntimeError, "Can't delete slave from stack: #{stack.id}, there aren't any left" if slaves.size == 0
 
       slave = slaves.pop
-      @cloud_provider.delete_container slave.id
+      @cloud_provider.delete_container slave.correlation_id
       slave.destroy
       stack.save
 
@@ -118,26 +94,10 @@ module AutoScaling
     # * *Args* :
     # - +service+ -> instance of models/service
     def update(service)
-      # note method blocks until i get a full configuration (inc ids and ips)
-      conf = @cloud_provider.configuration(service.id)
-      @@logger.debug("Got configuration for a service #{service.id}: #{conf}")
-
-      # TODO support for more than one stack
-      stack = service.stacks[0]
-      stack.containers = [Container.create(
-                              :id => conf['master'][0][:id].to_i,
-                              :ip => conf['master'][0][:ip],
-                              :type => :master
-                          )]
-
-      conf['slave'].each do |vm|
-        stack.containers << Container.create(
-            :id => vm[:id].to_i,
-            :ip => vm[:ip]
-        )
+      service.stacks.each do |stack|
+        update_stack(stack)
       end
 
-      # TODO add synchronization
       service.status = :converged
       service.save
     end
@@ -159,6 +119,57 @@ module AutoScaling
             raise RuntimeError, "An error occurred during sending configuration, status: #{response.code}"
         end
       }
+    end
+
+    def create_stack(stack)
+      # create appflow template
+      # but first we need to have appflow service-representation
+      stack_definition = @cloud_provider.render stack, @mappings
+      template_id = @cloud_provider.create_template stack_definition
+
+      # instantiate
+      instance_id = @cloud_provider.instantiate_template template_id
+
+      policies = []
+      stack['policy_set']['policies'].each do |policy|
+        policies << Policy.create(
+            :name => policy['name'],
+            :arguments => policy['arguments']
+        )
+      end
+
+      policy_set = PolicySet.create(
+          :min_vms => stack['policy_set']['min_vms'],
+          :max_vms => stack['policy_set']['max_vms'],
+          :policies => policies
+      )
+
+      Stack.create(
+          :type => stack['type'],
+          :correlation_id => instance_id,
+          :policy_set => policy_set
+      )
+    end
+
+    def update_stack(stack)
+      # note method blocks until i get a full configuration (inc ids and ips)
+      conf = @cloud_provider.configuration(stack.correlation_id)
+      @@logger.debug("Got configuration for a stack #{stack.correlation_id}: #{conf}")
+
+      stack.containers = [Container.create(
+                              :correlation_id => conf['master'][0][:id].to_i,
+                              :ip => conf['master'][0][:ip],
+                              :type => :master
+                          )]
+
+      conf['slave'].each do |vm|
+        stack.containers << Container.create(
+            :correlation_id => vm[:id].to_i,
+            :ip => vm[:ip]
+        )
+      end
+
+      stack.save
     end
 
   end

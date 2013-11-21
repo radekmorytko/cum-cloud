@@ -31,10 +31,10 @@ module AutoScaling
     end
 
     def test_shall_successfully_deploy_service
-      service_template =
+      stack_template =
 <<-eos
 {
-    "name": "service-name",
+    "name": "stack-name",
     "deployment": "straight",
     "roles": [
         {
@@ -55,15 +55,20 @@ module AutoScaling
 }
       eos
 
+      stack = {
+          'type' => 'java',
+          'instances' => 2,
+          'name' => 'stack-name',
+          'policy_set' => {
+              'min_vms' => 0,
+              'max_vms' => 2,
+              'policies' => [{'name' => 'threshold_model', 'parameters' => {'min' => '5', 'max' => '50'} }]
+          }
+      }
+
       service = {
-        'stack' => 'java',
-        'instances' => 2,
-        'name' => 'service-name',
-        'policy_set' => {
-            'min_vms' => 0,
-            'max_vms' => 2,
-            'policies' => [{'name' => 'threshold_model', 'parameters' => {'min' => '5', 'max' => '50'} }]
-        }
+        'name' => 'kwejk.pl',
+        'stacks' => [ stack ]
       }
 
       template_id = 100
@@ -73,8 +78,8 @@ module AutoScaling
          "slave" => [{:ip=>"192.168.122.101", :id=>"139"}]
       }
 
-      @cloud_provider.expects(:render).with(service, MAPPINGS).returns(service_template)
-      @cloud_provider.expects(:create_template).with(service_template).returns(template_id)
+      @cloud_provider.expects(:render).with(stack, MAPPINGS).returns(stack_template)
+      @cloud_provider.expects(:create_template).with(stack_template).returns(template_id)
       @cloud_provider.expects(:instantiate_template).with(template_id).returns(instance_id)
       @cloud_provider.expects(:configuration).with(instance_id).returns(configuration)
 
@@ -88,22 +93,23 @@ module AutoScaling
          'slave' => [{:ip=>"192.168.122.101", :id=>"139"}, {:ip=>"192.168.122.102", :id=>"140"}]
       }
 
-      stacks = [Stack.create(:type => 'java')]
+      stacks = [Stack.create(:type => 'java', :correlation_id => instance_id)]
 
+      service_id = 10
       service = Service.create(
-          :id => instance_id,
+          :id => service_id,
           :name => 'service-name',
           :stacks => stacks
       )
-      assert_equal Service.get(instance_id).status, :new
+      assert_equal Service.get(service_id).status, :new
 
       @cloud_provider.expects(:configuration).with(instance_id).returns(conf)
       @executor.send(:update, service)
 
-      assert_equal Service.get(instance_id).status, :converged
-      assert_equal Container.get(138).ip, "192.168.122.100"
-      assert_equal Container.get(139).ip, "192.168.122.101"
-      assert_equal Container.get(140).ip, "192.168.122.102"
+      assert_equal Service.get(service_id).status, :converged
+      assert_equal Container.correlated(138).ip, "192.168.122.100"
+      assert_equal Container.correlated(139).ip, "192.168.122.101"
+      assert_equal Container.correlated(140).ip, "192.168.122.102"
     end
 
     def test_shall_converge_and_update_master
@@ -111,30 +117,30 @@ module AutoScaling
 
       containers = [
           Container.create(
-              :id => 10,
+              :correlation_id => 10,
               :ip => '192.168.122.1'
           ),
           Container.create(
-              :id => 11,
+              :correlation_id => 11,
               :ip => '192.168.122.2'
           ),
           Container.create(
-              :id => 0,
+              :correlation_id => 0,
               :ip => '192.168.122.200',
               :type => :master
           )
       ]
 
       stack = Stack.create(
-              :type => 'java',
-              :containers => containers
-          )
+        :type => 'java',
+        :containers => containers,
+        :correlation_id => instance_id
+      )
 
       service = Service.create(
-          :id => instance_id,
-          :name => 'service-name',
-          :stacks => [stack],
-          :status => :converged
+        :name => 'service-name',
+        :stacks => [stack],
+        :status => :converged
       )
 
       FakeWeb.register_uri(:post,
@@ -150,11 +156,11 @@ module AutoScaling
 
       containers = [
           Container.create(
-              :id => 10,
+              :correlation_id => 10,
               :ip => '192.168.122.1'
           ),
           Container.create(
-              :id => 0,
+              :correlation_id => 0,
               :ip => master_ip,
               :type => :master
           )
@@ -162,11 +168,12 @@ module AutoScaling
 
       stack = Stack.create(
           :type => 'java',
-          :containers => containers
+          :containers => containers,
+          :correlation_id => instance_id
       )
 
       service = Service.create(
-          :id => instance_id,
+          :id => 10,
           :name => 'service-name',
           :stacks => [stack],
           :status => :converged
@@ -175,7 +182,7 @@ module AutoScaling
       container_id = 800
       container_ip = '192.168.122.69'
       response = 'Od przedszkola do Opola, kupuj szybko dzis bejzbola'
-      @cloud_provider.expects(:instantiate_container).with('java', 'slave', instance_id, MAPPINGS).returns({:id => container_id, :ip=> container_ip})
+      @cloud_provider.expects(:instantiate_container).with('java', 'slave', 10, MAPPINGS).returns({:id => container_id, :ip=> container_ip})
       FakeWeb.register_uri(:post,
                            "http://#{master_ip}:4567/chef",
                            :body => response,
@@ -184,20 +191,23 @@ module AutoScaling
       id = @executor.deploy_container stack
       assert_equal 2, Container.slaves(stack).size
 
-      assert Container.slaves(stack).include?(Container.get(container_id))
+      slaves = Container.slaves(stack)
+      container = Container.first(:correlation_id => container_id)
+
+      assert slaves.include?(container)
     end
 
     def test_shall_delete_container
-      instance_id = 69
       master_ip = '192.168.122.200'
+      correlation_id = 69
 
       containers = [
           Container.create(
-              :id => 10,
+              :correlation_id => 10,
               :ip => '192.168.122.1'
           ),
           Container.create(
-              :id => 0,
+              :correlation_id => 0,
               :ip => master_ip,
               :type => :master
           )
@@ -205,11 +215,12 @@ module AutoScaling
 
       stack = Stack.create(
           :type => 'java',
-          :containers => containers
+          :containers => containers,
+          :correlation_id => correlation_id
       )
 
       Service.create(
-          :id => instance_id,
+          :id => correlation_id,
           :name => 'service-name',
           :stacks => [stack],
           :status => :converged

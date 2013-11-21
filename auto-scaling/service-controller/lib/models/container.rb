@@ -6,14 +6,14 @@ module AutoScaling
   class Container
     include DataMapper::Resource
 
-    # id should correspond to internal container representation (ie. opennebula vm id)
-    property :id, Integer, :key => true
+    property :id, Serial
+    property :correlation_id, Integer
+
     belongs_to :stack
 
     property :ip, IPAddress, :required => true
     property :type, Enum[ :master, :slave ], :default => :slave, :required => true
-
-    # monitoring
+    # last time when container was probed
     property :probed, String, :default => "0"
 
     def self.master(stack)
@@ -22,6 +22,10 @@ module AutoScaling
 
     def self.slaves(stack)
       all(:stack => stack) & all(:type => :slave)
+    end
+
+    def self.correlated(correlation_id)
+      first(:correlation_id => correlation_id)
     end
 
     def master?

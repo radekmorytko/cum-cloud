@@ -11,13 +11,13 @@ module AutoScaling
     #
     # * service - AutoScaling::Service
     # * mappings - additonal information, needed to render template
-    def self.render(service, mappings)
+    def self.render(stack, mappings)
 
       result = ServiceTemplate.new(
-          service['name'],
-          mappings['stacks'][service['stack']]['master'],
-          mappings['stacks'][service['stack']]['slave'],
-          service['instances']
+          stack['name'],
+          mappings['stacks'][stack['type']]['master'],
+          mappings['stacks'][stack['type']]['slave'],
+          stack['instances']
       )
 
       render = result.render
@@ -32,7 +32,7 @@ module AutoScaling
         :worker_instances) do
 
       def render
-        template_path = File.join(File.dirname(File.expand_path(__FILE__)), 'templates', 'service_definition.erb')
+        template_path = File.join(File.dirname(File.expand_path(__FILE__)), 'templates', 'stack_definition.erb')
         template = File.read(template_path)
 
         ERB.new(template).result(binding)
