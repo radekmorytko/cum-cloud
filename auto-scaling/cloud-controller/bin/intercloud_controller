@@ -3,4 +3,8 @@ $:.unshift "#{File.dirname(__FILE__)}/../lib"
 
 require 'cloud_controller'
 
-AutoScaling::CloudController.run
+cloud_controller = AutoScaling::CloudController.build
+
+cloud_controller.amqp_thread.join
+
+
