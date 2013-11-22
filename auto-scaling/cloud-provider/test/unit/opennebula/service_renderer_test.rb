@@ -10,7 +10,7 @@ module AutoScaling
       expected =
 <<-eos
 {
-    "name": "service-name",
+    "name": "stack-name",
     "roles": [
         {
             "name": "master",
@@ -27,10 +27,15 @@ module AutoScaling
 }
 eos
 
-      service = {
-          'stack' => 'java',
-          'instances' => 2,
-          'name' => 'service-name'
+      stack = {
+        'type' => 'java',
+        'instances' => 2,
+        'name' => 'stack-name',
+        'policy_set' => {
+            'min_vms' => 0,
+            'max_vms' => 2,
+            'policies' => [{'name' => 'threshold_model', 'parameters' => {'min' => '5', 'max' => '50'} }]
+        }
       }
 
       mappings = {
@@ -50,7 +55,7 @@ eos
       }
 
       # test it from client side - ie. using opennebula
-      actual = OpenNebulaClient.new(options).render(service, mappings)
+      actual = OpenNebulaClient.new(options).render(stack, mappings)
       assert_equal expected.strip!, actual.strip!
     end
   end

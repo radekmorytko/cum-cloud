@@ -90,6 +90,12 @@ module AutoScaling
         end
       end
 
+      # maps resources to cpu percentage, memory to MB
+      factors = {:cpu => 100.0, :memory => 1024.0}
+      factors.each do |key, factor|
+        capacity[key] /= factor
+      end
+
       @@logger.debug "Got capacity aggregated into #{capacity}"
 
       capacity
