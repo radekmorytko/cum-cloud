@@ -3,3 +3,11 @@ amqp:
   host: 127.0.0.1
   offers_exchange_name: default.offers_exchange.fanout
   controller_routing_key: sap-cloud-controller-1
+
+pricing_mapping:
+  strategy: flat
+  
+  flat:
+    stack:
+      java: 50
+
