@@ -25,7 +25,9 @@ class ServiceDeployer
     @@logger.debug("Deployment message: #{deployment_msg}")
     service.deployed = true
     service.save
-    @publisher.publish(deployment_msg, :routing_key => selected_offer.controller_id )
+    @publisher.publish(deployment_msg,
+                       :routing_key => selected_offer.controller_id
+                      )
   end 
 
   def deploy_candidates

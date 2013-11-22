@@ -1,7 +1,9 @@
 require 'rubygems'
 require 'common/configurable'
 require 'cloud_controller/publisher'
-require 'cloud_controller/offers_manager'
+require 'cloud_controller/service_offer_preparer'
+require 'cloud_controller/stack_offer_preparer'
+require 'cloud_controller/offer_response_preparer'
 require 'logger'
 require 'amqp'
 require 'json'
@@ -27,7 +29,11 @@ module AutoScaling
 
     def self.build
       raise 'There can be only one instance of CloudController' unless @@instance.nil?
-      @@instance = CloudController.new( Publisher.new, OffersManager.new )
+      @@instance = CloudController.new(
+        Publisher.new,
+        ServiceOfferPreparer.new(StackOfferPreparer.new),
+        OfferResponsePreparer.new
+      )
       @@instance.run
       @@instance
     end
@@ -50,23 +56,22 @@ module AutoScaling
             channel.queue('').bind(offers_exchange).subscribe(&method(:handle_offer_request))
             channel.queue(amqp_conf['controller_routing_key']).subscribe(&method(:handle_deploy_request))
           end
-
         end
       end
     end
 
     def handle_offer_request(metadata, payload)
       @@logger.info("Handling an offer request")
-
-      message = JSON.parse(payload)
-
-      offer = @offers_manager.get_offer(message)
+      request = JSON.parse(payload)
+      offer = @service_offer_preparer.prepare_offer(request['specification'])
       if offer
-        respond_with(offer, message['offers_routing_key'])
-        @@logger.info("Sent an offer: #{offer}")
+        response = @offer_response_preparer.publishify_offer(offer, :service_id => request['service_id'])
+        respond_with(response, request['offers_routing_key'])
+        @@logger.info("Respondend with an offer: #{response}")
       else
         @@logger.info("The service is not deployable on this cloud - nothing has been sent")
       end
+      offer
     end
 
     private
@@ -78,11 +83,11 @@ module AutoScaling
       @@logger.info("Handling a deploy request")
     end
 
-    def initialize(publisher, offers_manager)
-      @publisher      = publisher
-      @offers_manager = offers_manager
+    def initialize(publisher, service_offer_preparer, offer_response_preparer)
+      @publisher               = publisher
+      @service_offer_preparer  = service_offer_preparer
+      @offer_response_preparer = offer_response_preparer
     end
-
   end
 end
 
