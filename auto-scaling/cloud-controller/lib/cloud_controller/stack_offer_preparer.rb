@@ -4,11 +4,14 @@ require 'cloud_controller/stack_price_mapping/flat_strategy'
 class StackOfferPreparer
   include Configurable
 
+  attr_writer :stack_info_retriever
+
   @@logger       = Logger.new(STDOUT)
   @@logger.level = Logger::DEBUG
 
-  def initialize
-    @stack_price_mapper = initialize_stack_price_mapper
+  def initialize(stack_info_retriever)
+    @stack_info_retriever = stack_info_retriever
+    @stack_price_mapper   = initialize_stack_price_mapper
     @@logger.info("Stack-Price mapper initialized with #{@stack_price_mapper.class}")
   end
 
@@ -16,12 +19,11 @@ class StackOfferPreparer
     { :cost => @stack_price_mapper.calculate_price(stack) } if deployable?(stack)
   end
 
+  private
   def deployable?(stack)
-    # TODO implement
-    true
+    @stack_info_retriever.deployable?(stack)
   end
 
-  private
   def initialize_stack_price_mapper
     Object.const_get(stack_price_mapper_classname).new
   end
