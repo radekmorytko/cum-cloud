@@ -12,7 +12,8 @@ require 'yaml'
 
 require 'cloud-provider/cloud_provider'
 require 'service-controller/service_controller'
-require 'cloud-controller/cloud_controller'
+require 'cloud-controller/lib/cloud_controller'
+require 'container-controller/container_controller'
 
 ENV['RACK_ENV'] = 'development'
 
@@ -45,10 +46,9 @@ module AutoScaling
     configure do
       cloud_provider = OpenNebulaClient.new(settings.endpoints[settings.cloud_provider_name])
 
-
-      set :lock, Mutex.new
       set :cloud_controller, CloudController.build()
       set :service_controller, ServiceController.build(cloud_provider, settings)
+      set :container_controller, ContainerController.build(cloud_provider, settings)
     end
 
     # Deploys new service.
@@ -79,6 +79,10 @@ module AutoScaling
         @@logger.debug "Deployed service #{service.to_json}"
 
         settings.service_controller.converge(service)
+
+        service.stacks.containers.each do |container|
+          settings.container_controller.schedule(container, settings.scheduler['interval'])
+        end
 
         #settings.service_controller.schedule(service, settings.scheduler['interval'])
         #@@logger.debug "Scheduled job execution for a service: #{service.to_json}"

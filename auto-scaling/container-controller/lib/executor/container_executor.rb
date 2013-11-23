@@ -5,15 +5,12 @@ require 'set'
 require 'models/models'
 
 module AutoScaling
-  class ContainerMonitor
+  class ContainerExecutor
 
     @@logger = Logger.new(STDOUT)
 
-    def monitor(container)
-      @@logger.debug "Monitoring a container #{container}"
-
-      data = {}
-      data
+    def initialize(cloud_provider)
+      @cloud_provider = cloud_provider
     end
 
   end

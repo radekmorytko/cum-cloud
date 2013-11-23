@@ -5,12 +5,17 @@ require 'set'
 require 'models/models'
 
 module AutoScaling
-  class ContainerMonitor
+  class ContainerPlanner
 
     @@logger = Logger.new(STDOUT)
 
-    def monitor(container)
-      @@logger.debug "Monitoring a container #{container}"
+    def initialize(executor, service_controller)
+      @executor = executor
+      @service_controller = service_controller
+    end
+
+    def monitor(data)
+      @@logger.debug "Planning actions based on data #{data}"
 
       data = {}
       data
