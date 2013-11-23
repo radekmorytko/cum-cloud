@@ -1,6 +1,6 @@
 
 amqp:
-  host: 127.0.0.1
+  host: 192.168.0.12
   offers_exchange_name: default.offers_exchange.fanout
   controller_routing_key: sap-cloud-controller-1
 

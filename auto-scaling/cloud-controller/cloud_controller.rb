@@ -1,1 +1,0 @@
-lib/cloud_controller.rb

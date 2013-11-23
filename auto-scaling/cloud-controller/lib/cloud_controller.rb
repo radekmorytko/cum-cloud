@@ -5,6 +5,7 @@ require 'common/configurable'
 require 'cloud_controller/publisher'
 require 'cloud_controller/service_offer_preparer'
 require 'cloud_controller/stack_offer_preparer'
+require 'cloud_controller/stack_info_retriever'
 require 'cloud_controller/offer_response_preparer'
 require 'logger'
 require 'amqp'
@@ -33,7 +34,9 @@ module AutoScaling
       raise 'There can be only one instance of CloudController' unless @@instance.nil?
       @@instance = CloudController.new(
         Publisher.new,
-        ServiceOfferPreparer.new(StackOfferPreparer.new),
+        ServiceOfferPreparer.new(
+          StackOfferPreparer.new(StackInfoRetriever.new)
+        ),
         OfferResponsePreparer.new
       )
       @@instance.run
