@@ -5,8 +5,8 @@ class Stack
   include DataMapper::Resource
   include Configurable
 
-  property :id,            Serial
-  property :type,          String, :required => true
+  property :id,            Serial, :unique_index => :unique_stack_name
+  property :type,          String, :unique_index => :unique_stack_name, :required => true
   property :instances,     Integer, :required => true
   property :status,        Enum[:initialized, :failed, :deployed], :default => :initialized
 
