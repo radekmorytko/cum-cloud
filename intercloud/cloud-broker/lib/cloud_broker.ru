@@ -4,7 +4,7 @@ require 'cloud-broker-ws/cb_ws'
 require 'cloud-broker-amqp/offer_consumer'
 require 'cloud-broker-amqp/publisher'
 require 'cloud-broker-amqp/service_deployer'
-require 'resource-mapping/offer_matcher'
+require 'resource-mapping/offer_selector'
 require 'models/models'
 require 'amqp'
   
@@ -49,7 +49,7 @@ def run(opts)
       p2p_publisher = Publisher.new
       p2p_publisher.exchange = channel.default_exchange
 
-      service_deployer   = ServiceDeployer.new(OfferMatcher.new, p2p_publisher)
+      service_deployer   = ServiceDeployer.new(OfferSelector.new, p2p_publisher)
       offer_consumer     = OfferConsumer.new
       channel.queue(amqp_conf['offers_routing_key']).subscribe(&offer_consumer.method(:handle_cloud_offer))
 

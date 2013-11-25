@@ -6,9 +6,9 @@ class ServiceDeployer
   @@logger = Logger.new(STDOUT)
   @@logger.level = Logger::DEBUG
 
-  def initialize(offer_matcher, publisher)
-    @offer_matcher = offer_matcher
-    @publisher     = publisher
+  def initialize(offer_selector, publisher)
+    @offer_selector = offer_selector
+    @publisher      = publisher
   end
 
   def deploy_services
@@ -18,25 +18,61 @@ class ServiceDeployer
   private
   # precondition: there is at least one offer for the given service
   def deploy_service(service)
-    selected_offer = @offer_matcher.match(service, service.offers.map { |o| o })
-    @@logger.info("#{selected_offer} is the selected offer for #{service}")
-    deployment_msg = prepare_deployment_message(service, selected_offer)
-    @@logger.debug("Notifying the cloud controller: #{selected_offer.controller_id}")
-    @@logger.debug("Deployment message: #{deployment_msg}")
-    service.deployed = true
-    service.save
-    @publisher.publish(deployment_msg,
-                       :routing_key => selected_offer.controller_id
-                      )
+    @@logger.info("Deploying service `#{service.name}'")
+
+    # for each stack select an appropriate offer
+    selected_offers = service.stacks.map do |stack|
+      @offer_selector.select(stack.offers.map { |o| o }) 
+    end
+
+    # group according to CC
+    services_instances = selected_offers.reduce({}) do |memo, offer|
+      memo[offer.controller_id] = [] unless memo.has_key?(offer.controller_id)
+      memo[offer.controller_id] << offer.stack
+      memo
+    end
+
+    @@logger.info("Service `#{service.name}' comprises #{service.stacks.count} stacks" \
+                  " which are to be deployed on #{services_instances.keys.count}" \
+                  " different clouds")
+
+    # for each cc, deploy an instance of the service
+    services_instances.each do |cloud_id, stacks|
+      deployment_msg = prepare_deployment_message(service, stacks)
+      @publisher.publish(deployment_msg,
+                         :routing_key => cloud_id
+                        )
+
+      # update stack attributes
+      stacks.each do |stack|
+        stack.status        = :deployed
+        stack.controller_id = cloud_id
+        stack.save
+      end
+
+      @@logger.debug("Notifying the cloud controller: #{cloud_id}")
+      @@logger.debug("Deployment message: #{deployment_msg}")
+    end
+
   end 
 
   def deploy_candidates
-    ServiceSpecification.all(:deployed => false, :broker_id => config['broker_id'])
+    ServiceSpecification.all
                         .select { |ss| ss.ready_to_deploy? }
   end
 
-  def prepare_deployment_message(service, chosen_offer)
-    service.specification
+  def prepare_deployment_message(service, stacks)
+    stacks_attributes = stacks.map do |stack|
+      attributes = stack.attributes
+      {
+        :type      => attributes[:type],
+        :instances => attributes[:instances]
+      }
+    end
+    {
+      :name   => service.name,
+      :stacks => stacks_attributes
+    }.to_json
   end
 end
 

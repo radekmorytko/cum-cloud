@@ -1,6 +1,4 @@
 require 'common/configurable'
-## TODO remove this once the offer mechanism is done
-require 'securerandom'
 
 class StackPriceMappingFlatStrategy
   include Configurable

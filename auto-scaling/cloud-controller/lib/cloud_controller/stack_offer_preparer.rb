@@ -16,7 +16,12 @@ class StackOfferPreparer
   end
 
   def prepare_offer(stack)
-    { :cost => @stack_price_mapper.calculate_price(stack) } if deployable?(stack)
+    if deployable?(stack)
+      {
+        :cost => @stack_price_mapper.calculate_price(stack),
+        :type => stack['type'] || stack[:type]
+      } 
+    end
   end
 
   private

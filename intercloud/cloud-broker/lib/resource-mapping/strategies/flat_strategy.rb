@@ -1,6 +1,8 @@
 
 class FlatStrategy
-  def match(service_specification, offers)
-    offers.min { |o1, o2| o1.cost <=> o2.cost }
+  
+  # select the minimal offer per stack
+  def select(offers)
+    offers.min_by { |o1| o1.cost }
   end
 end

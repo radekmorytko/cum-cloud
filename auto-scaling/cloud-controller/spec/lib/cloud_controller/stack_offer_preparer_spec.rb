@@ -20,6 +20,7 @@ describe StackOfferPreparer do
     subject { StackOfferPreparer.new(stack_info_retriever).prepare_offer(stack) }
 
     it { should have_key(:cost) }
+    it { should have_key(:type) }
     it { should be_instance_of Hash }
   end
 end

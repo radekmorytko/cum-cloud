@@ -10,4 +10,6 @@ pricing_mapping:
   flat:
     stack:
       java: 50
+      mysql: 51
+      ruby: 49
 

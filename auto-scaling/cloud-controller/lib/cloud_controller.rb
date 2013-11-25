@@ -67,11 +67,11 @@ module AutoScaling
 
     def handle_offer_request(metadata, payload)
       @@logger.info("Handling an offer request")
-      request = JSON.parse(payload)
-      offer = @service_offer_preparer.prepare_offer(request['specification'])
+      service_specification = JSON.parse(payload)
+      offer = @service_offer_preparer.prepare_offer(service_specification)
       if offer
-        response = @offer_response_preparer.publishify_offer(offer, :service_id => request['service_id'])
-        respond_with(response, request['offers_routing_key'])
+        response = @offer_response_preparer.publishify_offer(offer, :service_id => service_specification['service_id'])
+        respond_with(response, service_specification['offers_routing_key'])
         @@logger.info("Respondend with an offer: #{response}")
       else
         @@logger.info("The service is not deployable on this cloud - nothing has been sent")
