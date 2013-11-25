@@ -20,6 +20,7 @@ module AutoScaling
     @@instance = nil
 
     attr_reader :amqp_thread
+    attr_writer :service_controller
 
     # Handle request passed from lower layer (service-controller)
     #

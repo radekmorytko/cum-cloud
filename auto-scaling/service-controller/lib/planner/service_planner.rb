@@ -25,6 +25,10 @@ module AutoScaling
       @executor.deploy_service service
     end
 
+    def reserve?(stack_data)
+      @reservation_manager.reserve?(stack_data)
+    end
+
     # Analyzes data using supplied model
     #
     # * *Args* :

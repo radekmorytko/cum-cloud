@@ -44,7 +44,7 @@ module AutoScaling
     end
 
     def monitor_container(container)
-      data = @cloud_provider.monitor_container container.id
+      data = @cloud_provider.monitor_container container.correlation_id
       @@logger.debug "Grabbed data about container: #{container}, #{data}"
 
       # filter out historical data

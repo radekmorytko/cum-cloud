@@ -19,27 +19,27 @@ module AutoScaling
 
       @containers = [
           Container.create(
-              :id => 10,
+              :correlation_id => 10,
               :ip => '192.168.122.1'
           ),
           Container.create(
-              :id => 11,
+              :correlation_id => 11,
               :ip => '192.168.122.2'
           ),
           Container.create(
-              :id => 12,
+              :correlation_id => 12,
               :ip => '192.168.122.200',
               :type => :master
           )
       ]
 
       @stack = Stack.create(
+          :correlation_id => instance_id,
           :type => 'java',
           :containers => @containers
       )
 
       @service = Service.create(
-          :id => instance_id,
           :name => 'service-name',
           :stacks => [@stack],
           :status => :converged
@@ -64,7 +64,7 @@ module AutoScaling
 
     def test_shall_grab_data_about_all_containers
       data = { "CPU" => [["1", "100"], ["5", "105"]] }
-      @containers.each {|c| @cloud_provider.expects(:monitor_container).with(c.id).returns(data)}
+      @containers.each {|c| @cloud_provider.expects(:monitor_container).with(c.correlation_id).returns(data)}
 
       values = { "CPU" => ["100", "105"] }
       expected = { @stack => {@containers[0] => values, @containers[1] => values, @containers[2] => values}}
@@ -74,7 +74,7 @@ module AutoScaling
 
       # increment
       data = { "CPU" => [["1", "100"], ["5", "105"], ["10", "200"]] }
-      @containers.each {|c| @cloud_provider.expects(:monitor_container).with(c.id).returns(data)}
+      @containers.each {|c| @cloud_provider.expects(:monitor_container).with(c.correlation_id).returns(data)}
 
       values = { "CPU" => ["200"] }
       expected = { @stack => {@containers[0] => values, @containers[1] => values, @containers[2] => values}}

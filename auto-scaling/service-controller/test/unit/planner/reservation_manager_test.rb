@@ -19,13 +19,27 @@ module AutoScaling
           }
         }
       }
-      @reservation_manager = ReservationManager.new(@cloud_provider, {:cpu => 5, :memory => 5}, requirements['stacks'])
+      @reservation_manager = ReservationManager.new(@cloud_provider, {:cpu => 5, :memory => 1024}, requirements['stacks'])
+    end
+
+    def test_shall_check_if_deployment_is_possible
+      stack_data = {
+        'type' => 'boot',
+        'instances' => 2
+      }
+      assert @reservation_manager.reserve?(stack_data)
+
+      stack_data = {
+          'type' => 'boot',
+          'instances' => 20
+      }
+      assert !@reservation_manager.reserve?(stack_data)
     end
 
     def test_shall_reserve_resources
-      @reservation_manager.reserve({:cpu => 5, :memory => 2})
-      @reservation_manager.free(:memory => 2)
-      @reservation_manager.reserve(:memory => 5)
+      @reservation_manager.reserve({:cpu => 5, :memory => 1024})
+      @reservation_manager.free(:memory => 1024)
+      @reservation_manager.reserve(:memory => 1024)
     end
 
     def test_shall_return_resource_requirements

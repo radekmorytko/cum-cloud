@@ -31,7 +31,7 @@ module AutoScaling
       )
       policy = Policy.create(
         :name => 'threshold_model',
-        :arguments => {'min' => 10, 'max' => 50}
+        :arguments => {'min' => '10', 'max' => '50'}
       )
       values = ["90", "95" , "98", "60"]
 

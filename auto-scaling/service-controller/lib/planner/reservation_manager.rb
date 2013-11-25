@@ -37,6 +37,25 @@ module AutoScaling
       Hash[requirements.map(){|key, value| [key.to_sym(), value.to_f] }]
     end
 
+    # Checks if resource reservation is possible
+    #
+    # * *Args* :
+    # - +unit+ -> hashmap of resources to be reserved
+    # {
+    #   :cpu => 2,
+    #   :memory => 3
+    # }
+    def reserve?(stack_data)
+      needs = resources(stack_data['type'])
+      needs.each {|k, v| needs[k] = v * stack_data['instances'].to_i}
+
+      needs.each do |key, value|
+        return false if @capacity[key] < value
+      end
+
+      return true
+    end
+
     # Reserves resources
     #
     # * *Args* :

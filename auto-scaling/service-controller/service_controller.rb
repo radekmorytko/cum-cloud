@@ -49,6 +49,14 @@ module AutoScaling
       end
     end
 
+    # Checks if resource reservation is possible
+    #
+    # * *Args* :
+    # - +stack_data+ ->
+    def reserve?(stack_data)
+      @planner.reserve?(stack_data)
+    end
+
     # Build a service-controller instance
     #
     # * *Args* :
@@ -73,7 +81,10 @@ module AutoScaling
       reservation_manager = ReservationManager.new(cloud_provider, capacity)
       planner = ServicePlanner.new(executor, cloud_controller, reservation_manager)
 
-      ServiceController.new(monitor, analyzer, planner, executor)
+      service_controller = ServiceController.new(monitor, analyzer, planner, executor)
+      cloud_controller.service_controller = service_controller
+
+      return service_controller
     end
 
   end
