@@ -12,8 +12,8 @@ describe 'CloudBrokerWS' do
   end
 
   before do
-    @publisher = double('publisher', :publish => true)
-    app.set :publisher, @publisher
+    @offer_retriever = double(:fetch_cloud_offers => true)
+    app.set :offer_retriever, @offer_retriever
     app.set :config, ConfigUtils.load_config
   end
   
@@ -40,7 +40,7 @@ describe 'CloudBrokerWS' do
     let(:headers) { {'HTTP_CLIENT_ENDPOINT' => '127.0.0.1:12345'} }
 
     it 'sends offers to cloud controllers' do
-      @publisher.should_receive(:publish)
+      @offer_retriever.should_receive(:fetch_cloud_offers)
       post '/service', service_spec, headers
       expect(last_response).to be_ok
     end

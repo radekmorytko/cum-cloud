@@ -2,6 +2,7 @@ require 'common/config_utils'
 require 'common/database_utils'
 require 'cloud-broker-ws/cb_ws'
 require 'cloud-broker-amqp/offer_consumer'
+require 'cloud-broker-amqp/offer_retriever'
 require 'cloud-broker-amqp/publisher'
 require 'cloud-broker-amqp/service_deployer'
 require 'resource-mapping/offer_selector'
@@ -32,11 +33,10 @@ def run(opts)
     end
 
     Rack::Server.start({
-      :app    =>   dispatch,
-      :server =>   server,
-      :Host   =>   host,
-      :Port   =>   port,
-      :publisher => multicast_publisher
+      :app             => dispatch,
+      :server          => server,
+      :Host            => host,
+      :Port            => port,
     })
 
     amqp_conf = config['amqp']
@@ -46,12 +46,16 @@ def run(opts)
       channel = AMQP::Channel.new(connection)
 
       multicast_publisher.exchange = channel.fanout(amqp_conf['offers_exchange_name'])
-      p2p_publisher = Publisher.new
-      p2p_publisher.exchange = channel.default_exchange
+      p2p_publisher                = Publisher.new
+      p2p_publisher.exchange       = channel.default_exchange
 
       service_deployer   = ServiceDeployer.new(OfferSelector.new, p2p_publisher)
-      offer_consumer     = OfferConsumer.new
-      channel.queue(amqp_conf['offers_routing_key']).subscribe(&offer_consumer.method(:handle_cloud_offer))
+      offer_consumer     = OfferConsumer.new(OfferRetriever.new(multicast_publisher))
+
+      channel.queue(amqp_conf['offers_routing_key'])
+             .subscribe(&offer_consumer.method(:handle_cloud_offer))
+      channel.queue(amqp_conf['autoscaling_queue_name'])
+             .subscribe(&offer_consumer.method(:handle_autoscaling_message))
 
       EM.add_periodic_timer(amqp_conf['offers_select_interval']) do
         service_deployer.deploy_services
@@ -65,7 +69,7 @@ def run(opts)
   end
 end
   
-config = ConfigUtils.load_config
+config    = ConfigUtils.load_config
 publisher = Publisher.new
-run :app => CloudBrokerWS.new(nil, :publisher => publisher, :config => config), :publisher => publisher, :config => config
-    
+run :app => CloudBrokerWS.new(nil, :offer_retriever => OfferRetriever.new(publisher), :publisher => publisher, :config => config), :publisher => publisher, :config => config
+      

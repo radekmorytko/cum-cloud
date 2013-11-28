@@ -5,8 +5,14 @@ amqp:
   host: 127.0.0.1
   port: 5672
   offers_select_interval: 6
-  offers_routing_key: offers.routing_key
+
+# This is broker-id in the amqp sense.
+# Should be unique; otherwise there is an overhead with the amount
+# of messages being received by brokers
+  offers_routing_key: offers.sap_broker_1
   offers_exchange_name: default.offers_exchange.fanout
+
+  autoscaling_queue_name: scaling.sap_broker_1
 
 resource_mapping:
   strategy: flat

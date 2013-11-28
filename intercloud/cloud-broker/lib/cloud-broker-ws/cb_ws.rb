@@ -16,35 +16,12 @@ class CloudBrokerWS < Sinatra::Base
   end
 
   helpers do
-    # publish a message to AMQP
-    def publish(message, options = {})
-      settings.publisher.publish(message, options)
-    end
-
     # get cloud offers
     def fetch_cloud_offers(service_specification)
-      message = prepare_fetch_cloud_offers_message(service_specification)
-      @@logger.debug("Publishing a cloud-offers-fetching message: #{message}")
-      publish(message)
+      settings.offer_retriever.fetch_cloud_offers(service_specification)
     end
     
     # private scope
-    def prepare_fetch_cloud_offers_message(service_specification)
-      stacks_attributes = service_specification.stacks.map do |s|
-        attributes = s.attributes
-        [:type, :instances].reduce({}) { |acc, v| acc[v] = attributes[v]; acc }
-      end 
-      {
-        :service_id => service_specification.id,
-
-        # for a given stack select only limited no of attributes
-        :stacks => stacks_attributes,
-
-        # this broker id in an amqp sense
-        :offers_routing_key => settings.config['amqp']['offers_routing_key'],
-      }.to_json
-    end
-
     def create_stacks(stacks_attr_list, service_specification)
       stacks_attr_list.each do |stack_attrs|
         service_specification.stacks.create(stack_attrs)

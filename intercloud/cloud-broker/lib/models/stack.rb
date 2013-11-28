@@ -8,7 +8,7 @@ class Stack
   property :id,            Serial, :unique_index => :unique_stack_name
   property :type,          String, :unique_index => :unique_stack_name, :required => true
   property :instances,     Integer, :required => true
-  property :status,        Enum[:initialized, :failed, :deployed], :default => :initialized
+  property :status,        Enum[:initialized, :scaling, :failed, :deployed], :default => :initialized
 
   # cloud id where it is deployed at
   property :controller_id, String
@@ -27,9 +27,9 @@ class Stack
 
   private 
   def deployment_criteria_satisfied?
-    offers.count > 0 and
+    offers(:examined => false).count > 0 and
     # 86400 = 24*60*60 -> # seconds in a day
-    (DateTime.now - offers.max_by { |o| o.received_at }.received_at).to_f * 86400 > config['resource_mapping']['offers_wait_interval'] 
+    (DateTime.now - offers(:examined => false).max_by { |o| o.received_at }.received_at).to_f * 86400 > config['resource_mapping']['offers_wait_interval'] 
   end
 end
 

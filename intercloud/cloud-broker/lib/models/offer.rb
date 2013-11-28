@@ -7,6 +7,7 @@ class Offer
   property :id,            Serial
   property :cost,          Float, :required => true
   property :controller_id, String, :required => true # cc id and its routing key as well
+  property :examined,      Boolean, :default => false
   property :received_at,   DateTime, :default => DateTime.now
 
   belongs_to :stack

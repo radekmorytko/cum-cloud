@@ -2,8 +2,12 @@ require 'models/offer'
 require 'models/service_specification'
 
 class OfferConsumer
-  @@logger = Logger.new(STDOUT)
+  @@logger       = Logger.new(STDOUT)
   @@logger.level = Logger::DEBUG
+
+  def initialize(offer_retriever)
+    @offer_retriever = offer_retriever
+  end
 
   ##
   # Creates an offer for the service specification's STACK
@@ -24,6 +28,19 @@ class OfferConsumer
     @@logger.debug("Message: #{message}")
     service_specification = ServiceSpecification.get(message['service_id'])
     message['offers'].each { |offer| create_offer(service_specification, offer, message['controller_id']) }
+  end
+
+  # TODO extract to another class
+  def handle_autoscaling_message(metadata, payload)
+    @@logger.info("Handling an autoscaling message")
+    message = JSON.parse(payload)
+
+    service_id = message['service_id']
+    stack_type = message['type']
+    stack_to_scale = ServiceSpecification.get(service_id).stacks(:type => stack_type).first
+    stack_to_scale.update(:status => :scaling)
+
+    @offer_retriever.fetch_cloud_offers(stack_to_scale.service_specification)
   end
 
   private

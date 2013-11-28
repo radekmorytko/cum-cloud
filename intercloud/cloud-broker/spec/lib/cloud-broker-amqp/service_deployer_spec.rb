@@ -5,12 +5,16 @@ require 'resource-mapping/offer_selector'
 describe ServiceDeployer do
   let(:publisher) { double('Publisher', :publish => true) }
   subject { ServiceDeployer.new(OfferSelector.new, publisher) }
-  
-  before do
-    @service_specification = ss = ServiceSpecification.create(
+
+  let(:service_specification) do
+    ServiceSpecification.create(
       :name => 'weszlo.com',
       :client_endpoint => '192.168.0.166'
     )
+  end
+  
+  before do
+    ss = service_specification
     ss.stacks.create({:type => 'java', :instances => 3})
     ss.stacks.create({:type => 'ruby', :instances => 1})
     ss.stacks.create({:type => 'postgres', :instances => 2})
@@ -39,11 +43,33 @@ describe ServiceDeployer do
       end
     end
   end
-  describe 'when there are candidates for deployment' do
-    it 'deploys them' do
-      publisher.should_receive(:publish).exactly(3).times
+  describe 'when there is an offer for autoscaling the cloud' do
+    before do
+      subject.deploy_services
+      type = 'java'
+      stack = service_specification.stacks(:type => type).first
+      stack.update(:status => :scaling)
+      stack.offers.create({:cost => 10, :controller_id => 'cid', :received_at =>  DateTime.new(2013, 11, 18, 13, 20, 56) })
+    end
+    
+    it 'deployes one server' do
+      publisher.should_receive(:publish).exactly(1).times
       subject.deploy_services
     end
   end
+  describe 'when there are candidates for deployment' do
+    it 'deploys them by publishing messages to cloud controllers' do
+      publisher.should_receive(:publish).exactly(3).times
+      subject.deploy_services
+    end
 
+
+    it 'deploys them by changing the status of all offers to `examined\'' do
+      subject.deploy_services
+      service_specification.stacks.each do |stack|
+        expect(stack.offers(:examined => true).count).to  eq 3
+        expect(stack.offers(:examined => false).count).to eq 0
+      end
+    end
+  end
 end

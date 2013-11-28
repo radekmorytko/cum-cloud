@@ -3,7 +3,7 @@ require 'common/configurable'
 class ServiceDeployer
   include Configurable
 
-  @@logger = Logger.new(STDOUT)
+  @@logger       = Logger.new(STDOUT)
   @@logger.level = Logger::DEBUG
 
   def initialize(offer_selector, publisher)
@@ -21,7 +21,7 @@ class ServiceDeployer
     @@logger.info("Deploying service `#{service.name}'")
 
     # for each stack select an appropriate offer
-    selected_offers = service.stacks.map do |stack|
+    selected_offers = service.stacks.select { |stack| stack.ready_to_deploy? }.map do |stack|
       @offer_selector.select(stack.offers.map { |o| o }) 
     end
 
@@ -32,7 +32,7 @@ class ServiceDeployer
       memo
     end
 
-    @@logger.info("Service `#{service.name}' comprises #{service.stacks.count} stacks" \
+    @@logger.info("Service `#{service.name}' comprises #{selected_offers.count} stacks" \
                   " which are to be deployed on #{services_instances.keys.count}" \
                   " different clouds")
 
@@ -43,11 +43,13 @@ class ServiceDeployer
                          :routing_key => cloud_id
                         )
 
-      # update stack attributes
+      # update stack and its offers attributes
       stacks.each do |stack|
         stack.status        = :deployed
         stack.controller_id = cloud_id
         stack.save
+
+        stack.offers.update(:examined => true)
       end
 
       @@logger.debug("Notifying the cloud controller: #{cloud_id}")
@@ -70,8 +72,9 @@ class ServiceDeployer
       }
     end
     {
-      :name   => service.name,
-      :stacks => stacks_attributes
+      :name                   => service.name,
+      :stacks                 => stacks_attributes,
+      :autoscaling_queue_name => config['amqp']['autoscaling_queue_name']
     }.to_json
   end
 end

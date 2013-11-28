@@ -21,6 +21,6 @@ class ServiceSpecification
   def ready_to_deploy?
     not deployed?    and
     stacks.count > 0 and
-    stacks.reduce(true) { |status, stack| stack.ready_to_deploy? and status}
+    stacks.reduce(false) { |status, stack| stack.ready_to_deploy? or status}
   end
 end
