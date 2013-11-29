@@ -17,7 +17,7 @@ module AutoScaling
 
     @@logger       = Logger.new(STDOUT)
     @@logger.level = Logger::DEBUG
-    @@instance = nil
+    @@instance     = nil
 
     attr_reader :amqp_thread
     attr_writer :service_controller
@@ -103,8 +103,8 @@ module AutoScaling
 
     def handle_deploy_request(metadata, payload)
       @@logger.info("Handling a deploy request")
-      @@logger.debug("Payload:")
       message = JSON.parse(payload)
+      @@logger.debug("Payload: #{message.inspect}")
     end
 
     def valid_stack?(stack)
@@ -116,5 +116,4 @@ module AutoScaling
     
   end
 end
-
 
