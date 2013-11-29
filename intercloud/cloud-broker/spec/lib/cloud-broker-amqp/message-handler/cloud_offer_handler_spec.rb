@@ -33,7 +33,7 @@ describe CloudOfferHandler do
   end
 
   it 'creates offers for stacks of a service specification' do
-    subject.handle_cloud_offer(nil, message)
+    subject.handle_message(nil, message)
     expect(ServiceSpecification.get(service_spec.id).stacks.reduce(0) { |sum, s| sum + s.offers(:examined => false).count }).to be > 0
   end
 
