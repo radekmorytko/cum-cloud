@@ -52,6 +52,7 @@ class ServiceDeployer
         stack.offers.update(:examined => true)
       end
 
+
       @@logger.debug("Notifying the cloud controller: #{cloud_id}")
       @@logger.debug("Deployment message: #{deployment_msg}")
     end

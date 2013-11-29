@@ -44,23 +44,39 @@ describe ServiceDeployer do
     end
   end
   describe 'when there is an offer for autoscaling the cloud' do
+    let(:type) { 'java' }
+    let(:stack_under_test) { service_specification.stacks(:type => type).first }
     before do
       subject.deploy_services
-      type = 'java'
-      stack = service_specification.stacks(:type => type).first
-      stack.update(:status => :scaling)
-      stack.offers.create({:cost => 10, :controller_id => 'cid', :received_at =>  DateTime.new(2013, 11, 18, 13, 20, 56) })
+      stack_under_test.update(:status => :scaling)
+      stack_under_test.offers
+                      .create({:cost => 10, :controller_id => 'cid', :received_at =>  DateTime.new(2013, 11, 18, 13, 20, 56) })
+      stack_under_test.reload
     end
     
     it 'deployes one server' do
       publisher.should_receive(:publish).exactly(1).times
       subject.deploy_services
     end
+
+    it 'changes the status of a deployed stack to :deployed' do
+      subject.deploy_services
+      expect(stack_under_test.status).to eq :deployed
+    end
   end
+
   describe 'when there are candidates for deployment' do
     it 'deploys them by publishing messages to cloud controllers' do
       publisher.should_receive(:publish).exactly(3).times
       subject.deploy_services
+    end
+
+    it 'changes the status of a deployed stack to :deployed' do
+      subject.deploy_services
+      service_specification.reload
+      service_specification.stacks.each do |stack|
+        expect(stack.status).to eq :deployed
+      end
     end
 
 
