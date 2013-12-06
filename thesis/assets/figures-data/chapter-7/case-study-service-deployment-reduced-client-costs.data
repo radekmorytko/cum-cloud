@@ -1,0 +1,8 @@
+## Cost of a service by cloud providers
+"Deployment destination" "Cloud Provider 1" "Cloud Provider 2" "Cloud Provider 3" "C-SAP solution"
+java      150 120 180 120
+ruby      220 290 250 220
+postgres  320 240 290 240
+python    200 260 180 180
+amqp      330 390 285 285
+

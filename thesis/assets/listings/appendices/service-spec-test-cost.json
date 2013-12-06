@@ -1,0 +1,25 @@
+{
+  "name": "my new facebook",
+  "stacks": [
+  {
+    "type":"java",
+    "instances":1
+  },
+  {
+    "type":"amqp",
+    "instances":1
+  },
+  {
+    "type":"python",
+    "instances":1
+  },
+  {
+    "type":"ruby",
+    "instances":1
+  },
+  {
+    "type":"postgres",
+    "instances":1
+  }
+  ]
+}
