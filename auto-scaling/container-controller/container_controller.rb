@@ -8,7 +8,7 @@ require 'planner/container_planner'
 require 'executor/container_executor'
 require 'monitor/container_monitor'
 require 'analyzer/container_analyzer'
-require 'models/models'
+require 'domain/domain'
 
 module AutoScaling
 

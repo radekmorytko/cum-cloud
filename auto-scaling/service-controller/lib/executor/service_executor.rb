@@ -4,7 +4,7 @@ require 'rest_client'
 require 'base64'
 
 require 'executor/chef_renderer'
-require 'models/models'
+require 'domain/domain'
 
 module AutoScaling
 
@@ -92,7 +92,7 @@ module AutoScaling
     # Updates model, so it reflects actual configuration
     #
     # * *Args* :
-    # - +service+ -> instance of models/service
+    # - +service+ -> instance of domain/service
     def update(service)
       service.stacks.each do |stack|
         update_stack(stack)

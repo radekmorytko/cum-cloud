@@ -6,8 +6,8 @@ require 'rubygems'
 require 'logger'
 require 'sinatra'
 
-require 'models/chef_configuration'
-require 'models/chef_executor'
+require 'domain/chef_configuration'
+require 'domain/chef_executor'
 
 logger = Logger.new(STDOUT)
 

@@ -2,13 +2,29 @@ require 'rubygems'
 require 'logger'
 require 'set'
 
-require 'models/models'
-require 'analyzer/threshold_model'
+require 'domain/domain'
+require 'common/common'
 
 module AutoScaling
   class ServiceAnalyzer
 
     @@logger = Logger.new(STDOUT)
+
+    @@mappings = {
+        :threshold_model => {
+            :master => {
+                :greater => :overloaded_master,
+                :lesser => :healthy,
+                :fits => :healthy
+            },
+
+            :slave => {
+                :greater => :insufficient_slaves,
+                :lesser => :redundant,
+                :fits => :healthy
+            }
+        }
+    }
 
     def initialize(policy_evaluator)
       @policy_evaluator = policy_evaluator
@@ -44,7 +60,7 @@ module AutoScaling
           containers.each do |container, metrics|
 
             metrics.each do |key, values|
-              conclusion = @policy_evaluator.evaluate(policy, container, values)
+              conclusion = @policy_evaluator.evaluate(policy, container, values, @@mappings)
               @@logger.debug "Concluded that currently #{container} is #{conclusion} (by key: #{key})"
 
               conclusions[stack] << conclusion

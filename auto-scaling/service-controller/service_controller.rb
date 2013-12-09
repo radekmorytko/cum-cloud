@@ -10,7 +10,7 @@ require 'executor/service_executor'
 require 'monitor/service_monitor'
 require 'analyzer/service_analyzer'
 require 'analyzer/policy_evaluator'
-require 'models/models'
+require 'domain/domain'
 
 module AutoScaling
 

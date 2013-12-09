@@ -2,7 +2,7 @@ require 'rubygems'
 require 'logger'
 
 require 'cloud-provider/cloud_provider'
-require 'models/models'
+require 'domain/domain'
 
 module AutoScaling
   class ServiceMonitor

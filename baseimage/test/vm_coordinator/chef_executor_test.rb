@@ -3,7 +3,7 @@ require 'base64'
 require "test/unit"
 require 'mocha/setup'
 
-require 'models/chef_executor'
+require 'domain/chef_executor'
 
 class ChefExecutorTest < Test::Unit::TestCase
   TMP_DIR = 'tmp'

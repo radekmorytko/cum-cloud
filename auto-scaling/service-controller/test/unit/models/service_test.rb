@@ -3,7 +3,7 @@ require 'data_mapper'
 require "test/unit"
 
 require 'utils'
-require 'models/models'
+require 'domain/domain'
 
 module AutoScaling
   class ServiceTest < Test::Unit::TestCase

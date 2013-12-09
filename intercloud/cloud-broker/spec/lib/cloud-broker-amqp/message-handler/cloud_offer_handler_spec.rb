@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'models/service_specification'
+require 'domain/service_specification'
 require 'cloud-broker-amqp/message-handler/cloud_offer_handler'
 
 describe CloudOfferHandler do

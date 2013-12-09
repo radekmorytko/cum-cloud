@@ -1,6 +1,6 @@
 require 'spec_helper'
 require 'resource-mapping/offer_selector'
-require 'models/offer'
+require 'domain/offer'
 
 describe OfferSelector do
 

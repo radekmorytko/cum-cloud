@@ -2,7 +2,7 @@ require 'rubygems'
 require 'logger'
 require 'set'
 
-require 'models/models'
+require 'domain/domain'
 
 module AutoScaling
   class ContainerMonitor

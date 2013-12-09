@@ -9,6 +9,22 @@ require 'analyzer/service_analyzer'
 module AutoScaling
   class ServiceAnalyzerTest < Test::Unit::TestCase
 
+    @@mappings = {
+        :threshold_model => {
+            :master => {
+                :greater => :overloaded_master,
+                :lesser => :healthy,
+                :fits => :healthy
+            },
+
+            :slave => {
+                :greater => :insufficient_slaves,
+                :lesser => :redundant,
+                :fits => :healthy
+            }
+        }
+    }
+
     def setup
       Utils::setup_database
       @evaluator = mock()
@@ -80,7 +96,7 @@ module AutoScaling
 
       responses = {@containers[0] => :insufficient_slaves, @containers[1] => :insufficient_slaves, @containers[2] => :insufficient_slaves, @containers[3] => :overloaded_master}
       data[@stack].each do |container, metrics|
-        @evaluator.expects(:evaluate).with(policy, container, data[@stack][container]["CPU"]).returns(responses[container])
+        @evaluator.expects(:evaluate).with(policy, container, data[@stack][container]["CPU"], @@mappings).returns(responses[container])
       end
 
       conclusion = @analyzer.analyze(data)

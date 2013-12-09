@@ -2,12 +2,28 @@ require 'rubygems'
 require 'test/unit'
 require 'data_mapper'
 require 'mocha/setup'
-require 'models/models'
+require 'domain/domain'
 require 'utils'
 require 'analyzer/policy_evaluator'
 
 module AutoScaling
   class PolicyEvaluatorTest < Test::Unit::TestCase
+
+    @@mappings = {
+        :threshold_model => {
+            :master => {
+                :greater => :overloaded_master,
+                :lesser => :healthy,
+                :fits => :healthy
+            },
+
+            :slave => {
+                :greater => :insufficient_slaves,
+                :lesser => :redundant,
+                :fits => :healthy
+            }
+        }
+    }
 
     def setup
       Utils::setup_database
@@ -35,7 +51,7 @@ module AutoScaling
       )
       values = ["90", "95" , "98", "60"]
 
-      actual = @evaluator.evaluate(policy, container, values)
+      actual = @evaluator.evaluate(policy, container, values, @@mappings)
       assert_equal(expected, actual)
     end
 

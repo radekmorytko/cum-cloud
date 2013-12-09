@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'json'
 require 'logger'
-require 'models/models'
+require 'domain/domain'
 
 module AutoScaling
 

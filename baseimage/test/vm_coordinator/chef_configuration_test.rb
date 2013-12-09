@@ -2,7 +2,7 @@ require 'rubygems'
 require 'test/unit'
 require 'mocha/setup'
 
-require 'models/chef_configuration'
+require 'domain/chef_configuration'
 
 class ChefConfigurationTest < Test::Unit::TestCase
   TMP_DIR = 'tmp'

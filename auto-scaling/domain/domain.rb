@@ -1,8 +1,8 @@
-require 'models/container'
-require 'models/stack'
-require 'models/service'
-require 'models/policy'
-require 'models/policy_set'
+require 'domain/container'
+require 'domain/stack'
+require 'domain/service'
+require 'domain/policy'
+require 'domain/policy_set'
 
 DataMapper.finalize
 

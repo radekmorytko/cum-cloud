@@ -1,6 +1,6 @@
 require 'logger'
 require 'common/config_utils'
-require 'models/models'
+require 'domain/domain'
 require 'data_mapper'
 
 class DatabaseUtils

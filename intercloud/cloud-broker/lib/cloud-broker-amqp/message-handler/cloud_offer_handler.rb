@@ -1,4 +1,4 @@
-require 'models/service_specification'
+require 'domain/service_specification'
 require 'logger'
 
 class CloudOfferHandler
