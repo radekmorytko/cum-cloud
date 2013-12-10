@@ -3,7 +3,7 @@ require 'test/unit'
 require 'mocha/setup'
 
 require 'utils'
-require 'monitor/service_monitor'
+require 'monitor/container_monitor'
 
 module AutoScaling
 
@@ -33,41 +33,39 @@ module AutoScaling
       assert_equal set_2 - set_1, @monitor.send(:last, set_2, @container )
     end
 
-    def test_shall_grab_data_about_all_containers
+    def test_shall_grab_data_container
       data = { "CPU" => [["1", "100"], ["5", "105"]] }
       @cloud_provider.expects(:monitor_container).with(@container.correlation_id).returns(data)
 
-      values = { "CPU" => ["100", "105"] }
-      expected = { @stack => {@containers[0] => values, @containers[1] => values, @containers[2] => values}}
+      expected = { "CPU" => ["100", "105"] }
 
-      actual = @monitor.monitor @service
+      actual = @monitor.monitor @container
       assert_equal expected, actual
 
 
       # increment
-    #  data = { "CPU" => [["1", "100"], ["5", "105"], ["10", "200"]] }
-  #    @containers.each {|c| @cloud_provider.expects(:monitor_container).with(c.id).returns(data)}
+      data = { "CPU" => [["1", "100"], ["5", "105"], ["10", "200"]] }
+      @cloud_provider.expects(:monitor_container).with(@container.correlation_id).returns(data)
 
-   #   values = { "CPU" => ["200"] }
-   #   expected = { @stack => {@containers[0] => values, @containers[1] => values, @containers[2] => values}}
+      expected = { "CPU" => ["200"] }
 
-    #  actual = @monitor.monitor @service
-    #  assert_equal expected, actual
+      actual = @monitor.monitor @container
+      assert_equal expected, actual
     end
 
     def test_shall_properly_collect_values
-     # data = {
-    #      "CPU" => [["1", "100"], ["5", "105"], ["10", "200"]],
-    #      "MEMORY" => [["1", "70"], ["5", "7345"], ["10", "3213"]],
-    #  }
-    #  expected = {
-     #     "CPU" => ["100", "105", "200"],
-    #      "MEMORY" => ["70", "7345", "3213"],
-    #  }
+      data = {
+          "CPU" => [["1", "100"], ["5", "105"], ["10", "200"]],
+          "MEMORY" => [["1", "70"], ["5", "7345"], ["10", "3213"]],
+      }
+      expected = {
+          "CPU" => ["100", "105", "200"],
+          "MEMORY" => ["70", "7345", "3213"],
+      }
 
-     # actual = @monitor.send(:collect_values, data)
-    #  assert_equal expected, actual
-    #  assert_equal expected, actual
+      actual = @monitor.send(:collect_values, data)
+      assert_equal expected, actual
+      assert_equal expected, actual
     end
 
   end
