@@ -15,7 +15,7 @@ module AutoScaling
       @stack_controller = mock()
       @reservation_manager = mock()
 
-      @planner = ContainerPlanner.new(@executor, @stack_controller, @reservation_manager)
+      @planner = ContainerPlanner.new(@executor, @reservation_manager)
     end
 
     def test_shall_properly_plan_actions
