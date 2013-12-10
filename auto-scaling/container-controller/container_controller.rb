@@ -4,6 +4,7 @@ require 'rubygems'
 require 'logger'
 require 'rufus-scheduler'
 
+require 'common/common'
 require 'planner/container_planner'
 require 'executor/container_executor'
 require 'monitor/container_monitor'
@@ -34,8 +35,8 @@ module AutoScaling
         @@logger.debug "Executing job for a #{container}"
 
         monitoring_data = monitor.monitor(container)
-        conclusions = analyzer.analyze(monitoring_data)
-        planner.plan(conclusions)
+        conclusions = analyzer.analyze({:container => container, :metrics => monitoring_data})
+        planner.plan({:container => container, :conclusions => conclusions})
 
         @@logger.debug "Job execution has finished"
       end
@@ -43,14 +44,17 @@ module AutoScaling
 
     #_provider+ -> cloud provider, ie, open nebula
     # - +cloud_controller+ -> an instance of CloudController
-    def self.build(cloud_provider, settings)
+    def self.build(cloud_provider, reservation_manager, scheduler = nil)
       # mapek model
       monitor = ContainerMonitor.new(cloud_provider)
-      analyzer = ContainerAnalyzer.new()
-      executor = ContainerExecutor.new(cloud_provider)
-      planner = ContainerPlanner.new(executor, settings['service_controller'])
+      analyzer = ContainerAnalyzer.new(PolicyEvaluator.new)
+      executor = ContainerExecutor.new()
+      planner = ContainerPlanner.new(executor, reservation_manager)
 
-      ContainerController.new(monitor, analyzer, planner, executor)
+      controller = ContainerController.new(monitor, analyzer, planner, executor, scheduler)
+      @@logger.debug "Instantiated ContainerController: #{controller}"
+
+      controller
     end
 
   end

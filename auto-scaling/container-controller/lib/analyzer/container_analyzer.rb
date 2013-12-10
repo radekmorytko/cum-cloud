@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'logger'
 require 'set'
+require 'pp'
 
 require 'domain/domain'
 
@@ -62,6 +63,8 @@ module AutoScaling
           conclusions << (conclusion.to_s + '_' + key.downcase).to_sym
         end
       end
+
+      @@logger.debug "Conclusions about #{container} are #{conclusions.to_s}"
 
       conclusions
     end

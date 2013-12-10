@@ -14,19 +14,24 @@ module AutoScaling
 
     def increase_cpu(container)
       payload = '{ "chef" => "CPU" }'
-      post(container, payload)
+      @@logger.debug "Prepared payload for CPU increase: #{payload} for #{container}"
+      result = post(container, payload)
     end
 
     def increase_memory(container)
       payload = '{ "chef" => "MEMORY" }'
+      @@logger.debug "Prepared payload for MEMORY increase: #{payload} for #{container}"
       post(container, payload)
     end
 
     private
     def post(container, payload)
-      RestClient.post(url(container), payload){ |response, request, result, &block|
+      url = url(container)
+
+      RestClient.post(url, payload){ |response, request, result, &block|
         case response.code
           when 200
+            @@logger.debug "Got response #{response} from #{url}"
             response
           else
             response.return!(request, result, &block)

@@ -14,9 +14,8 @@ module AutoScaling
 
     attr_reader :conclusions
 
-    def initialize(executor, stack_controller, reservation_manager)
+    def initialize(executor, reservation_manager)
       @executor = executor
-      @stack_controller = stack_controller
       @reservation_manager = reservation_manager
       @conclusions = []
     end
@@ -46,11 +45,13 @@ module AutoScaling
 
     private
     def insufficient_cpu(container)
+      @@logger.debug "Attempt to scale CPU up for container: #{container}"
       @reservation_manager.scale_up(container, :cpu)
       @executor.increase_cpu(container)
     end
 
     def insufficient_memory(container)
+      @@logger.debug "Attempt to scale MEMORY up for container: #{container}"
       @reservation_manager.scale_up(container, :memory)
       @executor.increase_memory(container)
     end
