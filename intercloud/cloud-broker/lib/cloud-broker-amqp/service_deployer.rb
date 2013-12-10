@@ -34,7 +34,7 @@ class ServiceDeployer
 
     @@logger.info("Service `#{service.name}' comprises #{selected_offers.count} stacks" \
                   " which are to be deployed on #{services_instances.keys.count}" \
-                  " different clouds")
+                  " different clouds. Total cost of deployment: #{selected_offers.reduce(0){|acc, o| acc + o.cost}}")
 
     # for each cc, deploy an instance of the service
     services_instances.each do |cloud_id, stacks|

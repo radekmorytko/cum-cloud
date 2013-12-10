@@ -18,6 +18,8 @@ describe ServiceDeployer do
     ss.stacks.create({:type => 'java', :instances => 3})
     ss.stacks.create({:type => 'ruby', :instances => 1})
     ss.stacks.create({:type => 'postgres', :instances => 2})
+    ss.stacks.create({:type => 'python', :instances => 3})
+    ss.stacks.create({:type => 'amqp', :instances => 3})
     date = DateTime.new(2013, 11, 18, 13, 20, 56) 
     cost_hash = {
       'java' => {
@@ -34,9 +36,19 @@ describe ServiceDeployer do
         'c1' => 103,
         'c2' => 102,
         'c3' => 101
+      },
+      'python' => {
+        'c1' => 120,
+        'c2' => 119,
+        'c3' => 118
+      },
+      'amqp' => {
+        'c1' => 130,
+        'c2' => 129,
+        'c3' => 131
       }
     }
-    %w(java ruby postgres).each do |type|
+    %w(java ruby postgres python amqp).each do |type|
       stack = ss.stacks(:type => type).first
       %w(c1 c2 c3).each do |cloud_id|
         stack.offers.create({:cost => cost_hash[type][cloud_id], :controller_id => cloud_id, :received_at => date})

@@ -25,5 +25,5 @@ development:
   database-log-level: info
 test:
   database: ':memory:'
-  database-log-level: debug
+  database-log-level: info
 
