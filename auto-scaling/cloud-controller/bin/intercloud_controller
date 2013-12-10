@@ -5,6 +5,6 @@ require 'cloud_controller'
 
 cloud_controller = AutoScaling::CloudController.build
 
-cloud_controller.amqp_thread.join
+cloud_controller.run
 
 

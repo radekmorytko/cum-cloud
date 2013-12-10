@@ -66,8 +66,8 @@ module AutoScaling
     # - +mappings+ -> an instance of hashmap, used to configure ServiceExecutor
     def self.build(cloud_provider, settings)
       # shortcuts
-      cloud_controller = settings.cloud_controller
-      mappings = settings.mappings[settings.cloud_provider_name]
+      cloud_controller = settings['cloud_controller']
+      mappings = settings['mappings'][settings['cloud_provider_name']]
 
       # mapek model
       monitor = ServiceMonitor.new(cloud_provider)
@@ -75,8 +75,8 @@ module AutoScaling
       executor = ServiceExecutor.new(cloud_provider, mappings)
 
       capacity = {}
-      if settings.endpoints[settings.cloud_provider_name].key?('capacity')
-        capacity = settings.endpoints[settings.cloud_provider_name]['capacity']
+      if settings['endpoints'][settings['cloud_provider_name']].key?('capacity')
+        capacity = settings['endpoints'][settings['cloud_provider_name']]['capacity']
       end
       reservation_manager = ReservationManager.new(cloud_provider, capacity)
       planner = ServicePlanner.new(executor, cloud_controller, reservation_manager)

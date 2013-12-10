@@ -48,7 +48,7 @@ module AutoScaling
       monitor = ContainerMonitor.new(cloud_provider)
       analyzer = ContainerAnalyzer.new()
       executor = ContainerExecutor.new(cloud_provider)
-      planner = ContainerPlanner.new(executor, settings.service_controller)
+      planner = ContainerPlanner.new(executor, settings['service_controller'])
 
       ContainerController.new(monitor, analyzer, planner, executor)
     end

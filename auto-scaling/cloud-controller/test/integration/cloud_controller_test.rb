@@ -1,33 +1,24 @@
 require 'rubygems'
 require 'test/unit'
 require 'mocha/setup'
-require 'rack/test'
 require 'json'
 require 'fakeweb'
 require 'uri'
 require 'rest-client'
 
-ENV['RACK_ENV'] = 'test'
-
-require 'auto_scaling_server'
+require 'cloud_controller'
+require 'common/config_utils'
 # helper for generating opennebula responses
 require 'cloud-provider/test/opennebula_generator'
 
+ENV['CLOUD_ENV'] = 'test'
 
 module AutoScaling
   class AutoScalingServerTest < Test::Unit::TestCase
 
-    include Rack::Test::Methods
-
-    def app
-      AutoScalingServer
-    end
-
     def setup
-      ENV['RACK_ENV'] = 'test'
-
-      config = YAML.load_file('config/config.yaml')
-      @settings = config['endpoints'][ENV['RACK_ENV']]['opennebula']
+      @settings         = ConfigUtils.load_config['endpoints']['opennebula']
+      @cloud_controller = CloudController.build
     end
 
     def url
@@ -79,9 +70,8 @@ module AutoScaling
       FakeWeb.register_uri(:post, "http://#{master[:ip]}:4567/chef", :status => ["200", "OK"])
       FakeWeb.register_uri(:post, "http://#{slave[:ip]}:4567/chef", :status => ["200", "OK"])
 
-      post '/service', msg.to_json
-      assert last_response.ok?
-      service_id = JSON.parse(last_response.body)['id']
+      service_attributes = @cloud_controller.handle_deploy_request(nil, msg.to_json)
+      service_id = service_attributes[:id]
       service = Service.get(service_id)
       assert_equal :converged, service.status
 
