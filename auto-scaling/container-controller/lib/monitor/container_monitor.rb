@@ -18,7 +18,7 @@ module AutoScaling
     # * *Args* :
     # - +container+ -> reference to a container. An instance of AutoScaling::Container class
     #
-    # Returns hashmap that consists mapping stacks => containers => metrics, ex:
+    # Returns hashmap that consists mapping containers => metrics, ex:
     # {
     #   "CPU" => ["100", "105", "200"],
     #   "MEMORY" => ["70", "7345", "3213"],
