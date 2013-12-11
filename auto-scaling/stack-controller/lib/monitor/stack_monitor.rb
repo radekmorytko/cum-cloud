@@ -17,8 +17,8 @@ module AutoScaling
     #
     # * *Args* :
     # - +service+ -> reference to a service. An instance of AutoScaling::Service class
-    def monitor(service)
-      @@logger.debug "Monitoring a service #{service}"
+    def monitor(stack)
+      @@logger.debug "Monitoring a service #{stack}"
 
       # check all vms that forms a service
       data = {}

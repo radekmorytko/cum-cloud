@@ -13,7 +13,7 @@ require 'cloud_controller/offer_response_preparer'
 
 # Remaining CSAP stack
 require 'cloud-provider/cloud_provider'
-require 'stack-controller/service_controller'
+require 'stack-controller/stack_controller'
 require 'container-controller/container_controller'
 
 # common
@@ -28,7 +28,7 @@ module AutoScaling
     @@logger       = Logger.new(STDOUT)
     @@logger.level = Logger::DEBUG
 
-    attr_writer :service_controller
+    attr_writer :stack_controller
     attr_writer :container_controller
 
     # Handle request passed from lower layer (stack-controller)
@@ -69,7 +69,7 @@ module AutoScaling
 
       @@logger.info("Initializing ServiceController")
       service_controller            = StackController.build(cloud_provider, config)
-      instance.service_controller   = service_controller
+      instance.stack_controller   = service_controller
       config['service_controller']  = service_controller
 
       @@logger.info("Initializing Container Controller")
@@ -123,18 +123,18 @@ module AutoScaling
 
     def handle_deploy_request(metadata, payload)
       @@logger.info("Handling a deploy request")
-      service_data = JSON.parse(payload)
-      @@logger.debug("Payload: #{service_data.inspect}")
+      stack_data = JSON.parse(payload)
+      @@logger.debug("Payload: #{stack_data.inspect}")
 
       begin
-        service = {}
-        @@logger.debug "Planning deployment of: #{service_data}"
-        service = @service_controller.plan_deployment(service_data)
-        @@logger.debug "Deployed service #{service.to_json}"
+        stack = {}
+        @@logger.debug "Planning deployment of: #{stack_data}"
+        stack = @stack_controller.plan_deployment(stack_data)
+        @@logger.debug "Deployed service #{stack.to_json}"
 
-        @service_controller.converge(service)
+        @stack_controller.converge(stack)
 
-        service.stacks.containers.each do |container|
+        stack.containers.each do |container|
           @container_controller.schedule(container, config['scheduler']['interval'])
         end
 
@@ -142,7 +142,7 @@ module AutoScaling
         @@logger.error e
         raise e
       end
-      service.attributes
+      stack.attributes
     end
 
     private

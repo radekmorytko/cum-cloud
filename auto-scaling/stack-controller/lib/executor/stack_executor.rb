@@ -116,6 +116,7 @@ module AutoScaling
             @@logger.debug "Successfully sent configuration #{response}"
             # this is simplification - master not necessarily is the last deployed container
             container.stack.state = :converged
+            container.stack.save
             response
           else
             raise RuntimeError, "An error occurred during sending configuration, status: #{response.code}"

@@ -32,19 +32,14 @@ module AutoScaling
     def test_shall_deploy_a_service
 
       msg = {
-        'name' => 'kwejk.pl',
-        'stacks' => [
-          {
-            'type' => 'java',
-            'instances' => 2,
-            'name' => 'stack-name',
-            'policy_set' => {
-                'min_vms' => 0,
-                'max_vms' => 2,
-                'policies' => [{'name' => 'threshold_model', 'parameters' => {'min' => '5', 'max' => '50'} }]
-            }
-          }
-        ]
+        'type' => 'java',
+        'instances' => 2,
+        'name' => 'stack-name',
+        'policy_set' => {
+            'min_vms' => 0,
+            'max_vms' => 2,
+            'policies' => [{'name' => 'threshold_model', 'parameters' => {'min' => '5', 'max' => '50'} }]
+        }
       }
 
       instance_id = 144
@@ -70,10 +65,6 @@ module AutoScaling
       FakeWeb.register_uri(:post, "http://#{master[:ip]}:4567/chef", :status => ["200", "OK"])
       FakeWeb.register_uri(:post, "http://#{slave[:ip]}:4567/chef", :status => ["200", "OK"])
 
-      service_attributes = @cloud_controller.handle_deploy_request(nil, msg.to_json)
-      service_id = service_attributes[:id]
-      service = Service.get(service_id)
-      assert_equal :converged, service.status
 
       # monitoring data
       # note that it is quite hard to mock xmlrpc (one endpoint is common to all request)
@@ -88,6 +79,12 @@ module AutoScaling
                             {:status => ["200", "OK"], :body => response, :content_type => "text/xml"},
                             {:status => ["200", "OK"], :body => master[:response], :content_type => "text/xml"},
                             {:status => ["200", "OK"], :body => slave[:response], :content_type => "text/xml"}])
+
+      stack_attributes = @cloud_controller.handle_deploy_request(nil, msg.to_json)
+      stack_id = stack_attributes[:id]
+      stack = Stack.get(stack_id)
+      assert_equal :converged, stack.state
+
 
       sleep 10
     end

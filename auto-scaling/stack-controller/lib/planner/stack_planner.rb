@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'logger'
 require 'executor/stack_executor'
-require 'planner/reservation_manager'
+require 'common/common'
 
 module AutoScaling
 

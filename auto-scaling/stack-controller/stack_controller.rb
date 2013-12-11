@@ -42,11 +42,9 @@ module AutoScaling
       @planner.plan_deployment(service_data)
     end
 
-    def converge(service)
-      service.stacks.each do |stack|
-        master = Container.master(stack)
-        @executor.converge(master.id)
-      end
+    def converge(stack)
+      master = Container.master(stack)
+      @executor.converge(master.id)
     end
 
     # Checks if resource reservation is possible
@@ -81,10 +79,10 @@ module AutoScaling
       reservation_manager = ReservationManager.new(cloud_provider, capacity)
       planner = StackPlanner.new(executor, cloud_controller, reservation_manager)
 
-      service_controller = StackController.new(monitor, analyzer, planner, executor)
-      cloud_controller.service_controller = service_controller
+      stack_controller = StackController.new(monitor, analyzer, planner, executor)
+      cloud_controller.stack_controller = stack_controller
 
-      return service_controller
+      return stack_controller
     end
 
   end
