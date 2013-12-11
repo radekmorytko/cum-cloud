@@ -5,32 +5,32 @@ require 'mocha/setup'
 require 'fakeweb'
 
 require 'utils'
-require 'executor/service_executor'
+require 'executor/stack_executor'
 
 module AutoScaling
 
-  class ServiceExecutorTest < Test::Unit::TestCase
+  class StackExecutorTest < Test::Unit::TestCase
 
     MAPPINGS = {
-        'onetemplate_id' => 7,
+      'onetemplate_id' => 7,
 
-        # supported stacks
-        'appstage' => {
-            'java' => {
-                'master' => 39,
-                'slave' => 25
-            }
+      # supported stacks
+      'appstage' => {
+        'java' => {
+            'master' => 39,
+            'slave' => 25
         }
+      }
     }
 
     def setup
       @cloud_provider = mock()
       Utils::setup_database
 
-      @executor = ServiceExecutor.new(@cloud_provider, MAPPINGS)
+      @executor = StackExecutor.new(@cloud_provider, MAPPINGS)
     end
 
-    def test_shall_successfully_deploy_service
+    def test_shall_successfully_deploy_stack
       stack_template =
 <<-eos
 {
@@ -66,11 +66,6 @@ module AutoScaling
           }
       }
 
-      service = {
-        'name' => 'kwejk.pl',
-        'stacks' => [ stack ]
-      }
-
       template_id = 100
       instance_id = 69
       configuration = {
@@ -83,7 +78,7 @@ module AutoScaling
       @cloud_provider.expects(:instantiate_template).with(template_id).returns(instance_id)
       @cloud_provider.expects(:configuration).with(instance_id).returns(configuration)
 
-      @executor.deploy_service service
+      @executor.deploy_stack stack
     end
 
     def test_shall_update_model
@@ -93,20 +88,12 @@ module AutoScaling
          'slave' => [{:ip=>"192.168.122.101", :id=>"139"}, {:ip=>"192.168.122.102", :id=>"140"}]
       }
 
-      stacks = [Stack.create(:type => 'java', :correlation_id => instance_id)]
-
-      service_id = 10
-      service = Service.create(
-          :id => service_id,
-          :name => 'service-name',
-          :stacks => stacks
-      )
-      assert_equal Service.get(service_id).status, :new
+      stack = Stack.create(:type => 'java', :correlation_id => instance_id)
 
       @cloud_provider.expects(:configuration).with(instance_id).returns(conf)
-      @executor.send(:update, service)
+      @executor.send(:update, stack)
 
-      assert_equal Service.get(service_id).status, :converged
+      assert_equal Stack.correlated(instance_id).state, :deployed
       assert_equal Container.correlated(138).ip, "192.168.122.100"
       assert_equal Container.correlated(139).ip, "192.168.122.101"
       assert_equal Container.correlated(140).ip, "192.168.122.102"
@@ -135,12 +122,6 @@ module AutoScaling
         :type => 'java',
         :containers => containers,
         :correlation_id => instance_id
-      )
-
-      service = Service.create(
-        :name => 'service-name',
-        :stacks => [stack],
-        :status => :converged
       )
 
       FakeWeb.register_uri(:post,
@@ -172,17 +153,10 @@ module AutoScaling
           :correlation_id => instance_id
       )
 
-      service = Service.create(
-          :id => 10,
-          :name => 'service-name',
-          :stacks => [stack],
-          :status => :converged
-      )
-
       container_id = 800
       container_ip = '192.168.122.69'
       response = 'Od przedszkola do Opola, kupuj szybko dzis bejzbola'
-      @cloud_provider.expects(:instantiate_container).with('java', 'slave', 10, MAPPINGS).returns({:id => container_id, :ip=> container_ip})
+      @cloud_provider.expects(:instantiate_container).with('java', 'slave', MAPPINGS).returns({:id => container_id, :ip=> container_ip})
       FakeWeb.register_uri(:post,
                            "http://#{master_ip}:4567/chef",
                            :body => response,
@@ -219,13 +193,6 @@ module AutoScaling
           :correlation_id => correlation_id
       )
 
-      Service.create(
-          :id => correlation_id,
-          :name => 'service-name',
-          :stacks => [stack],
-          :status => :converged
-      )
-
       response = 'Hulaj dusza, baki ida'
       FakeWeb.register_uri(:post,
                            "http://#{master_ip}:4567/chef",
@@ -238,17 +205,9 @@ module AutoScaling
     end
 
     def test_shall_throw_exception_when_there_is_no_slaves_left
-      instance_id = 69
       stack = Stack.create(
           :type => 'java',
           :containers => []
-      )
-
-      Service.create(
-          :id => instance_id,
-          :name => 'service-name',
-          :stacks => [stack],
-          :status => :converged
       )
 
       assert_raise RuntimeError do

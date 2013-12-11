@@ -78,7 +78,7 @@ eos
     end
 
     def test_shall_manage_container
-      container_info = @opennebula_client.instantiate_container('bootstrap', 'base', 'bootstrap', MAPPINGS)
+      container_info = @opennebula_client.instantiate_container('bootstrap', 'base', MAPPINGS)
       assert_equal true, container_info[:id] >= 0
       assert_equal true, container_info[:ip] != ''
 

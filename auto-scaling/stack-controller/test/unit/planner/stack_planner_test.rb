@@ -3,18 +3,18 @@ require 'test/unit'
 require 'mocha/setup'
 
 require 'utils'
-require 'planner/service_planner'
+require 'planner/stack_planner'
 
 module AutoScaling
 
-  class ServicePlannerTest < Test::Unit::TestCase
+  class StackPlannerTest < Test::Unit::TestCase
 
     def setup
       @executor = mock()
       @cloud_controller = mock()
       @reservation_manager = mock()
 
-      @planner = ServicePlanner.new(@executor, @cloud_controller, @reservation_manager)
+      @planner = StackPlanner.new(@executor, @cloud_controller, @reservation_manager)
     end
 
     def test_shall_plan_service_deployment
@@ -23,7 +23,7 @@ module AutoScaling
           'instances' => 2,
           'name' => 'enterprise-app'
       }
-      @executor.expects(:deploy_service).with(service)
+      @executor.expects(:deploy_stack).with(service)
 
       @planner.plan_deployment(service)
     end

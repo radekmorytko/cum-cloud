@@ -27,7 +27,7 @@ module AutoScaling
 
     # Instantiates container with given type and role, which are used
     # to determine its template id
-    def instantiate_container(stack_type, container_role, service_id, mappings)
+    def instantiate_container(stack_type, container_role, mappings)
       @@logger.debug "Instantiating container: #{stack_type}, #{container_role}"
 
       # get template
@@ -38,7 +38,7 @@ module AutoScaling
 
       # add required variables
       raise(RuntimeError, res.message) if OpenNebula.is_error?(res)
-      t = add_required_variables(template, container_variables(service_id))
+      t = add_required_variables(template, container_variables())
 
       # instantiate it
       xml = OpenNebula::VirtualMachine.build_xml()
@@ -103,8 +103,8 @@ module AutoScaling
 
     private
     # Extra variables that needs to be added to handle base image initialization
-    def container_variables(service_id)
-      { 'SERVICE_ID' => service_id, 'VM_ID' => '$VMID' }
+    def container_variables()
+      { 'VM_ID' => '$VMID' }
     end
 
     # Modifies a template to add new variables

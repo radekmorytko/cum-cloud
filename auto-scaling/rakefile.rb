@@ -19,7 +19,7 @@ task :package do
 
   # prepare absolute structure
   FileUtils.mkdir_p('pkg/opt')
-  %w(cloud-controller cloud-provider server service-controller).each do |dir|
+  %w(cloud-controller cloud-provider server stack-controller).each do |dir|
     FileUtils.cp_r(dir, 'pkg/opt/auto-scaling')
   end
 

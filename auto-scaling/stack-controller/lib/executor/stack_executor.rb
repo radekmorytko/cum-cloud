@@ -8,7 +8,7 @@ require 'domain/domain'
 
 module AutoScaling
 
-  class ServiceExecutor
+  class StackExecutor
 
     @@logger = Logger.new(STDOUT)
 
@@ -20,41 +20,30 @@ module AutoScaling
     end
 
     # * *Args* :
-    # - +service+ -> description of a service. An instance of HashMap, ex:
-    #   service =
-    #  {
-    #    'name' => 'youtube',
-    #    'stacks' => [
-    #     {
-    #       'stack' => 'tomcat',
-    #       'instances' => 2,
-    #       'name' => 'enterprise-app'
-    #       'policy_set' =>
-    #          :min_vms =>  0
-    #          :max_vms =>  2
-    #          :polices => [{'name' => 'threshold_model', :parameters => {'min' => '5', 'max' => '50'}}]
-    #     }
-    #     ]
-    #  }
+    # - +stack+ -> description of a stack. An instance of HashMap, ex:
+    #   stack =
+    #   {
+    #     'stack' => 'tomcat',
+    #     'instances' => 2,
+    #     'name' => 'enterprise-app'
+    #     'policy_set' =>
+    #        :min_vms =>  0
+    #        :max_vms =>  2
+    #        :polices => [{'name' => 'threshold_model', :parameters => {'min' => '5', 'max' => '50'}}]
+    #   }
     #
-    def deploy_service(service)
-      @@logger.debug "Deploying service #{service} with mappings: #{@mappings}"
+    def deploy_stack(stack_data)
+      @@logger.debug "Deploying stack #{stack_data} with mappings: #{@mappings}"
 
-      stacks = service['stacks'].collect { |stack| create_stack(stack) }
+      stack = create_stack(stack_data)
+      update(stack)
 
-      service = Service.create(
-        :name => service['name'],
-        :stacks => stacks
-      )
-
-      update(service)
-
-      service
+      stack
     end
 
     def deploy_container(stack)
       @@logger.debug "Deploying container at #{stack} with mappings: #{@mappings}"
-      container_info = @cloud_provider.instantiate_container(stack.type.to_s, 'slave', stack.service.id, @mappings)
+      container_info = @cloud_provider.instantiate_container(stack.type.to_s, 'slave', @mappings)
 
       # persist data
       container = Container.create(
@@ -92,14 +81,27 @@ module AutoScaling
     # Updates model, so it reflects actual configuration
     #
     # * *Args* :
-    # - +service+ -> instance of domain/service
-    def update(service)
-      service.stacks.each do |stack|
-        update_stack(stack)
+    # - +stack+ -> instance of stack
+    def update(stack)
+      # note method blocks until i get a full configuration (inc ids and ips)
+      conf = @cloud_provider.configuration(stack.correlation_id)
+      @@logger.debug("Got configuration for a stack #{stack.correlation_id}: #{conf}")
+
+      stack.containers = [Container.create(
+                              :correlation_id => conf['master'][0][:id].to_i,
+                              :ip => conf['master'][0][:ip],
+                              :type => :master
+                          )]
+
+      conf['slave'].each do |vm|
+        stack.containers << Container.create(
+            :correlation_id => vm[:id].to_i,
+            :ip => vm[:ip]
+        )
       end
 
-      service.status = :converged
-      service.save
+      stack.state = :deployed
+      stack.save
     end
 
     def configure(container)
@@ -113,7 +115,7 @@ module AutoScaling
           when 200
             @@logger.debug "Successfully sent configuration #{response}"
             # this is simplification - master not necessarily is the last deployed container
-            container.stack.state = :deployed
+            container.stack.state = :converged
             response
           else
             raise RuntimeError, "An error occurred during sending configuration, status: #{response.code}"
@@ -123,7 +125,7 @@ module AutoScaling
 
     def create_stack(stack)
       # create appflow template
-      # but first we need to have appflow service-representation
+      # but first we need to have appflow stack-representation
       stack_definition = @cloud_provider.render stack, @mappings
       template_id = @cloud_provider.create_template stack_definition
 
@@ -149,27 +151,6 @@ module AutoScaling
           :correlation_id => instance_id,
           :policy_set => policy_set
       )
-    end
-
-    def update_stack(stack)
-      # note method blocks until i get a full configuration (inc ids and ips)
-      conf = @cloud_provider.configuration(stack.correlation_id)
-      @@logger.debug("Got configuration for a stack #{stack.correlation_id}: #{conf}")
-
-      stack.containers = [Container.create(
-                              :correlation_id => conf['master'][0][:id].to_i,
-                              :ip => conf['master'][0][:ip],
-                              :type => :master
-                          )]
-
-      conf['slave'].each do |vm|
-        stack.containers << Container.create(
-            :correlation_id => vm[:id].to_i,
-            :ip => vm[:ip]
-        )
-      end
-
-      stack.save
     end
 
   end

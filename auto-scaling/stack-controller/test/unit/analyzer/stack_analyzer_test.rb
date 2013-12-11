@@ -4,10 +4,10 @@ require 'mocha/setup'
 require 'set'
 
 require 'utils'
-require 'analyzer/service_analyzer'
+require 'analyzer/stack_analyzer'
 
 module AutoScaling
-  class ServiceAnalyzerTest < Test::Unit::TestCase
+  class StackAnalyzerTest < Test::Unit::TestCase
 
     @@mappings = {
         :threshold_model => {
@@ -28,7 +28,7 @@ module AutoScaling
     def setup
       Utils::setup_database
       @evaluator = mock()
-      @analyzer = ServiceAnalyzer.new @evaluator
+      @analyzer = StackAnalyzer.new @evaluator
 
       instance_id = 69
 
@@ -57,14 +57,8 @@ module AutoScaling
       @stack = Stack.create(
           :type => 'java',
           :containers => @containers,
-          :policy_set => @policy_set
-      )
-
-      @service = Service.create(
-          :id => instance_id,
-          :name => 'service-name',
-          :stacks => [@stack],
-          :status => :converged
+          :policy_set => @policy_set,
+          :correlation_id => instance_id
       )
     end
 

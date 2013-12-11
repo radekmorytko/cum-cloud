@@ -5,7 +5,7 @@ require 'cloud-provider/cloud_provider'
 require 'domain/domain'
 
 module AutoScaling
-  class ServiceMonitor
+  class StackMonitor
 
     @@logger = Logger.new(STDOUT)
 

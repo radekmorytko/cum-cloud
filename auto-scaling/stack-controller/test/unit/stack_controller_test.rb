@@ -3,17 +3,17 @@ require 'test/unit'
 require 'mocha/setup'
 
 require 'utils'
-require 'service-controller/service_controller'
+require 'stack-controller/stack_controller'
 
 module AutoScaling
 
-  class ServiceControllerTest < Test::Unit::TestCase
+  class StackControllerTest < Test::Unit::TestCase
 
     def setup
       @monitor, @analyzer, @planner = mock(), mock(), mock()
       @scheduler = Rufus::Scheduler.new
 
-      @controller = ServiceController.new @monitor, @analyzer, @planner, @scheduler
+      @controller = StackController.new @monitor, @analyzer, @planner, @scheduler
     end
 
     def test_shall_perform_full_cycle

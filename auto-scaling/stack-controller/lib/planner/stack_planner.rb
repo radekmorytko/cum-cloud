@@ -1,11 +1,11 @@
 require 'rubygems'
 require 'logger'
-require 'executor/service_executor'
+require 'executor/stack_executor'
 require 'planner/reservation_manager'
 
 module AutoScaling
 
-  class ServicePlanner
+  class StackPlanner
 
     @@logger = Logger.new(STDOUT)
 
@@ -15,14 +15,14 @@ module AutoScaling
       @reservation_manager = reservation_manager
     end
 
-    def plan_deployment(service)
-      @@logger.debug "Planning deployment of a #{service}"
+    def plan_deployment(stack)
+      @@logger.debug "Planning deployment of a #{stack}"
       # are there enough resources?
 
       # reserve resources
 
       # deploy
-      @executor.deploy_service service
+      @executor.deploy_stack stack
     end
 
     def reserve?(stack_data)

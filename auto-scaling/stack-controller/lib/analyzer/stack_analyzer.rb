@@ -6,7 +6,7 @@ require 'domain/domain'
 require 'common/common'
 
 module AutoScaling
-  class ServiceAnalyzer
+  class StackAnalyzer
 
     @@logger = Logger.new(STDOUT)
 

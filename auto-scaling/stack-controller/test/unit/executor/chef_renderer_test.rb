@@ -53,13 +53,6 @@ module AutoScaling
           :containers => containers
       )
 
-      service = Service.create(
-          :id => instance_id,
-          :name => 'service-name',
-          :stacks => [stack],
-          :status => :converged
-      )
-
       actual = ChefRenderer.render(stack)
 
       assert_equal expected, actual

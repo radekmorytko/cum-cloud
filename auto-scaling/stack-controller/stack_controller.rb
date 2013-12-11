@@ -4,17 +4,17 @@ require 'rubygems'
 require 'logger'
 require 'rufus-scheduler'
 
-require 'planner/service_planner'
+require 'planner/stack_planner'
 require 'planner/reservation_manager'
-require 'executor/service_executor'
-require 'monitor/service_monitor'
-require 'analyzer/service_analyzer'
+require 'executor/stack_executor'
+require 'monitor/stack_monitor'
+require 'analyzer/stack_analyzer'
 require 'analyzer/policy_evaluator'
 require 'domain/domain'
 
 module AutoScaling
 
-  class ServiceController
+  class StackController
 
     @@logger = Logger.new(STDOUT)
     attr_reader :monitor, :analyzer, :planner
@@ -57,7 +57,7 @@ module AutoScaling
       @planner.reserve?(stack_data)
     end
 
-    # Build a service-controller instance
+    # Build a stack-controller instance
     #
     # * *Args* :
     # - +cloud_provider+ -> cloud provider, ie, open nebula
@@ -70,18 +70,18 @@ module AutoScaling
       mappings = settings['mappings'][settings['cloud_provider_name']]
 
       # mapek model
-      monitor = ServiceMonitor.new(cloud_provider)
-      analyzer = ServiceAnalyzer.new(PolicyEvaluator.new)
-      executor = ServiceExecutor.new(cloud_provider, mappings)
+      monitor = StackMonitor.new(cloud_provider)
+      analyzer = StackAnalyzer.new(PolicyEvaluator.new)
+      executor = StackExecutor.new(cloud_provider, mappings)
 
       capacity = {}
       if settings['endpoints'][settings['cloud_provider_name']].key?('capacity')
         capacity = settings['endpoints'][settings['cloud_provider_name']]['capacity']
       end
       reservation_manager = ReservationManager.new(cloud_provider, capacity)
-      planner = ServicePlanner.new(executor, cloud_controller, reservation_manager)
+      planner = StackPlanner.new(executor, cloud_controller, reservation_manager)
 
-      service_controller = ServiceController.new(monitor, analyzer, planner, executor)
+      service_controller = StackController.new(monitor, analyzer, planner, executor)
       cloud_controller.service_controller = service_controller
 
       return service_controller

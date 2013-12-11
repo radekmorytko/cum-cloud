@@ -17,7 +17,7 @@ module AutoScaling
 
     @@logger = Logger.new(STDOUT)
 
-    # Build a service-controller instance
+    # Build a stack-controller instance
     #
     # * *Args* :
     # - +cloudLogger.new(STDOUT)

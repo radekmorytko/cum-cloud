@@ -13,7 +13,7 @@ require 'cloud_controller/offer_response_preparer'
 
 # Remaining CSAP stack
 require 'cloud-provider/cloud_provider'
-require 'service-controller/service_controller'
+require 'stack-controller/service_controller'
 require 'container-controller/container_controller'
 
 # common
@@ -31,7 +31,7 @@ module AutoScaling
     attr_writer :service_controller
     attr_writer :container_controller
 
-    # Handle request passed from lower layer (service-controller)
+    # Handle request passed from lower layer (stack-controller)
     #
     # * *Args* :
     # - +conclusion+ -> an action that lower layer wanted to perform
@@ -68,7 +68,7 @@ module AutoScaling
       cloud_provider = OpenNebulaClient.new(config['endpoints'][config['cloud_provider_name']])
 
       @@logger.info("Initializing ServiceController")
-      service_controller            = ServiceController.build(cloud_provider, config)
+      service_controller            = StackController.build(cloud_provider, config)
       instance.service_controller   = service_controller
       config['service_controller']  = service_controller
 

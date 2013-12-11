@@ -8,11 +8,6 @@ module AutoScaling
 
     property :id, Serial
 
-    property :name, String, :required => true
-    property :status, Enum[ :new, :converged ], :default => :new
-
-    has n, :stacks
-
     def to_s
       JSON.pretty_generate(self)
     end
