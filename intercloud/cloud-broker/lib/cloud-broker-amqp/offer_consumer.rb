@@ -1,5 +1,5 @@
-require 'domain/offer'
-require 'domain/service_specification'
+require 'models/offer'
+require 'models/service_specification'
 
 class OfferConsumer
   @@logger       = Logger.new(STDOUT)

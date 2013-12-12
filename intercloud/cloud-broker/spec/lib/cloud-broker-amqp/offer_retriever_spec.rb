@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'cloud-broker-amqp/offer_retriever'
-require 'domain/service_specification'
-require 'domain/stack'
+require 'models/service_specification'
+require 'models/stack'
 
 describe OfferRetriever do
   let(:publisher) { double(:publish => true) }

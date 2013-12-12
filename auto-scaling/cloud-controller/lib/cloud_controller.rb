@@ -1,7 +1,7 @@
 $:.unshift "#{File.dirname(__FILE__)}/../lib"
 $:.unshift File.dirname(File.expand_path('../..', __FILE__))
 
-require 'rubygems'
+require 'bundler/setup'
 
 # Cloud-Controller solely
 require 'common/configurable'
@@ -10,6 +10,8 @@ require 'cloud_controller/service_offer_preparer'
 require 'cloud_controller/stack_offer_preparer'
 require 'cloud_controller/stack_info_retriever'
 require 'cloud_controller/offer_response_preparer'
+require 'cloud_controller/deployers/service_deployer'
+require 'cloud_controller/deployers/stack_deployer'
 
 # Remaining CSAP stack
 require 'cloud-provider/cloud_provider'
@@ -28,8 +30,7 @@ module AutoScaling
     @@logger       = Logger.new(STDOUT)
     @@logger.level = Logger::DEBUG
 
-    attr_writer :stack_controller
-    attr_writer :container_controller
+    attr_writer :service_deployer
 
     # Handle request passed from lower layer (stack-controller)
     #
@@ -37,53 +38,56 @@ module AutoScaling
     # - +conclusion+ -> an action that lower layer wanted to perform
     # - +stack+ -> subject of above-mentioned action
     def forward(conclusion, stack)
+      raise 'Improper type of <<stack>> argument' unless stack.is_a?(Stack)
+
       @@logger.info("Received request of #{conclusion} to be performed on a stack #{stack.inspect}")
 
-      raise 'Invalid `stack\' structure - it must have `autoscaling_key\', ' \
-            'service_id and type of the stack!' unless valid_stack?(stack)
-
-      # TODO save this key while deploying a service
-      autoscaling_key = 'scaling.sap_broker_1'
-
-      respond_with(stack.to_json, autoscaling_key)
+      routing_key = stack.service.autoscaling_queue_name
+      respond_with(stack.to_json, routing_key)
     end
 
     def self.build
+      setup_database
+
       instance = CloudController.new(
         Publisher.new,
         ServiceOfferPreparer.new(
           StackOfferPreparer.new(StackInfoRetriever.new)
         ),
-        OfferResponsePreparer.new
+        OfferResponsePreparer.new,
+        nil # it is left for tests only
       )
 
       @@logger.info("Cloud Controller initialized")
-
-      setup_database
       
       config = ConfigUtils.load_config
       config['cloud_controller'] = instance
 
       @@logger.info("Initializing OpenNebulaClient")
-      cloud_provider = OpenNebulaClient.new(config['endpoints'][config['cloud_provider_name']])
+      cloud_provider       = OpenNebulaClient.new(config['endpoints'][config['cloud_provider_name']])
 
-      @@logger.info("Initializing ServiceController")
-      service_controller            = StackController.build(cloud_provider, config)
-      instance.stack_controller   = service_controller
-      config['service_controller']  = service_controller
+      @@logger.info("Initializing StackController")
+      stack_controller     = StackController.build(cloud_provider, config)
 
       @@logger.info("Initializing Container Controller")
-      instance.container_controller = ContainerController.build(cloud_provider, config)
+      container_controller = ContainerController.build(cloud_provider, config)
+
+      instance.service_deployer = ServiceDeployer.new(
+        StackDeployer.new(
+          stack_controller, container_controller
+        )
+      )
 
       @@logger.info("Cloud Controller setup completed")
       instance
     end
 
     # The only reason for exposing this method is testing
-    def initialize(publisher, service_offer_preparer, offer_response_preparer)
+    def initialize(publisher, service_offer_preparer, offer_response_preparer, service_deployer)
       @publisher               = publisher
       @service_offer_preparer  = service_offer_preparer
       @offer_response_preparer = offer_response_preparer
+      @service_deployer        = service_deployer
     end
 
         
@@ -123,39 +127,14 @@ module AutoScaling
 
     def handle_deploy_request(metadata, payload)
       @@logger.info("Handling a deploy request")
-      stack_data = JSON.parse(payload)
-      @@logger.debug("Payload: #{stack_data.inspect}")
-
-      begin
-        stack = {}
-        @@logger.debug "Planning deployment of: #{stack_data}"
-        stack = @stack_controller.plan_deployment(stack_data)
-        @@logger.debug "Deployed service #{stack.to_json}"
-
-        @stack_controller.converge(stack)
-
-        stack.containers.each do |container|
-          @container_controller.schedule(container, config['scheduler']['interval'])
-        end
-
-      rescue RuntimeError => e
-        @@logger.error e
-        raise e
-      end
-      stack.attributes
+      service_data = JSON.parse(payload)
+      @@logger.debug("Payload: #{service_data.inspect}")
+      @service_deployer.deploy(service_data)
     end
 
     private
     def respond_with(message, to)
       @publisher.publish(message, :routing_key => to)
-    end
-
-    
-    def valid_stack?(stack)
-      return false if stack.nil?
-      %w(autoscaling_key service_id type).reduce(true) do |result, key|
-        result and (stack.has_key?(key) or stack.has_key?(key.to_sym))
-      end
     end
 
     def self.setup_database

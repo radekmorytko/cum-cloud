@@ -1,5 +1,5 @@
 require 'common/config_utils'
-require 'domain/domain'
+require 'models/models'
 require 'sinatra'
 require 'json'
 require 'logger'

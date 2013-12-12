@@ -1,4 +1,4 @@
-require 'domain/service_specification'
+require 'models/service_specification'
 require 'logger'
 
 class AutoscalingMessageHandler

@@ -1,4 +1,4 @@
-require 'domain/service_specification'
-require 'domain/offer'
-require 'domain/stack'
+require 'models/service_specification'
+require 'models/offer'
+require 'models/stack'
 

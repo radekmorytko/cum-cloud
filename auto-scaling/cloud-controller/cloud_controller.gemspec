@@ -29,4 +29,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "guard-rspec"
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "rack-test"
+  # this is UTTERLY UGLY
+  spec.add_development_dependency "rest-client"
+  spec.add_development_dependency "rufus-scheduler"
+  spec.add_development_dependency "data_mapper"
+  spec.add_development_dependency "dm-sqlite-adapter"
 end

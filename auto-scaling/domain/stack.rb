@@ -11,6 +11,7 @@ module AutoScaling
 
     has 1, :policy_set
     has n, :containers
+    belongs_to :service
 
     property :type, Enum[ :invalid, :java ], :default => :invalid
     property :state, Enum[ :invalid, :queued, :pending, :deployed, :converged ], :default => :invalid
