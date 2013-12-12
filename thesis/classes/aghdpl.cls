@@ -36,6 +36,7 @@
 \RequirePackage{ctable}
 \RequirePackage{courier}
 \RequirePackage{caption}
+\RequirePackage{paralist}
 
 \lstset{
          basicstyle=\footnotesize\ttfamily, % Standardschrift
