@@ -9,6 +9,7 @@ class Stack
   property :type,          String, :unique_index => :unique_stack_name, :required => true
   property :instances,     Integer, :required => true
   property :status,        Enum[:initialized, :scaling, :failed, :deployed], :default => :initialized
+  property :policy_set,    Json, :required => true
 
   # cloud id where it is deployed at
   property :controller_id, String

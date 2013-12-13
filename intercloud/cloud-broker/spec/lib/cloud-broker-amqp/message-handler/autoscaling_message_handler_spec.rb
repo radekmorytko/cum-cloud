@@ -7,15 +7,32 @@ describe AutoscalingMessageHandler do
   let(:offer_retriever) { double(:fetch_cloud_offers => true) }
   subject { AutoscalingMessageHandler.new(offer_retriever) }
 
+  let(:policy_set) { 
+    {
+      "min_vms"=>0,
+      "max_vms"=>2,
+      "policies"=>[
+        {
+          "name"=>"threshold_model",
+          "parameters"=>{
+            "min"=>"5",
+            "max"=>"50"
+          }
+        }
+      ]
+    } 
+  }
   let(:stacks_attributes) do
     [
       {
         :type => 'java',
-        :instances => 2
+        :instances => 2,
+        :policy_set => policy_set
       },
       {
         :type => 'tomcat',
-        :instances => 3
+        :instances => 3,
+        :policy_set => policy_set
       }
     ]
   end

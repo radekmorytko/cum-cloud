@@ -12,14 +12,30 @@ describe ServiceDeployer do
       :client_endpoint => '192.168.0.166'
     )
   end
-  
+
+  let(:policy_set) { 
+    {
+      "min_vms"=>0,
+      "max_vms"=>2,
+      "policies"=>[
+        {
+          "name"=>"threshold_model",
+          "parameters"=>{
+            "min"=>"5",
+            "max"=>"50"
+          }
+        }
+      ]
+    } 
+  }
+
   before do
     ss = service_specification
-    ss.stacks.create({:type => 'java', :instances => 3})
-    ss.stacks.create({:type => 'ruby', :instances => 1})
-    ss.stacks.create({:type => 'postgres', :instances => 2})
-    ss.stacks.create({:type => 'python', :instances => 3})
-    ss.stacks.create({:type => 'amqp', :instances => 3})
+    ss.stacks.create({:type => 'java', :instances => 3, :policy_set => policy_set})
+    ss.stacks.create({:type => 'ruby', :instances => 1, :policy_set => policy_set})
+    ss.stacks.create({:type => 'postgres', :instances => 2, :policy_set => policy_set})
+    ss.stacks.create({:type => 'python', :instances => 3, :policy_set => policy_set})
+    ss.stacks.create({:type => 'amqp', :instances => 3, :policy_set => policy_set})
     date = DateTime.new(2013, 11, 18, 13, 20, 56) 
     cost_hash = {
       'java' => {

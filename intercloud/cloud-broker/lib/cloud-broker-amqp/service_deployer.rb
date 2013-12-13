@@ -68,8 +68,9 @@ class ServiceDeployer
     stacks_attributes = stacks.map do |stack|
       attributes = stack.attributes
       {
-        :type      => attributes[:type],
-        :instances => attributes[:instances]
+        :type       => attributes[:type],
+        :instances  => attributes[:instances],
+        :policy_set => attributes[:policy_set]
       }
     end
     {

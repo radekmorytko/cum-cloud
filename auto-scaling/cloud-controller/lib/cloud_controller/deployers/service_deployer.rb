@@ -1,4 +1,3 @@
-require 'domain/domain'
 require 'logger'
 
 module AutoScaling

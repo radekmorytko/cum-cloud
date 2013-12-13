@@ -6,16 +6,33 @@ require 'models/stack'
 describe OfferRetriever do
   let(:publisher) { double(:publish => true) }
   subject { OfferRetriever.new(publisher) }
+  let(:policy_set) { 
+    {
+      "min_vms"=>0,
+      "max_vms"=>2,
+      "policies"=>[
+        {
+          "name"=>"threshold_model",
+          "parameters"=>{
+            "min"=>"5",
+            "max"=>"50"
+          }
+        }
+      ]
+    } 
+  }
 
   let(:candidates) {
     [
       {
         :type => 'java',
-        :instances => 2
+        :instances => 2,
+        :policy_set => policy_set
       },
       {
         :type => 'tomcat',
-        :instances => 3
+        :instances => 3,
+        :policy_set => policy_set
       }
     ]
   }
@@ -25,15 +42,18 @@ describe OfferRetriever do
       {
         :type => 'java',
         :instances => 2,
+        :policy_set => policy_set,
         :status => :deployed
       },
       {
         :type => 'tomcat',
         :instances => 3,
+        :policy_set => policy_set,
         :status => :failed
       },
       {
         :type => 'python',
+        :policy_set => policy_set,
         :instances => 2
       }
     ]
