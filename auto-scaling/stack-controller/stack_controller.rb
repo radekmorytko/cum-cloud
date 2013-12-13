@@ -38,8 +38,8 @@ module AutoScaling
       end
     end
 
-    def plan_deployment(service_data)
-      @planner.plan_deployment(service_data)
+    def plan_deployment(stack_data)
+      @planner.plan_deployment(stack_data)
     end
 
     def converge(stack)

@@ -145,12 +145,12 @@ module AutoScaling
     def self.setup_database
       config = ConfigUtils.load_config['database']
       DataMapper::Logger.new($stdout, config['log_level'].to_sym)
-      #db_path = File.join(File.expand_path(File.dirname(__FILE__)), 'auto-scaling.db')
+      db_path = File.join(File.expand_path(File.dirname(__FILE__)), 'auto-scaling.db')
 
-      DataMapper.setup(:default, 'sqlite::memory:')
+      #DataMapper.setup(:default, 'sqlite::memory:')
 
-      #DataMapper::Model.raise_on_save_failure = true
-      #DataMapper.setup(:default, "sqlite://#{db_path}")
+      DataMapper::Model.raise_on_save_failure = true
+      DataMapper.setup(:default, "sqlite://#{db_path}")
       DataMapper.auto_migrate!
     end
 

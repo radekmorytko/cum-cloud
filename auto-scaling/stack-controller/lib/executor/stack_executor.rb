@@ -134,7 +134,10 @@ module AutoScaling
       instance_id = @cloud_provider.instantiate_template template_id
 
       policies = []
+
       stack['policy_set']['policies'].each do |policy|
+        pp policy
+
         policies << Policy.create(
             :name => policy['name'],
             :arguments => policy['arguments']

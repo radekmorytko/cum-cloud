@@ -6,11 +6,12 @@ module AutoScaling
   class PolicySet
     include DataMapper::Resource
 
-    property :id, Integer, :key => true
-    belongs_to :stack
+    property :id, Serial
+    belongs_to :stack, :required => false
 
     property :max_vms, Integer, :required => true
     property :min_vms, Integer, :required => true
+
     has n, :policies
 
     def to_s

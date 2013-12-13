@@ -17,7 +17,7 @@ module AutoScaling
     def deploy(stack_data)
         @@logger.debug "Planning deployment of: #{stack_data}"
         stack = @stack_controller.plan_deployment(stack_data)
-        @@logger.debug "Deployed service #{stack.to_json}"
+        @@logger.debug "Deployed stack #{stack.to_json}"
 
         @stack_controller.converge(stack)
 

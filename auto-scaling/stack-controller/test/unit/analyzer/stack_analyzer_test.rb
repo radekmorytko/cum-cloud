@@ -52,7 +52,7 @@ module AutoScaling
         )
       ]
 
-      @policy_set = PolicySet.create()
+      @policy_set = PolicySet.create(:min_vms => 0, :max_vms => 10)
 
       @stack = Stack.create(
           :type => 'java',
@@ -68,19 +68,15 @@ module AutoScaling
         @stack => {
           @containers[0] => {
             "CPU" => ["50", "75", "20"],
-#            "MEMORY" => ["70", "7345", "3213"],
           },
           @containers[1] => {
               "CPU" => ["50", "95", "99"],
-#              "MEMORY" => ["70", "7345", "5431"],
           },
           @containers[2] => {
               "CPU" => ["20", "30", "40"],
-              #              "MEMORY" => ["70", "345", "41"],
           },
           @containers[3] => {
               "CPU" => ["70", "95", "10"],
-              #              "MEMORY" => ["70", "345", "41"],
           }
         }
       }

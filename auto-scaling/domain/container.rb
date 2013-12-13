@@ -9,7 +9,7 @@ module AutoScaling
     property :id, Serial
     property :correlation_id, Integer
 
-    belongs_to :stack
+    belongs_to :stack, :required => false
 
     property :ip, IPAddress, :required => true
     property :type, Enum[ :master, :slave ], :default => :slave, :required => true

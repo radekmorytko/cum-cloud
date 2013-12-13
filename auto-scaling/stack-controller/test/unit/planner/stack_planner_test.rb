@@ -11,10 +11,9 @@ module AutoScaling
 
     def setup
       @executor = mock()
-      @cloud_controller = mock()
       @reservation_manager = mock()
 
-      @planner = StackPlanner.new(@executor, @cloud_controller, @reservation_manager)
+      @planner = StackPlanner.new(@executor, @reservation_manager)
     end
 
     def test_shall_plan_service_deployment
@@ -57,9 +56,11 @@ module AutoScaling
           stack_1 => [:insufficient_slaves],
       }
 
+      @planner.cloud_controller = mock()
+
+      @planner.cloud_controller.expects(:forward).with(:insufficient_slaves, stack_1)
       @reservation_manager.expects(:resources).with(:java).returns(:cpu => 5, :memory => 5)
       @reservation_manager.expects(:reserve).with(:cpu => 5, :memory => 5).raises(InsufficientResources)
-      @cloud_controller.expects(:forward).with(:insufficient_slaves, stack_1)
 
       @planner.plan(data)
     end

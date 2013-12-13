@@ -9,6 +9,8 @@ module AutoScaling
 
     @@logger = Logger.new(STDOUT)
 
+    attr_accessor :cloud_controller
+
     def initialize(executor, reservation_manager)
       @executor = executor
       @reservation_manager = reservation_manager

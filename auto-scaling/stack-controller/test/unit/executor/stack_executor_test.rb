@@ -24,8 +24,9 @@ module AutoScaling
     }
 
     def setup
-      @cloud_provider = mock()
       Utils::setup_database
+      @cloud_provider = mock()
+
 
       @executor = StackExecutor.new(@cloud_provider, MAPPINGS)
     end
@@ -88,7 +89,7 @@ module AutoScaling
          'slave' => [{:ip=>"192.168.122.101", :id=>"139"}, {:ip=>"192.168.122.102", :id=>"140"}]
       }
 
-      stack = Stack.create(:type => 'java', :correlation_id => instance_id)
+      stack = Stack.new(:type => 'java', :correlation_id => instance_id)
 
       @cloud_provider.expects(:configuration).with(instance_id).returns(conf)
       @executor.send(:update, stack)

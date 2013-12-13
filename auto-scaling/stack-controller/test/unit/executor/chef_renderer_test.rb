@@ -34,15 +34,15 @@ module AutoScaling
 
       containers = [
           Container.create(
-              :id => 10,
-              :ip => '192.168.122.100'
+              :correlation_id => 10,
+              :ip => '192.168.122.100',
           ),
           Container.create(
-              :id => 11,
+              :correlation_id => 11,
               :ip => '192.168.122.101'
           ),
           Container.create(
-              :id => 0,
+              :correlation_id => 0,
               :ip => '192.168.122.200',
               :type => :master
           )
@@ -50,7 +50,8 @@ module AutoScaling
 
       stack = Stack.create(
           :type => 'java',
-          :containers => containers
+          :containers => containers,
+          :correlation_id => instance_id
       )
 
       actual = ChefRenderer.render(stack)

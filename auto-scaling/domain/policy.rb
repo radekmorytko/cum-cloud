@@ -6,8 +6,9 @@ module AutoScaling
   class Policy
     include DataMapper::Resource
 
-    property :id, Integer, :key => true
+    property :id, Serial
     property :name, String
+    belongs_to :policy_set, :required => false
 
     property :arguments, Object
 

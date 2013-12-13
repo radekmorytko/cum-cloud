@@ -18,7 +18,11 @@ module AutoScaling
       raise 'There is already a service with the given name!' unless service.save
 
       service_data['stacks'].each do |stack_data|
-        service.stacks << @stack_deployer.deploy(stack_data)
+        begin
+          service.stacks << @stack_deployer.deploy(stack_data)
+        rescue RuntimeError => ex
+          @@logger.warn "Error while deploying a stack #{stack_data} #{ex}"
+        end
       end
 
       service.save
