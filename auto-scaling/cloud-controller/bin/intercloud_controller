@@ -4,7 +4,4 @@ $:.unshift "#{File.dirname(__FILE__)}/../lib"
 require 'cloud_controller'
 
 cloud_controller = AutoScaling::CloudController.build
-
 cloud_controller.run
-
-

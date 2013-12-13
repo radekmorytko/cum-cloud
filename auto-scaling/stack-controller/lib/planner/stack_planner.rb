@@ -9,9 +9,8 @@ module AutoScaling
 
     @@logger = Logger.new(STDOUT)
 
-    def initialize(executor, cloud_controller, reservation_manager)
+    def initialize(executor, reservation_manager)
       @executor = executor
-      @cloud_controller = cloud_controller
       @reservation_manager = reservation_manager
     end
 

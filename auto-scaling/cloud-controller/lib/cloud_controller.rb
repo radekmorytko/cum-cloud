@@ -1,7 +1,7 @@
 $:.unshift "#{File.dirname(__FILE__)}/../lib"
 $:.unshift File.dirname(File.expand_path('../..', __FILE__))
 
-require 'bundler/setup'
+#require 'bundler/setup'
 
 # Cloud-Controller solely
 require 'common/configurable'
@@ -22,6 +22,7 @@ require 'container-controller/container_controller'
 require 'logger'
 require 'amqp'
 require 'json'
+require 'pp'
 
 module AutoScaling
   class CloudController
@@ -64,13 +65,18 @@ module AutoScaling
       config['cloud_controller'] = instance
 
       @@logger.info("Initializing OpenNebulaClient")
-      cloud_provider       = OpenNebulaClient.new(config['endpoints'][config['cloud_provider_name']])
+      cloud_provider = OpenNebulaClient.new(config['endpoints'][config['cloud_provider_name']])
 
       @@logger.info("Initializing StackController")
-      stack_controller     = StackController.build(cloud_provider, config)
+      capacity = {}
+      if config['endpoints'][config['cloud_provider_name']].key?('capacity')
+        capacity = config['endpoints'][config['cloud_provider_name']]['capacity']
+      end
+      reservation_manager = ReservationManager.new(cloud_provider, capacity)
+      stack_controller = StackController.build(cloud_provider, reservation_manager, config)
 
       @@logger.info("Initializing Container Controller")
-      container_controller = ContainerController.build(cloud_provider, config)
+      container_controller = ContainerController.build(cloud_provider, reservation_manager)
 
       instance.service_deployer = ServiceDeployer.new(
         StackDeployer.new(
@@ -139,9 +145,11 @@ module AutoScaling
 
     def self.setup_database
       DataMapper::Logger.new($stdout, :info)
-      db_path = File.join(File.expand_path(File.dirname(__FILE__)), 'auto-scaling.db')
+      #db_path = File.join(File.expand_path(File.dirname(__FILE__)), 'auto-scaling.db')
 
-      DataMapper.setup(:default, "sqlite://#{db_path}")
+      DataMapper.setup(:default, 'sqlite::memory:')
+
+      #DataMapper.setup(:default, "sqlite://#{db_path}")
       DataMapper.auto_migrate!
     end
 
