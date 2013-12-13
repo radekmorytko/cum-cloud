@@ -12,11 +12,11 @@ module AutoScaling
     describe 'when deploying a service' do
       let(:service_data) { 
         {
-          :name => 'weszlo.com',
-          :autoscaling_queue_name => 'queue',
-          :stacks => [
-            { :type => 'java' },
-            { :type => 'ruby' }
+          'name' => 'weszlo.com',
+          'autoscaling_queue_name' => 'queue',
+          'stacks' => [
+            { 'type' => 'java' },
+            { 'type' => 'ruby' }
           ]
         }
       }
@@ -30,7 +30,7 @@ module AutoScaling
 
       it 'saves the service data' do
         subject.deploy(service_data)
-        service = Service.get(service_data[:name])
+        service = Service.get(service_data['name'])
         expect(service).not_to be_nil
         expect(service.autoscaling_queue_name).not_to be_nil
       end

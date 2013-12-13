@@ -1,8 +1,6 @@
 $:.unshift "#{File.dirname(__FILE__)}/../lib"
 $:.unshift File.dirname(File.expand_path('../..', __FILE__))
 
-#require 'bundler/setup'
-
 # Cloud-Controller solely
 require 'common/configurable'
 require 'cloud_controller/publisher'
@@ -12,6 +10,7 @@ require 'cloud_controller/stack_info_retriever'
 require 'cloud_controller/offer_response_preparer'
 require 'cloud_controller/deployers/service_deployer'
 require 'cloud_controller/deployers/stack_deployer'
+require 'domain/domain'
 
 # Remaining CSAP stack
 require 'cloud-provider/cloud_provider'
@@ -144,11 +143,13 @@ module AutoScaling
     end
 
     def self.setup_database
-      DataMapper::Logger.new($stdout, :info)
+      config = ConfigUtils.load_config['database']
+      DataMapper::Logger.new($stdout, config['log_level'].to_sym)
       #db_path = File.join(File.expand_path(File.dirname(__FILE__)), 'auto-scaling.db')
 
       DataMapper.setup(:default, 'sqlite::memory:')
 
+      #DataMapper::Model.raise_on_save_failure = true
       #DataMapper.setup(:default, "sqlite://#{db_path}")
       DataMapper.auto_migrate!
     end
