@@ -26,6 +26,11 @@ module AutoScaling
       end
 
       service.save
+
+      # For integration tests only
+      service.notify_observer_process
+
+      service
     end
   end
 end

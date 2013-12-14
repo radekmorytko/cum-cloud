@@ -2,6 +2,7 @@ require 'logger'
 require 'erb'
 require 'yaml'
 require 'fileutils'
+require 'securerandom'
 
 task :default => :run
 
@@ -36,6 +37,17 @@ config_files = {
 ##### Other global variables
 @settings = YAML.load_file("#{base_path}/config.yaml")
 
+## Modify settings so that some ids and keys are unique per each invocation
+unique_str = '_' + SecureRandom.urlsafe_base64(3).to_s
+%w(
+   offers_exchange_name
+   offers_routing_key
+   autoscaling_queue_name
+   id
+  ).each { |key| @settings['cloud_broker'][key] <<= unique_str }
+@settings['cloud_controller']['controller_routing_key'] <<= unique_str
+## End-Of settings modification
+
 logger       = Logger.new(STDOUT)
 logger.level = Logger::DEBUG
 
@@ -51,7 +63,7 @@ def create_config(config_template, destination_file)
   settings   = @settings
   runner_pid = $$
   config     = ERB.new(File.read(config_template))
-                .result(binding)
+                  .result(binding)
   File.open(destination_file, 'w') { |f| f.write(config) }
 end
 
@@ -71,6 +83,11 @@ def kill_processes(*pids)
 end
 ##### End-Of Helper methods
 
+Signal.trap('INT') {
+  # this will cause to run cleanup task
+  kill_processes(cb_pid, cc_pid)
+}
+
 Signal.trap('USR1') {
   end_time = Time.new
   puts "Deployment completed!"
@@ -88,7 +105,11 @@ task :cleanup => :run_test do
   kill_processes(cb_pid, cc_pid)
 
   config_files.each_value do |path_hash|
-    File.rename path_hash[:tmp], path_hash[:actual]
+    if File.exists? path_hash[:tmp]
+      File.rename path_hash[:tmp], path_hash[:actual]
+    elsif File.exists? path_hash[:actual] # in this case there was no config.yaml file, but the default one
+      FileUtils.remove_file(path_hash[:actual])
+    end
   end
 
   FileUtils.remove_file "#{client_path}/payload.json"
@@ -97,8 +118,9 @@ end
 task :run_test => [:run_cloud_controller, :run_cloud_broker, :prepare_client] do
   logger.info "Executing test case!"
   # Wait for CC and CB
-  sleep 5
+  sleep 7 
   # Shoot in da face
+  start_time = Time.new
   `cd #{client_path} && bin/intercloud_client deploy -e payload.json`
   Process.wait cc_pid
 end

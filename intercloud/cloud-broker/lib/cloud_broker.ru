@@ -17,8 +17,6 @@ def run(opts)
     logger.level = Logger::DEBUG
 
     config = opts[:config]
-    require 'pp'
-    pp config
 
     server    = 'thin'
     host      = '0.0.0.0'

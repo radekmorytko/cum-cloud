@@ -3,7 +3,7 @@
   "stacks":[
   {
     "type":"java",
-    "instances":3,
+    "instances":2,
     "policy_set":{
       "min_vms":0,
       "max_vms":2,
