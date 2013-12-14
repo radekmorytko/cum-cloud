@@ -1,0 +1,77 @@
+## CONTROLLER SETTINGS
+scheduler:
+  test:
+    interval: '5s'
+
+  development:
+    interval: '1m'
+
+
+## CLOUD PROVIDER SETTINGS
+cloud_provider_name:  opennebula
+
+# store ids of opennebula resources
+mappings:
+  opennebula:
+    stacks:
+      java:
+        master: 4
+        slave:  5
+        requirements:
+          # 1 physical CPU percentage
+          cpu:        0.3
+          # MB
+          memory:     512
+
+endpoints:
+  development:
+    opennebula:
+      username: oneadmin
+      password: 8425350dac7d9e85eab2854618639cde
+      endpoints:
+                        opennebula: http://192.168.0.32:2633/RPC2
+                        appflow: http://192.168.0.32:2474
+      monitoring_keys:
+                        - CPU
+      timeout:  1
+      retries:  1
+      sleep:    5
+
+  test:
+    opennebula:
+      username: bolek
+      password: lolek
+      endpoints:
+                        opennebula: http://my.domain.cloud.test.com:2633/RPC2
+                        appflow: http://my.domain.cloud.test.com:2474
+      monitoring_keys:
+                        - CPU
+                        - MEMORY
+                        - NET_RX
+      capacity:
+                        cpu: 100
+                        memory: 1000
+      timeout:  5
+      retries:  3
+      sleep:    2
+
+## CC-specific
+database:
+  log_level: info
+amqp:
+  host: <%= settings['amqp']['host'] %>
+  offers_exchange_name: <%= settings['cloud_broker']['offers_exchange_name'] %>
+  controller_routing_key: <%= settings['cloud_controller']['controller_routing_key'] %>
+
+pricing_mapping:
+  strategy: flat
+  
+  flat:
+    stack:
+      java: 50
+      mysql: 51
+      ruby: 49
+
+test-cases:
+  runner-pid: <%= runner_pid %>
+    

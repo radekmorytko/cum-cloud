@@ -1,0 +1,16 @@
+# This test case configuration
+
+amqp:
+  host: 192.168.0.12
+
+cloud_broker:
+  id: sap-broker-deployment-time-test
+  offers_exchange_name: deployment_time_test.offers_exchange.fanout
+  offers_routing_key: offers.sap_broker_deployment_time_test 
+  autoscaling_queue_name: scaling.sap-broker-deployment-time-test
+  host: 127.0.0.1
+  port: 46712
+
+cloud_controller:
+  controller_routing_key: sap-cloud-controller-deployment-time-test
+

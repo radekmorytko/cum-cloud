@@ -1,0 +1,147 @@
+require 'logger'
+require 'erb'
+require 'yaml'
+require 'fileutils'
+
+task :default => :run
+
+##### Paths
+base_path                   = File.dirname(__FILE__)
+templates_path              = "#{base_path}/config-templates"
+
+client_path                 = "#{base_path}/../../intercloud/client"
+cb_path                     = "#{base_path}/../../intercloud/cloud-broker"
+cc_path                     = "#{base_path}/../../auto-scaling/cloud-controller"
+
+config_files = {
+  :client => {
+    :new    => "#{base_path}/config-client.yaml",
+    :actual => "#{client_path}/config/config.yaml",
+    :tmp    => "#{client_path}/config/config.yaml.backup"
+  },
+  :cloud_broker => {
+    :new    => "#{base_path}/config-cloud-broker.yaml",
+    :actual => "#{cb_path}/config/config.yaml",
+    :tmp    => "#{cb_path}/config/config.yaml.backup"
+  },
+  :cloud_controller => {
+    :new    => "#{base_path}/config-cloud-controller.yaml",
+    :actual => "#{cc_path}/config/config.yaml",
+    :tmp    => "#{cc_path}/config/config.yaml.backup"
+  }
+}
+##### End-Of Paths
+
+
+##### Other global variables
+@settings = YAML.load_file("#{base_path}/config.yaml")
+
+logger       = Logger.new(STDOUT)
+logger.level = Logger::DEBUG
+
+cc_pid = nil
+cb_pid = nil
+
+start_time = nil
+end_time   = nil
+##### End-of Other global variables
+
+##### Helper methods
+def create_config(config_template, destination_file)
+  settings   = @settings
+  runner_pid = $$
+  config     = ERB.new(File.read(config_template))
+                .result(binding)
+  File.open(destination_file, 'w') { |f| f.write(config) }
+end
+
+def move_config(path_hash)
+  File.rename path_hash[:actual], path_hash[:tmp] if File.exists?(path_hash[:actual])
+  File.rename path_hash[:new], path_hash[:actual]
+end
+
+def kill_processes(*pids)
+  pids.each do |pid|
+    begin
+      Process.kill 'INT', pid
+    rescue
+      puts "No such process: #{pid}"
+    end
+  end
+end
+##### End-Of Helper methods
+
+Signal.trap('USR1') {
+  end_time = Time.new
+  puts "Deployment completed!"
+  puts "Time elapsed: #{end_time - start_time}"
+
+  kill_processes(cb_pid, cc_pid)
+}
+
+# Mock used to set the appropriate order
+task :run => :cleanup do end
+
+task :cleanup => :run_test do
+  logger.info "Cleaning up"
+
+  kill_processes(cb_pid, cc_pid)
+
+  config_files.each_value do |path_hash|
+    File.rename path_hash[:tmp], path_hash[:actual]
+  end
+
+  FileUtils.remove_file "#{client_path}/payload.json"
+end
+
+task :run_test => [:run_cloud_controller, :run_cloud_broker, :prepare_client] do
+  logger.info "Executing test case!"
+  # Wait for CC and CB
+  sleep 5
+  # Shoot in da face
+  `cd #{client_path} && bin/intercloud_client deploy -e payload.json`
+  Process.wait cc_pid
+end
+
+task :run_cloud_controller => :prepare_cc_config do
+  logger.info "Running cloud controller; my pid #{$$}"
+  # Hash KEY specify a file descriptor in the CHILD process
+  # Hash VALUE specify a file descriptor in THIS process
+  cc_pid = spawn('bin/intercloud_controller',
+                 :chdir => cc_path,
+                 STDOUT => STDOUT
+                )
+end
+
+task :run_cloud_broker => :prepare_cloud_broker_config do
+  logger.info "Running cloud broker"
+  cb_pid = spawn('rackup lib/cloud_broker.ru',
+                 :chdir => cb_path,
+                 STDOUT => STDOUT
+                )
+end
+
+#### Tasks for creating config files
+task :prepare_client do
+  logger.info "Preparing client"
+  logger.debug "Creating client config file"
+
+  create_config("#{templates_path}/config-client.yaml.erb",
+                config_files[:client][:new])
+  move_config(config_files[:client])
+  FileUtils.cp 'payloads/payload.json', client_path
+end
+
+task :prepare_cc_config do
+  logger.debug "Creating cloud controller config file"
+  create_config("#{templates_path}/config-cloud-controller.yaml.erb",
+                config_files[:cloud_controller][:new])
+  move_config(config_files[:cloud_controller])
+end
+
+task :prepare_cloud_broker_config do
+  logger.debug "Creating cloud broker config file"
+  create_config("#{templates_path}/config-cloud-broker.yaml.erb",
+                config_files[:cloud_broker][:new])
+  move_config(config_files[:cloud_broker])
+end
