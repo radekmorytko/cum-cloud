@@ -12,13 +12,14 @@ module AutoScaling
   class StackExecutorTest < Test::Unit::TestCase
 
     MAPPINGS = {
-      'onetemplate_id' => 7,
-
-      # supported stacks
-      'appstage' => {
+      'stacks' => {
         'java' => {
             'master' => 39,
-            'slave' => 25
+            'slave' => 25,
+            'requirements' => {
+                'cpu' => 0.3,
+                'memory' => 256,
+            }
         }
       }
     }

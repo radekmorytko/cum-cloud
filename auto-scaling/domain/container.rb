@@ -16,6 +16,8 @@ module AutoScaling
     # last time when container was probed
     property :probed, String, :default => "0"
 
+    property :requirements, Object
+
     def self.master(stack)
       (all(:stack => stack) & all(:type => :master))[0]
     end

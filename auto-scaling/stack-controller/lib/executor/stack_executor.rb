@@ -45,10 +45,13 @@ module AutoScaling
       @@logger.debug "Deploying container at #{stack} with mappings: #{@mappings}"
       container_info = @cloud_provider.instantiate_container(stack.type.to_s, 'slave', @mappings)
 
+      requirements = @mappings['stacks'][stack.type.to_s]['requirements']
+
       # persist data
       container = Container.create(
           :correlation_id => container_info[:id],
-          :ip => container_info[:ip]
+          :ip => container_info[:ip],
+          :requirements => requirements
       )
       stack.containers << container
 
@@ -87,16 +90,20 @@ module AutoScaling
       conf = @cloud_provider.configuration(stack.correlation_id)
       @@logger.debug("Got configuration for a stack #{stack.correlation_id}: #{conf}")
 
+      requirements = @mappings['stacks'][stack.type.to_s]['requirements']
+
       stack.containers = [Container.create(
                               :correlation_id => conf['master'][0][:id].to_i,
                               :ip => conf['master'][0][:ip],
-                              :type => :master
+                              :type => :master,
+                              :requirements => requirements
                           )]
 
       conf['slave'].each do |vm|
         stack.containers << Container.create(
             :correlation_id => vm[:id].to_i,
-            :ip => vm[:ip]
+            :ip => vm[:ip],
+            :requirements => requirements
         )
       end
 

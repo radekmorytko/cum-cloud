@@ -27,7 +27,8 @@ module AutoScaling
       id = 100
       container = Container.create(
           :ip => '192.168.122.1',
-          :correlation_id => id
+          :correlation_id => id,
+          :requirements => {'cpu' => 1, 'memory' => 600}
       )
       policy_set = PolicySet.create(
           :min_vms => 1,
@@ -47,7 +48,7 @@ module AutoScaling
 
       data = { "CPU" => [["1", "100"], ["5", "105"]] }
       @cloud_provider.expects(:monitor_container).with(id).returns(data)
-      @reservation_manager.expects(:scale_up).with(container, :cpu)
+      @reservation_manager.expects(:scale_up).with(container, :cpu, 1.3)
       FakeWeb.register_uri(:post, "http://#{container.ip}:4567/chef", :body => '{ "status" => "ok" }')
 
       @controller.schedule(container, '1s')
