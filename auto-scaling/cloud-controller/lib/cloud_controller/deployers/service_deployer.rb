@@ -1,7 +1,10 @@
 require 'logger'
+require 'common/configurable'
 
 module AutoScaling
   class ServiceDeployer
+    include Configurable
+
     @@logger       = Logger.new(STDOUT)
     @@logger.level = Logger::DEBUG
 
@@ -28,9 +31,23 @@ module AutoScaling
       service.save
 
       # For integration tests only
-      service.notify_observer_process
-
+      notify_observer_process(service)
       service
+    end
+
+    private
+
+    # This method is used in an integration test where it
+    # sends USR1 signal to the test-runner process
+    def notify_observer_process(service)
+      return if (not service.deployed?) or
+                (not config.has_key?('test-cases') and config['test-cases'].has_key?(['runner-pid']))
+
+      pid_to_notify = config['test-cases']['runner-pid']
+
+      @@logger.debug("Notifying process #{pid_to_notify} about the deployed service")
+
+      Process.kill('USR1', pid_to_notify)
     end
   end
 end
