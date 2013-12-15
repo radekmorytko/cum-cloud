@@ -48,7 +48,7 @@ module AutoScaling
       # mapek model
       monitor = ContainerMonitor.new(cloud_provider)
       analyzer = ContainerAnalyzer.new(PolicyEvaluator.new)
-      executor = ContainerExecutor.new()
+      executor = ContainerExecutor.new(cloud_provider)
       planner = ContainerPlanner.new(executor, reservation_manager)
 
       controller = ContainerController.new(monitor, analyzer, planner, executor, scheduler)

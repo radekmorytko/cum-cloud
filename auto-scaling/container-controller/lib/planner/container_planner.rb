@@ -49,7 +49,7 @@ module AutoScaling
       scaled = scale_up(container, 'cpu')
 
       @reservation_manager.scale_up(container, :cpu, scaled)
-      @executor.increase_cpu(container)
+      @executor.increase_cpu(container, scaled)
     end
 
     def insufficient_memory(container)
@@ -57,7 +57,7 @@ module AutoScaling
       scaled = scale_up(container, 'memory')
 
       @reservation_manager.scale_up(container, :memory, scaled)
-      @executor.increase_memory(container)
+      @executor.increase_memory(container, scaled)
     end
 
     def scale_up(container, resource)

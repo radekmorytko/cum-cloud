@@ -26,10 +26,10 @@ module AutoScaling
           :conclusions => [:insufficient_cpu, :insufficient_memory]
       }
 
-      @executor.expects(:increase_cpu).with(container)
+      @executor.expects(:increase_cpu).with(container, 1.3)
       @reservation_manager.expects(:scale_up).with(container, :cpu, 1.3)
 
-      @executor.expects(:increase_memory).with(container)
+      @executor.expects(:increase_memory).with(container, 1300)
       @reservation_manager.expects(:scale_up).with(container, :memory, 1300)
 
       @planner.plan(data)
