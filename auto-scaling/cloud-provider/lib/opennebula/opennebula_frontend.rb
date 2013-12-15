@@ -25,6 +25,22 @@ module AutoScaling
       data
     end
 
+    def host_by_container(container_id)
+      host_pool = ::OpenNebula::HostPool.new(@client)
+
+      host_pool.info
+      data = host_pool.to_hash
+
+      raise(RuntimeError, data.message) if OpenNebula.is_error?(data)
+
+      data['HOST_POOL']['HOST'].each do |host|
+        next if host['VMS'].empty?
+        return host['NAME'] if host['VMS']['ID'].any? {|id| id == container_id.to_s}
+      end
+
+      raise(RuntimeError, "Can't find host corresponding to a container #{container_id}")
+    end
+
     # Instantiates container with given type and role, which are used
     # to determine its template id
     def instantiate_container(stack_type, container_role, mappings)

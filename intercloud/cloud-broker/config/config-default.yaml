@@ -2,7 +2,7 @@ broker_id: sap-broker-1
 port: 65401
 
 amqp:
-  host: 192.168.0.12 
+  host: 192.168.0.12
   port: 5672
   offers_select_interval: 6
 

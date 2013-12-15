@@ -13,24 +13,29 @@ module AutoScaling
     def setup
       Utils::setup_database
 
+      @cloud_provider = mock()
       @container = Container.create(
-          :ip => '192.168.122.1'
+          :ip => '192.168.122.1',
+          :correlation_id => 10
       )
-      @executor = ContainerExecutor.new()
+      @executor = ContainerExecutor.new(@cloud_provider)
     end
 
     def test_shall_increase_cpu
-      request = '{ "chef" => "CPU" }'
-      FakeWeb.register_uri(:post, "http://#{@container.ip}:4567/chef", :body => '{ "status" => "ok" }')
-      @executor.increase_cpu(@container)
-      assert_equal true, FakeWeb.last_request.body == request
+      request = '{"cpulimit":10}'
+      @cloud_provider.expects(:host_by_container).with(@container.correlation_id).returns('localhost')
+      FakeWeb.register_uri(:post, "http://localhost:4567/container/10/configuration", :body => '{ "status" => "ok" }')
+      @executor.increase_cpu(@container, 10)
+      puts FakeWeb.last_request.body
+      assert_equal FakeWeb.last_request.body, request
     end
 
     def test_shall_increase_memory
-      request = '{ "chef" => "MEMORY" }'
-      FakeWeb.register_uri(:post, "http://#{@container.ip}:4567/chef", :body => '{ "status" => "ok" }')
-      @executor.increase_memory(@container)
-      assert_equal true, FakeWeb.last_request.body == request
+      request = '{"physpages":1024}'
+      @cloud_provider.expects(:host_by_container).with(@container.correlation_id).returns('localhost')
+      FakeWeb.register_uri(:post, "http://localhost:4567/container/10/configuration", :body => '{ "status" => "ok" }')
+      @executor.increase_memory(@container, 1024)
+      assert_equal FakeWeb.last_request.body, request
     end
 
   end

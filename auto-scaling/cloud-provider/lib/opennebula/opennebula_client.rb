@@ -47,6 +47,10 @@ module AutoScaling
       @frontend.delete_container container_id
     end
 
+    def host_by_container(container_id)
+      @frontend.host_by_container(container_id)
+    end
+
     # Creates an instance of a container with a predefined template in mappings
     def instantiate_container(stack_type, container_role, mappings)
       @frontend.instantiate_container(stack_type, container_role, mappings)

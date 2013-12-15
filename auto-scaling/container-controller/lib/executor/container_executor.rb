@@ -9,24 +9,28 @@ module AutoScaling
 
     @@logger = Logger.new(STDOUT)
 
-    def initialize()
+    def initialize(cloud_provider)
+      @cloud_provider = cloud_provider
     end
 
-    def increase_cpu(container)
-      payload = '{ "chef" => "CPU" }'
+    # Sets OpenVZ cpu limit to a specified amount
+    def increase_cpu(container, amount)
+      payload = { 'cpulimit' => amount }
       @@logger.debug "Prepared payload for CPU increase: #{payload} for #{container}"
-      result = post(container, payload)
+      host = @cloud_provider.host_by_container(container.correlation_id)
+      post(host, container, payload.to_json)
     end
 
-    def increase_memory(container)
-      payload = '{ "chef" => "MEMORY" }'
+    def increase_memory(container, amount)
+      payload = { 'physpages' => amount }
       @@logger.debug "Prepared payload for MEMORY increase: #{payload} for #{container}"
-      post(container, payload)
+      host = @cloud_provider.host_by_container(container.correlation_id)
+      post(host, container, payload.to_json)
     end
 
     private
-    def post(container, payload)
-      url = url(container)
+    def post(host, container, payload)
+      url = url(host, container)
 
       RestClient.post(url, payload){ |response, request, result, &block|
         case response.code
@@ -39,8 +43,8 @@ module AutoScaling
       }
     end
 
-    def url(container)
-      "http://#{container.ip}:4567/chef"
+    def url(host, container)
+      "http://#{host}:4567/container/#{container.correlation_id}/configuration"
     end
 
   end
