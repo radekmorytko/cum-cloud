@@ -121,7 +121,7 @@ module AutoScaling
         case response.code
           when 200
             @@logger.debug "Successfully sent configuration #{response}"
-            # this is simplification - master not necessarily is the last deployed container
+            # this is a simplification - master not necessarily is the last deployed container
             container.stack.state = :converged
             container.stack.save
             response

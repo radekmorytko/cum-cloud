@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'json'
 require 'data_mapper'
+require 'logger'
 
 module AutoScaling
   class Service

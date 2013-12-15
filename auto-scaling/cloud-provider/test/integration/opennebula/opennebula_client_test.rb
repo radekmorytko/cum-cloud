@@ -47,6 +47,7 @@ eos
       options = {
           'username' => 'oneadmin',
           'password' => '8425350dac7d9e85eab2854618639cde',
+          'host_password' => 'password',
           'endpoints' =>  {
             'opennebula' => 'http://frontend1:2633/RPC2',
             'appflow' => 'http://frontend1:2474'
@@ -95,7 +96,6 @@ eos
     end
 
     def test_shall_extract_ip
-
       expected = '192.168.122.104'
       configuration = OpenNebulaGenerator.show_vm(:vm_id => 100, :ip => expected)
       actual = @opennebula_client.frontend.send(:extract_ip, configuration)
@@ -109,6 +109,12 @@ eos
       actual.each do |key, value|
         assert_equal true, value > 0
       end
+    end
+
+    def test_shall_retrieve_host_usage
+      actual = @opennebula_client.monitor_host('node1')
+
+      pp actual
     end
 
   end

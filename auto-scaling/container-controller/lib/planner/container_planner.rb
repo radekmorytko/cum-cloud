@@ -47,6 +47,7 @@ module AutoScaling
     def insufficient_cpu(container)
       @@logger.debug "Attempt to scale CPU up for a container: #{container}"
       scaled = scale_up(container, 'cpu')
+
       @reservation_manager.scale_up(container, :cpu, scaled)
       @executor.increase_cpu(container)
     end
@@ -54,6 +55,7 @@ module AutoScaling
     def insufficient_memory(container)
       @@logger.debug "Attempt to scale MEMORY up for a container: #{container}"
       scaled = scale_up(container, 'memory')
+
       @reservation_manager.scale_up(container, :memory, scaled)
       @executor.increase_memory(container)
     end

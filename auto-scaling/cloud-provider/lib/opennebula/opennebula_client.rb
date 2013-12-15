@@ -1,5 +1,6 @@
 require 'opennebula/appflow_client'
 require 'opennebula/opennebula_frontend'
+require 'opennebula/opennebula_supervisor'
 require 'opennebula/service_renderer'
 
 module AutoScaling
@@ -9,6 +10,7 @@ module AutoScaling
 
     attr_reader :appflow
     attr_reader :frontend
+    attr_reader :monitor
 
     #
     # * options - connectivity parameters, ex:
@@ -16,6 +18,7 @@ module AutoScaling
     # options = {
     #   'username'   => 'username',        <- opennebula username (also a linux user)
     #   'password'   => 'password',        <- opennebula username password (also a password of a linux user)
+    #   'host_password' => 'password'      <- opennebula compute node password (plaintext)
     #   'endpoints'  => {                  <- hashmap of endpoints that are used by this client (all of them have to support the same credential)
     #     'opennebula' => 'http://redtube.com:69/XMLRPC2'
     #     'appflow' => 'http://pudelek.pl:4567'
@@ -25,6 +28,7 @@ module AutoScaling
     def initialize(options)
       @appflow = AppflowClient.new options
       @frontend = OpenNebulaFrontend.new options
+      @monitor = OpenNebulaSupervisor.new options
     end
 
     def create_template(service_template)
@@ -50,6 +54,10 @@ module AutoScaling
 
     def monitor_container(container_id)
       @frontend.monitor(container_id)
+    end
+
+    def monitor_host(host_name)
+      @monitor.monitor_host(host_name)
     end
 
     def image_name(image_id)

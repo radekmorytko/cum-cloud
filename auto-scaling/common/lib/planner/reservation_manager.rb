@@ -21,6 +21,7 @@ module AutoScaling
 
       @reservation = Mutex.new
       @requirements = requirements
+      @cloud_provider = cloud_provider
     end
 
     # Checks required resources for a given stack
@@ -54,6 +55,22 @@ module AutoScaling
       end
 
       return true
+    end
+
+    def scale_up(container, parameter, requested)
+      @reservation.synchronize do
+        host = @cloud_provider.host_by_container(container.correlation_id)
+        current_state = @cloud_provider.monitor_host(host)
+
+        if current_state[parameter] < requested then
+          raise InsufficientResources.new("Cannot reserve: #{requested} with #{current_state} at #{host}")
+        end
+
+        current = container.requirements[parameter.to_s]
+        @capacity[parameter] -= (requested - current)
+        container.requirements[parameter.to_s] = requested
+        container.save
+      end
     end
 
     # Reserves resources

@@ -19,6 +19,7 @@ module AutoScaling
           }
         }
       }
+      @cloud_provider = mock()
       @reservation_manager = ReservationManager.new(@cloud_provider, {:cpu => 5, :memory => 1024}, requirements['stacks'])
     end
 
@@ -52,6 +53,29 @@ module AutoScaling
     def test_shall_raise_insufficient_resources
       assert_raise InsufficientResources do
         @reservation_manager.reserve(:cpu => 6)
+      end
+    end
+
+    def test_shall_scale_up
+      host_name = 'node'
+      container = Container.create(
+
+      )
+
+      @cloud_provider.expects(:monitor_host).with(host_name).returns({:cpu => 10})
+      @cloud_provider.expects(:host_by_container).with(100).returns(host_name)
+
+      @reservation_manager.scale_up(container, :cpu, 10)
+    end
+
+    def test_shall_raise_insufficient_resources_when_scaling_up
+      host_name = 'node'
+
+      @cloud_provider.expects(:monitor_host).with(host_name).returns({:cpu => 9})
+      @cloud_provider.expects(:host_by_container).with(100).returns(host_name)
+
+      assert_raise InsufficientResources do
+        @reservation_manager.scale_up(container, :cpu, 10)
       end
     end
 
