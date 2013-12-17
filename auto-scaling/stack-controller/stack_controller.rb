@@ -26,6 +26,10 @@ module AutoScaling
       @scheduler = scheduler
     end
 
+    def forward(conclusion, container)
+      @@logger.info "Got unprocessed conclusion: #{conclusion} for #{container}"
+    end
+
     def schedule(service, interval)
       @scheduler.every(interval) do
         @@logger.debug "Executing job for a #{service}"

@@ -12,12 +12,11 @@ module AutoScaling
 
     @@logger = Logger.new(STDOUT)
 
-    attr_reader :conclusions
+    attr_accessor :stack_controller
 
     def initialize(executor, reservation_manager)
       @executor = executor
       @reservation_manager = reservation_manager
-      @conclusions = []
     end
 
     # Plans actions that aims to scale container up
@@ -38,7 +37,7 @@ module AutoScaling
           @@logger.info msg
           @@logger.info "Leaving a problem #{conclusion} on #{container} to a stack-controller"
 
-          @conclusions << {:conclusion => conclusion, :container => container}
+          @stack_controller.forward(conclusion, container)
         end
       end
     end
