@@ -65,9 +65,16 @@ Table \ref{tbl:test-service-deployment-cost-mapping} shows obtained mapping betw
 
 \section{Deployment time -- solution comparison}
 \subsection{Motivation}
-In this test we want to compare our solution to one of those available at the market which use \emph{OpenNebula} as an underlying tool for managing resources of a data center in terms of \textbf{deployment time}, one of the most important factors of products whose main purpose is to scale applications.
+In this test we want to compare our solution to one of those available at the market which use \emph{OpenNebula} as an underlying tool for managing resources of a data center and \emph{OpenVZ} as a hypervisor in terms of \textbf{deployment time}, one of the most important factors of products whose main purpose is to scale applications.
 \emph{Carina} \cite{Carina} can be considered a perfect match of a solution for such a comparison and tests are ran against it.
 \subsection{Description and preconditions}
+This test involves the steps of
+  \begin{inparaenum}[i)]
+    \item instantiating one of the tested product, i.e. Cloud-SAP or Carina,
+    \item ordering the deployment of a service whose specification is shown in listing \ref{lst:service-spec-test-deployment-time},
+    \item measuring the time needed to set up the environment of the service.
+  \end{inparaenum}
+Before performing any tests all virtual machines present at the deployment node are removed.
 \subsubsection{Service description}
 The service comprises a simple java enterprise application, deployed in a master-slave configuration with one VM set as a load balancer and other nodes that serve as workers, which uses Tomcat as a web container.
 
@@ -75,6 +82,33 @@ TODO dodać konfigurację każdej z maszyn wirtualnych
 \subsubsection{Hardware configuration}
 All virtual machines were deployed on one node which had 3G RAM, AMD Athlon\texttrademark 64 X2 Dual Core Processor with each core of 2000 MHz frequency and a hard drive with a capacity of 160 GB.
 \subsection{Results}
+Obtained results are shown in table \ref{tbl:test-service-deployment-time} and in figure \ref{ch7:deployment-time-test}.
+
+\begin{table}
+  \centering
+  \begin{tabular}{ c  c  c }
+    \hline
+    & \multicolumn{2}{c}{Solution} \\
+    \cline{2-3}
+    Instance no & Cloud-SAP & Carina \\
+    \hline
+    2 & 103.9s & x \\
+    3 & 166.3s & x \\
+    4 & 225.5s & x \\
+    5 & 288.3s & x \\
+    \hline
+  \end{tabular}
+  \caption{Average deployment time for the service with the various number of VMs used for the whole environment}
+  \label{tbl:test-service-deployment-time}
+\end{table}
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-7/deployment-time-test}
+  \end{center}
+  \caption{Average deployment time for two competing products when the variable is the number of instances of VMs}
+  \label{ch7:deployment-time-test}
+\end{figure}
 
 \section{Deployment time -- hypervisor comparison}
 
