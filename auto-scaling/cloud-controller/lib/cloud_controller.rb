@@ -102,7 +102,7 @@ module AutoScaling
         amqp_conf = config['amqp']
 
         AMQP.connect(:host => amqp_conf['host']) do |connection|
-          @@logger.info('Connected to AMQP')
+          @@logger.info("Connected to AMQP (host: #{amqp_conf['host']})")
           channel = AMQP::Channel.new(connection)
 
           @publisher.exchange = channel.default_exchange

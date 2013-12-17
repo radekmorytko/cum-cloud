@@ -61,7 +61,7 @@ endpoints:
 database:
   log_level: debug
 amqp:
-  host: 192.168.0.12
+  host: 54.200.88.46
   offers_exchange_name: default.offers_exchange.fanout
   controller_routing_key: sap-cloud-controller-1
 

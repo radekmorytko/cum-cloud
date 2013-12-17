@@ -1,7 +1,7 @@
 # This test case configuration
 
 amqp:
-  host: 192.168.0.12
+  host: 54.200.88.46
 
 cloud_broker:
   id: sap-broker
