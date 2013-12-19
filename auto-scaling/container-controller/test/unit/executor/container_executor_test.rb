@@ -22,10 +22,10 @@ module AutoScaling
     end
 
     def test_shall_increase_cpu
-      request = '{"cpulimit":10}'
+      request = '{"cpulimit":50.0}'
       @cloud_provider.expects(:host_by_container).with(@container.correlation_id).returns('localhost')
       FakeWeb.register_uri(:post, "http://localhost:4567/container/10/configuration", :body => '{ "status" => "ok" }')
-      @executor.increase_cpu(@container, 10)
+      @executor.increase_cpu(@container, 0.5)
       puts FakeWeb.last_request.body
       assert_equal FakeWeb.last_request.body, request
     end

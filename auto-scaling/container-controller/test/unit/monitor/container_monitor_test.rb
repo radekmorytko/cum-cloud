@@ -37,7 +37,7 @@ module AutoScaling
       data = { "CPU" => [["1", "100"], ["5", "105"]] }
       @cloud_provider.expects(:monitor_container).with(@container.correlation_id).returns(data)
 
-      expected = { "CPU" => ["100", "105"] }
+      expected = { "CPU" => [], "MEMORY" => [] }
 
       actual = @monitor.monitor @container
       assert_equal expected, actual

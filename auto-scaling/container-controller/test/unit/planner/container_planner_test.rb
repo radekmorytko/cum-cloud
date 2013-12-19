@@ -16,6 +16,7 @@ module AutoScaling
       @reservation_manager = mock()
 
       @planner = ContainerPlanner.new(@executor, @reservation_manager)
+      @planner.stack_controller = @stack_controller
     end
 
     def test_shall_properly_plan_actions
@@ -44,9 +45,9 @@ module AutoScaling
       }
 
       @reservation_manager.expects(:scale_up).with(container, :cpu, 1.3).raises(InsufficientResources)
+      @stack_controller.expects(:forward).with(:insufficient_cpu, container)
 
       @planner.plan(data)
-      assert_equal true, @planner.conclusions.include?({:container => container, :conclusion => :insufficient_cpu})
     end
 
   end

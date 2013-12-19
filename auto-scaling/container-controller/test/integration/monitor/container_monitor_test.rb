@@ -39,7 +39,6 @@ module AutoScaling
         actual = @monitor.monitor @container
         sleep 30
       end
-
     end
 
   end
