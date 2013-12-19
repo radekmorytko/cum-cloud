@@ -59,10 +59,18 @@ module AutoScaling
       @executor.increase_memory(container, scaled)
     end
 
+
+    def redundant_cpu(container)
+      @@logger.debug "Redundant cpu #{container}: ignoring"
+    end
+
+    def redundant_memory(container)
+      @@logger.debug "Redundant memory #{container}: ignoring"
+    end
+
     def scale_up(container, resource)
       requirements = container.requirements
-      requirements[resource] *= 1.3
-      requirements[resource]
+      requirements[resource] * 1.3
     end
 
   end

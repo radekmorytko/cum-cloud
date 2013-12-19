@@ -117,7 +117,7 @@ module AutoScaling
 
       @@logger.debug "Sending configuration #{chef} to #{url}"
 
-      RestClient::Request.execute(:method => :post, :url => url, :timeout => 300, :node_object_data => Base64::encode64(chef)) { |response, request, result, &block|
+      RestClient::Request.execute(:method => :post, :url => url, :timeout => 300, :payload => {:node_object_data => Base64::encode64(chef)}) { |response, request, result, &block|
         case response.code
           when 200
             @@logger.debug "Successfully sent configuration #{response}"

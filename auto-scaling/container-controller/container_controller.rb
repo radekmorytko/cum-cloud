@@ -31,7 +31,7 @@ module AutoScaling
     end
 
     def schedule(container, interval)
-      @scheduler.every(interval) do
+      @scheduler.every(interval, :overlap => false) do
         @@logger.debug "Executing job for a #{container}"
 
         monitoring_data = monitor.monitor(container)
@@ -55,6 +55,10 @@ module AutoScaling
       @@logger.debug "Instantiated ContainerController: #{controller}"
 
       controller
+    end
+
+    def stack_controller=(stack_controller)
+      @planner.stack_controller = stack_controller
     end
 
   end

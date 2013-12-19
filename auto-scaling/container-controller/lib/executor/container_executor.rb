@@ -15,16 +15,17 @@ module AutoScaling
 
     # Sets OpenVZ cpu limit to a specified amount
     def increase_cpu(container, amount)
-      payload = { 'cpulimit' => amount }
-      @@logger.debug "Prepared payload for CPU increase: #{payload} for #{container}"
+      # normalize
+      payload = { 'cpulimit' => amount * 100}
       host = @cloud_provider.host_by_container(container.correlation_id)
+      @@logger.debug "Prepared payload for CPU increase: #{payload} for #{container} at #{host}"
       post(host, container, payload.to_json)
     end
 
     def increase_memory(container, amount)
       payload = { 'physpages' => amount }
-      @@logger.debug "Prepared payload for MEMORY increase: #{payload} for #{container}"
       host = @cloud_provider.host_by_container(container.correlation_id)
+      @@logger.debug "Prepared payload for MEMORY increase: #{payload} for #{container} at #{host}"
       post(host, container, payload.to_json)
     end
 

@@ -76,6 +76,7 @@ module AutoScaling
 
       @@logger.info("Initializing Container Controller")
       container_controller = ContainerController.build(cloud_provider, reservation_manager)
+      container_controller.stack_controller = stack_controller
 
       instance.service_deployer = ServiceDeployer.new(
         StackDeployer.new(

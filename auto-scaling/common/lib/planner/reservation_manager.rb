@@ -64,6 +64,7 @@ module AutoScaling
 
         if current_state[parameter] < requested then
           raise InsufficientResources.new("Cannot reserve: #{requested} with #{current_state} at #{host}")
+          return
         end
 
         current = container.requirements[parameter.to_s]
