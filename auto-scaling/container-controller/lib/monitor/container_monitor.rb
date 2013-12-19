@@ -27,7 +27,6 @@ module AutoScaling
       @@logger.debug "Monitoring a container #{container}"
 
       data = @cloud_provider.monitor_container container.correlation_id
-      @@logger.debug "Grabbed data about container: #{container}, #{data}"
 
       # filter out historical data
       result = {}
@@ -36,10 +35,22 @@ module AutoScaling
         selection = last(probes, container)
         result[key] = selection
       end
+
+      is_warming_up = false
+      is_warming_up = true if container.probed == "0"
+
       container.probed = selection.last[0] if selection.last != nil
       container.save
 
-      collect_values(result)
+      if is_warming_up
+        @@logger.debug "Container monitoring: #{container} warming up..."
+        result = {'CPU' => [], 'MEMORY' => {}}
+      end
+
+      result = collect_values(result)
+      @@logger.debug "Grabbed data about container: #{container}, #{result}"
+
+      result
     end
 
     private

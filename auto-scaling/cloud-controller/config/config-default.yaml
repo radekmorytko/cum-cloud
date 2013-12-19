@@ -35,8 +35,8 @@ endpoints:
       monitoring_keys:
                         - CPU
       timeout:  10
-      retries:  10
-      sleep:    30
+      retries:  100
+      sleep:    5
 
   test:
     opennebula:
@@ -61,7 +61,8 @@ endpoints:
 database:
   log_level: debug
 amqp:
-  host: 54.200.88.46
+#  host: 54.200.88.46
+  host: 192.168.0.12
   offers_exchange_name: default.offers_exchange.fanout
   controller_routing_key: sap-cloud-controller-1
 

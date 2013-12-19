@@ -40,6 +40,7 @@ module AutoScaling
     # This method is used in an integration test where it
     # sends USR1 signal to the test-runner process
     def notify_observer_process(service)
+      return if config == nil
 
       return if (not service.deployed?) or
                 (not config.has_key?('test-cases') and config['test-cases'].has_key?(['runner-pid']))
