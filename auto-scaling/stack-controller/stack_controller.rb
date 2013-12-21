@@ -27,10 +27,10 @@ module AutoScaling
     end
 
     def forward(conclusion, container)
-      @@logger.info "Got unprocessed conclusion: #{conclusion} for #{container}"
+      @@logger.info "STACK Got unprocessed conclusion: #{conclusion} for #{container}"
 
       if(container.master?)
-        @@logger.debug "Currently scaling up a master is not supported, ignore"
+        @@logger.debug "STACK Currently scaling up a master is not supported, ignore"
         return
       end
 
@@ -43,13 +43,13 @@ module AutoScaling
 
     def schedule(service, interval)
       @scheduler.every(interval) do
-        @@logger.debug "Executing job for a #{service}"
+        @@logger.debug "STACK Executing job for a #{service}"
 
         monitoring_data = monitor.monitor(service)
         conclusions = analyzer.analyze(monitoring_data)
         planner.plan(conclusions)
 
-        @@logger.debug "Job execution has finished"
+        @@logger.debug "STACK Job execution has finished"
       end
     end
 
@@ -60,6 +60,10 @@ module AutoScaling
     def converge(stack)
       master = Container.master(stack)
       @executor.converge(master.id)
+    end
+
+    def cloud_controller=(cloud_controller)
+      @planner.cloud_controller = cloud_controller
     end
 
     # Checks if resource reservation is possible

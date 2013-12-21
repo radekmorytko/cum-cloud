@@ -24,7 +24,7 @@ module AutoScaling
     #   "MEMORY" => ["70", "7345", "3213"],
     # }
     def monitor(container)
-      @@logger.debug "Monitoring a container #{container}"
+      @@logger.debug "CONTAINER Monitoring a container #{container}"
 
       data = @cloud_provider.monitor_container container.correlation_id
 
@@ -43,12 +43,12 @@ module AutoScaling
       container.save
 
       if is_warming_up
-        @@logger.debug "Container monitoring: #{container} warming up..."
+        @@logger.debug "CONTAINER Container monitoring: #{container} warming up..."
         result = {'CPU' => [], 'MEMORY' => {}}
       end
 
       result = collect_values(result)
-      @@logger.debug "Grabbed data about container: #{container}, #{result}"
+      @@logger.debug "CONTAINER Grabbed data about container: #{container}, #{result}"
 
       result
     end

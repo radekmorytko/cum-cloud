@@ -22,7 +22,7 @@ directory "/vz/one/datastores" do
 end
 
 # gems
-%w( openvz systemu xml-mapping ).each do |gem|
+%w( openvz systemu xml-mapping openvz-agent ).each do |gem|
 	gem_package(gem) do
 		gem_binary "gem"
 	end

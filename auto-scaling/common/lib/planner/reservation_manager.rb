@@ -7,6 +7,8 @@ module AutoScaling
 
   class ReservationManager
 
+    @@logger       = Logger.new(STDOUT)
+
     def initialize(cloud_provider, capacity = {}, requirements = {})
       # map that stores available resources, e.g. {:cpu => 4, :memory => 3}
       # note:
@@ -22,6 +24,8 @@ module AutoScaling
       @reservation = Mutex.new
       @requirements = requirements
       @cloud_provider = cloud_provider
+
+      @@logger.debug "ReservationManager instantiated with #{@requirements} and #{@cloud_provider}"
     end
 
     # Checks required resources for a given stack
@@ -63,7 +67,7 @@ module AutoScaling
         current_state = @cloud_provider.monitor_host(host)
 
         if current_state[parameter] < requested then
-          raise InsufficientResources.new("Cannot reserve: #{requested} with #{current_state} at #{host}")
+          raise InsufficientResources.new("CONTAINER Cannot reserve: #{requested} with #{current_state} at #{host}")
           return
         end
 
@@ -89,7 +93,7 @@ module AutoScaling
         units.each do |key, value|
           if @capacity[key] < value then
             @capacity = backup
-            raise InsufficientResources.new("Cannot reserve: #{units} with #{@capacity}")
+            raise InsufficientResources.new("STACK Cannot reserve: #{units} with #{@capacity}")
           end
 
           @capacity[key] -= value

@@ -17,7 +17,7 @@ module AutoScaling
     end
 
     def plan_deployment(stack)
-      @@logger.debug "Planning deployment of a #{stack}"
+      @@logger.debug "STACK Planning deployment of a #{stack}"
       # are there enough resources?
 
       # reserve resources
@@ -40,7 +40,7 @@ module AutoScaling
     # }
     #
     def plan(data)
-      @@logger.debug "Planning actions based on data #{data}"
+      @@logger.debug "STACK Planning actions based on data #{data}"
 
       data.each do |stack, conclusions|
         conclusions.each do |conclusion|
@@ -48,7 +48,7 @@ module AutoScaling
             self.send(conclusion, stack)
           rescue InsufficientResources => msg
             @@logger.info msg
-            @@logger.info 'Delegating execution to a cloud-controller'
+            @@logger.info 'STACK Delegating execution to a cloud-controller'
 
             @cloud_controller.forward(conclusion, stack)
           end
@@ -72,11 +72,11 @@ module AutoScaling
     end
 
     def overloaded_master(stack)
-      @@logger.warn "Stack #{stack} has overloaded master. Currently, nothing can be done"
+      @@logger.warn "STACKStack #{stack} has overloaded master. Currently, nothing can be done"
     end
 
     def healthy(stack)
-      @@logger.info "Stack #{stack} is healthy. Ignoring"
+      @@logger.info "STACK Stack #{stack} is healthy. Ignoring"
     end
 
   end

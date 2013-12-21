@@ -71,8 +71,10 @@ module AutoScaling
       if config['endpoints'][config['cloud_provider_name']].key?('capacity')
         capacity = config['endpoints'][config['cloud_provider_name']]['capacity']
       end
-      reservation_manager = ReservationManager.new(cloud_provider, capacity)
+      requirements = config['mappings']['opennebula']['stacks']
+      reservation_manager = ReservationManager.new(cloud_provider, capacity, requirements)
       stack_controller = StackController.build(cloud_provider, reservation_manager, config)
+      stack_controller.cloud_controller = instance
 
       @@logger.info("Initializing Container Controller")
       container_controller = ContainerController.build(cloud_provider, reservation_manager)

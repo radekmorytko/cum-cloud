@@ -47,7 +47,7 @@ module AutoScaling
     # [:insufficient_cpu, :insufficient_memory]
     #
     def analyze(data)
-      @@logger.debug "Analyzing data #{data}"
+      @@logger.debug "CONTAINER Analyzing data #{data}"
 
       conclusions = Set.new
       container = data[:container]
@@ -56,7 +56,7 @@ module AutoScaling
       policies.each do |policy|
         data[:metrics].each do |key, values|
           conclusion = @policy_evaluator.evaluate(policy, container, values, @@mappings)
-          @@logger.debug "Concluded that currently #{container} is #{conclusion} (by key: #{key})"
+          @@logger.debug "CONTAINER Concluded that currently #{container} is #{conclusion} (by key: #{key})"
 
           next if conclusion == :healthy
 
@@ -64,7 +64,7 @@ module AutoScaling
         end
       end
 
-      @@logger.debug "Conclusions about #{container} are #{conclusions.to_s}"
+      @@logger.debug "CONTAINER Conclusions about #{container} are #{conclusions.to_s}"
 
       conclusions
     end
