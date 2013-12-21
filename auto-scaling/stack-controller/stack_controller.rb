@@ -28,6 +28,17 @@ module AutoScaling
 
     def forward(conclusion, container)
       @@logger.info "Got unprocessed conclusion: #{conclusion} for #{container}"
+
+      if(container.master?)
+        @@logger.debug "Currently scaling up a master is not supported, ignore"
+        return
+      end
+
+      # currently the only strategy is to scale out slave
+      stack = container.stack
+      data = { stack => [:insufficient_slaves] }
+
+      @planner.plan(data)
     end
 
     def schedule(service, interval)
