@@ -5,6 +5,64 @@
   proposed solution.
 }
 
+\section{Requirements}
+\subsection{Functional}
+One can notice that elements that yields a solution for
+a problem stated in the first chapter, which is ensuring that users'
+application provide appropriate Quality-of-Service for its customers, were
+introduced in previous chapters:
+
+\begin{itemize}
+	\item scalability           -- ability to improve application performance by enriching
+	\item adaptivity            -- ability to adapt (i.e. scale) appropriately to current usage pattern
+	\item inter-cloud awareness -- ability to cooperate with different cloud provider to supply application with extra resources
+\end{itemize}
+Having those in mind, we can make the list of functional requirements more formal:
+\begin{enumerate}
+  \item The user of the platform is able to:
+    \begin{enumerate}
+      \item deploy a service,
+      \item cancel the service,
+      \item check the status of the previously ordered-to-deploy service at any time. \emph{Status} means 
+        \begin{inparaenum}[a)]
+        \item whether or not the deployment succeeded,
+        \item current uptime of the service,
+        \item current cost
+        \end{inparaenum}
+    \end{enumerate}
+  \item One of the elements of the platform is a client application that is used by the user of the platform to communicate with it,
+  \item During the deployment process, the platform takes as an input a description of the service (application) that consists of:
+    \begin{itemize}
+    \item service name,
+    \item software stacks (e.g. \emph{java}, \emph{ruby}),
+    \item auto-scaling policies (per each stack) which define
+      \begin{inparaenum}[i)]
+      \item minimal and maximal number of VMs that are needed for the stack,
+      \item name of the policy (algorithm) which is used for scaling,
+      \item parameters of the policy
+      \end{inparaenum}
+    \end{itemize}
+  \item Deployment of a service is done in a way which minimizes the cost from the client's perspective with ensuring Quality-of-Service requirements at the same time,
+  \item It is assumed that the application which is going to be deployed is properly and fully tuned so that it is not possible to improve its performance by changing its or any of its components configuration(s),
+  \item The platform monitors the state of the deployed services and based on the results of this process takes appropriate steps in order to meet the auto-scaling requirements. These include
+    \begin{inparaenum}[a)]
+    \item altering VM's parameters and configuration,
+    \item vertical scaling,
+    \item horizontal scaling,
+    \item scaling stacks among different cloud providers
+    \end{inparaenum}
+\end{enumerate}
+
+TODO Alternative scenario -- the client has a predefined budget that they cannot exceed -- it can be mentioned in the overall discussion of the solution
+
+\subsection{Non-functional}
+\begin{itemize}
+  \item The platform uses \emph{OpenVZ} as a hypervisor
+  \item The platform uses \emph{OpenNebula} and \emph{AppFlow} as data-center management tools
+  \item The platform does not confine itself to one provider, but to a \emph{ecosystem of various cloud providers} that offers deployment capabilities which vary in terms of quality of service, cost, etc.
+  \item All communication between the user and the platform and among platform components should be encrypted
+\end{itemize}
+
 \section{Application controller}
 \section{Container controller}
 \section{Service controller}
