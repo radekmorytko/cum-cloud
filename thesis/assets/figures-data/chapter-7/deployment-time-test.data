@@ -1,14 +1,12 @@
 # Cloud-SAP
 "Number of instances" "Deployment time"
-2 103.9
-3 166.3
-5 225.5
-5 288.3
+2 197.97
+3 261.72
+4 294.38
 
 
 # Carina
 "Number of instances" "Deployment time"
-2 123.9
-3 186.3
-5 232.5
-5 303.3
+2 158.7
+3 208.1
+4 230.6

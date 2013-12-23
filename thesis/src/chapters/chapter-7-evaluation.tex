@@ -77,8 +77,13 @@ This test involves the steps of
     \item measuring the time needed to set up the environment of the service.
   \end{inparaenum}
 Before performing any tests all virtual machines present at the deployment node are removed.
+\subsubsection{OpenNebula configuration}
+To ensure objectivity in tests, OpenNebula was configured in both products in the same way. One of the key factors that could influence the deployment time is the configuration of scheduler. Its parameters are shown in the listing \ref{lst:one-scheduler-config}.
+\lstinputlisting[caption=OpenNebula scheduler configuration, label=lst:one-scheduler-config]{deployment-time-test-sched-config}
 \subsubsection{Service description}
 The service comprises a simple java enterprise application, deployed in a master-slave configuration with one VM set as a load balancer and other nodes that serve as workers, which uses Tomcat as a web container.
+
+The description of a service expressed in Carina format can be found in listing \ref{lst:carina-config}.
 
 TODO dodać konfigurację każdej z maszyn wirtualnych
 \subsubsection{Hardware configuration}
@@ -94,10 +99,9 @@ Obtained results are shown in table \ref{tbl:test-service-deployment-time} and i
     \cline{2-3}
     Instance no & Cloud-SAP & Carina \\
     \hline
-    2 & 103.9s & x \\
-    3 & 166.3s & x \\
-    4 & 225.5s & x \\
-    5 & 288.3s & x \\
+    2 & 198.0 & 158.7s \\
+    3 & 261.72 & 208.1s \\
+    4 & 294.38 & 230.6s \\
     \hline
   \end{tabular}
   \caption{Average deployment time for the service with the various number of VMs used for the whole environment}
