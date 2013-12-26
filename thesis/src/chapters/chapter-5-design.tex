@@ -30,7 +30,7 @@ It is vital that proposed architecture reflects that multi-layered model. Thus, 
 \subsection{Autonomic components}
 Each layer of the Cloud-SAP (shown in figure \ref{design:csap-layers}) must be characterized by an ability to adapt to a given application usage. As the previous chapter stated, this can be achieved by adding an elasticity controller to each layer. This observation is a foundation of proposed architecture.
 
-One of the first models that ensured system adaptivity is an autonomic component, concept based on a feed-back loop, initially proposed by IBM \cite{IBM06}. Figure \ref{ch5:autonomic-component} depicts that architecture. 
+One of the first models that ensured system adaptivity is an autonomic component, concept based on a feed-back loop, initially proposed by IBM \cite{IBM06}. Figure \ref{design:autonomic-component} depicts that architecture. 
 
 \begin{figure}[!ht]
   \begin{center}
@@ -40,7 +40,7 @@ One of the first models that ensured system adaptivity is an autonomic component
   \label{design:autonomic-component}
 \end{figure}
 
-Since designed platform operates on multiple layers, we can extend that model by using concept of a multi-hierarchical autonomic system \cite{LiWoZh05}. Figure \ref{ch5:hierarchical-autonomic-system} illustrates that hierarchy, were each level represents a different perspective on an application scaling. Using terminology characteristic to a autonomic system, first three hierarchy levels (application tuning, container, stack) are centralized and controlled by a single elasticity controller at each level, while the last inter-cloud level is a decentralized one - each cloud instance is fully independent.
+Since designed platform operates on multiple layers, we can extend that model by using concept of a multi-hierarchical autonomic system \cite{LiWoZh05}. Figure \ref{design:hierarchical-autonomic-system} illustrates that hierarchy, were each level represents a different perspective on an application scaling. Using terminology characteristic to a autonomic system, first three hierarchy levels (application tuning, container, stack) are centralized and controlled by a single elasticity controller at each level, while the last inter-cloud level is a decentralized one - each cloud instance is fully independent.
 
 As \cite{IBM06} states, each autonomic component has modules that are responsible for:
 \begin{itemize}

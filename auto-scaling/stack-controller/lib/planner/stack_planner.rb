@@ -72,7 +72,7 @@ module AutoScaling
     end
 
     def overloaded_master(stack)
-      @@logger.warn "STACKStack #{stack} has overloaded master. Currently, nothing can be done"
+      @@logger.warn "STACK Stack #{stack} has overloaded master. Currently, nothing can be done"
     end
 
     def healthy(stack)
