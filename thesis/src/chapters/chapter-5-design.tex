@@ -6,9 +6,18 @@
 }
 
 \section{Requirements}
+One can notice that elements that yields a solution for a problem stated in the first chapter, which is ensuring that users' application provide appropriate Quality-of-Service for its customers in a most-cost effective manner, were gradually introduced in previous chapters:
 
+\begin{itemize}
+	\item \emph{scalability} - ability to improve application performance by enriching resources
+	\item \emph{adaptivity} - ability to adapt (i.e. scale) appropriately to a current usage pattern
+	\item \emph{inter-cloud awareness} - ability to compose an application deployment using different cloud providers; cooperation with different cloud provider to supply application with extra resources while performing application scaling
+\end{itemize}
+
+Next section states the general overview of the proposed solution, while the consecutive sections presents more detailed discussion of its elements and finally the last section summarised the design choices in a context of system requirements.
+	
 \section{High-level design}
-\subsection{Elements of the architecture}
+\subsection{Key elements}
 In the previous chapters, various scalability models operating at different layers of abstraction were introduced: 
 \begin{itemize}
 	\item application platform: application platform tuning
@@ -57,3 +66,27 @@ While the managed component has:
 \end{itemize}
 
 Due to the hierarchy of our architecture, each level manages an underlying autonomic component, while being managed by an upper layer at the very same time.
+
+\subsubsection{Monitoring}
+
+\subsubsection{Analysis}
+
+\subsubsection{Planning}
+
+\subsubsection{Execution}
+
+\subsection{Cloud federation}
+Opis najwyzej warstwy, ze ma brokery, wykorzystuje kilka chmur.
+
+\subsection{Architecture overview}
+Taking above-mentioned points into account, we can distinguish two pivotal components responsible for auto-scaling and cooperation in intercloud respectively. While each auto-scaling component is entirely dedicated to a given cloud provider, the intercloud module has distributed components such as client and broker and can correspond to a variety of different auto-scaling components. Figure X illustrates overall architecture.
+
+(Diagram komponentowy)
+
+\section{Container controller}
+
+\section{Stack controller}
+
+\section{Cloud controller, cloud broker and client application}
+
+\section{Solution discussion}
