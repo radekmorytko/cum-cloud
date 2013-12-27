@@ -7,16 +7,17 @@
 \section{Introduction}
 We carried out a number of tests which aim to prove the solution be better than currently available, especially in terms of:
 \begin{enumerate}
-  \item maximum reduction of deployment cost by deploying different stacks comprising a given service on different cloud providers
-  \item reduced deployment time
-  \item TODO dopisać jeszcze kolejne
+  \item deployment cost
+  \item cost of providing given Quality-of-Service
+  \item deployment time
 \end{enumerate}
 
 \section{Cost of service deployment}
-\subsection{Description and preconditions}
-The aim of this test case is to test the primary use case of the proposed solution -- deployment of a service with the emphasis of client's \textbf{cost}.
-Service specification (\ref{lst:service-spec-test-cost}) forms an input to the application. Its elements are different software stacks that are parts of the whole service. Each cloud provider has its own price for a given software stack which is shown in table \ref{tbl:test-service-deployment-cost}.
-This test should show that the platform chooses the best mapping between the stacks and cloud providers so that the client's pays the \textbf{lowest} possible price.
+\subsection*{Description}
+The aim of this test case is to test the primary use case of the proposed solution -- deployment of a service with the emphasis of client's \textbf{cost}. It should show that the platform chooses the best mapping between the stacks and cloud providers so that the client's pays the \textbf{lowest} possible price.
+
+\subsection*{Preconditions}
+Service specification (\ref{lst:service-spec-test-cost}) forms an input to the application. Its elements are different software stacks that are parts of the whole service. Each cloud provider has its own price for a given software stack which is shown in table \ref{tbl:test-service-deployment-cost}. Diagram \ref{tbl:test-service-deployment-cost-diagram} illustrates the overall configuration.
 
 \begin{table}
   \centering
@@ -35,7 +36,9 @@ This test should show that the platform chooses the best mapping between the sta
   \label{tbl:test-service-deployment-cost}
 \end{table}
 
-\subsection{Results}
+(JEB deployment diagram, podzial na wezly)
+
+\subsection*{Results}
 Table \ref{tbl:test-service-deployment-cost-mapping} shows obtained mapping between stacks and cloud providers. Taking into account this result, figure \ref{ch7:service-deployment-cost} shows comparison of cost the client would have to pay with and without such a mapping.
 
 \begin{table}
@@ -63,19 +66,34 @@ Table \ref{tbl:test-service-deployment-cost-mapping} shows obtained mapping betw
   \label{ch7:service-deployment-cost}
 \end{figure}
 
-\section{Auto-scaling}
+\subsection*{Conclusion}
+
+
+\section{Auto-scaling -- single-provider based}
+\subsection*{Description}
+\subsection*{Preconditions}
+\subsection*{Results}
+\subsection*{Conclusion}
+
+\section{Auto-scaling -- multiple-provider based}
+\subsection*{Description}
+\subsection*{Preconditions}
+\subsection*{Results}
+\subsection*{Conclusion}
 
 \section{Deployment time -- solution comparison}
-\subsection{Motivation}
+\subsection*{Description}
 In this test we want to compare our solution to one of those available at the market which use \emph{OpenNebula} as an underlying tool for managing resources of a data center and \emph{OpenVZ} as a hypervisor in terms of \textbf{deployment time}, one of the most important factors of products whose main purpose is to scale applications.
 \emph{Carina} \cite{Carina} can be considered a perfect match of a solution for such a comparison and tests are ran against it.
-\subsection{Description and preconditions}
+
 This test involves the steps of
   \begin{inparaenum}[i)]
     \item instantiating one of the tested product, i.e. Cloud-SAP or Carina,
     \item ordering the deployment of a service whose specification is shown in listing \ref{lst:service-spec-test-deployment-time},
     \item measuring the time needed to set up the environment of the service.
   \end{inparaenum}
+
+\subsection*{Preconditions}
 Before performing any tests all virtual machines present at the deployment node are removed.
 \subsubsection{OpenNebula configuration}
 To ensure objectivity in tests, OpenNebula was configured in both products in the same way. One of the key factors that could influence the deployment time is the configuration of scheduler. Its parameters are shown in the listing \ref{lst:one-scheduler-config}.
@@ -85,10 +103,17 @@ The service comprises a simple java enterprise application, deployed in a master
 
 The description of a service expressed in Carina format can be found in listing \ref{lst:carina-config}.
 
-TODO dodać konfigurację każdej z maszyn wirtualnych
+- TODO dodać konfigurację każdej z maszyn wirtualnych
+
 \subsubsection{Hardware configuration}
-All virtual machines were deployed on one node which had 3G RAM, AMD Athlon\texttrademark 64 X2 Dual Core Processor with each core of 2000 MHz frequency and a hard drive with a capacity of 160 GB.
-\subsection{Results}
+All virtual machines were deployed on one node which had 3G RAM, AMD Athlon\texttrademark 64 X2 Dual Core Processor with each core of 2000 MHz frequency and a hard drive with a capacity of 160 GB. Diagram presents the physical configuration of nodes.
+- jeb physical diagram
+
+\subsubsection{Environment configuration}
+Components that were used during tests are shown in figure .
+- jeb logical diagram
+
+\subsection*{Results}
 Obtained results are shown in table \ref{tbl:test-service-deployment-time} and in figure \ref{ch7:deployment-time-test}.
 
 \begin{table}
@@ -116,4 +141,11 @@ Obtained results are shown in table \ref{tbl:test-service-deployment-time} and i
   \label{ch7:deployment-time-test}
 \end{figure}
 
+\subsection*{Conclusion}
+
 \section{Deployment time -- hypervisor comparison}
+\subsection*{Description}
+\subsection*{Preconditions}
+\subsection*{Results}
+\subsection*{Conclusion}
+
