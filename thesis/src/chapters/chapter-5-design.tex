@@ -141,10 +141,14 @@ Planning module is responsible for scheduling actions that have to be taken to s
 It is possible, however, that resolving issues is not possible at a current layer. It that case, the upper-layer is responsible for handling it.
 
 \subsubsection{Execution}
-It is expected that execution module manage resource by performing various operations on resource's effector. Each layer is characterised by different actions that can be taken, for example: application server reconfiguration, vertical or horizontal scaling.
+It is expected that execution module manage resource by performing various operations on resource's effector. Each layer is characterised by different actions that can be taken, for example: application server reconfiguration, vertical or horizontal scaling. 
+
+Enforcing actions on a managed component can be done using different methods, however, all of them requires an agent installed in a managed resource. Cloud-SAP does not enforce any specific technology, leaving low-level decision to an implementation.
 
 \subsubsection{Knowledge base}
-Knowledge base is represented as a set of rules, policies shared across autonomous components.
+Knowledge base is represented as a set of rules, policies shared across autonomic components.
+
+-- TODO przyklad z ibma
 
 \subsection{Cloud federation}
 Opis najwyzej warstwy, ze ma brokery, wykorzystuje kilka chmur.
