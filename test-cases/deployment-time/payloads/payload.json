@@ -10,7 +10,7 @@
       "policies":[
       {
         "name":"threshold_model",
-        "parameters":{
+        "arguments": {
           "min":"5",
           "max":"50"
         }
