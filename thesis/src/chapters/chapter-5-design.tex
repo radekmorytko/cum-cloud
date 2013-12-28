@@ -14,19 +14,28 @@ One can notice that elements that yields a solution for a problem stated in the 
 	\item \emph{inter-cloud awareness} - ability to compose an application deployment using different cloud providers; cooperation with different cloud provider to supply application with extra resources while performing application scaling
 \end{itemize}
 
-Next section states the general overview of the proposed solution, while the consecutive sections presents more detailed discussion of its elements and finally the last section summarised the design choices in a context of system requirements.
+Next section states the general overview of the proposed solution, while the consecutive sections presents more detailed discussion of its elements and finally the last section summarises the design choices in a context of system requirements.
 	
 \section{High-level design}
-\subsection{Key elements}
-In the previous chapters, various scalability models operating at different layers of abstraction were introduced: 
+\subsection{Overview}
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{chapter-5/hld-overview}
+  \end{center}
+  \caption{Cloud-SAP high level overview}
+  \label{design:hld-overview}
+\end{figure}
+
+As diagram \ref{design:hld-overview} illustrates, we can distinguish two main components of proposed solution: auto-scaling module and inter-cloud broker. Together, they can be seen as an hierarchical autonomic system, where each layer corresponds to a different scalability perspective:
 \begin{itemize}
-	\item application platform: application platform tuning
-	\item container: vertical scaling
-	\item stack: horizontal scaling
-	\item inter-cloud: scaling out across different cloud providers
+	\item application platform layer: application platform tuning
+	\item container layer: vertical scaling
+	\item stack layer: horizontal scaling
+	\item inter-cloud layer: scaling out across different cloud providers
 \end{itemize}
 
-It is vital that proposed architecture reflects that multi-layered model. Thus, we divided platform's components into a stack that is shown in figure \ref{design:csap-layers}.
+Diagram \ref{design:csap-layers} depicts that multi-layered structure.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -36,8 +45,10 @@ It is vital that proposed architecture reflects that multi-layered model. Thus, 
   \label{design:csap-layers}
 \end{figure}
 
-\subsection{Autonomic components}
-Each layer of the Cloud-SAP (shown in figure \ref{design:csap-layers}) must be characterized by an ability to adapt to a given application usage. As the previous chapter stated, this can be achieved by adding an elasticity controller to each layer. This observation is a foundation of proposed architecture.
+\subsection{Auto-scaling module}
+
+\subsubsection{Autonomic components}
+Each layer of the Cloud-SAP (shown in figure \ref{design:csap-layers}) must be characterised by an ability to adapt to a given application usage. As the previous chapter stated, this can be achieved by adding an elasticity controller to each layer. This observation is a foundation of proposed architecture.
 
 One of the first models that ensured system adaptivity is an autonomic component, concept based on a feed-back loop, initially proposed by IBM \cite{IBM06}. Figure \ref{design:autonomic-component} depicts that architecture. 
 
@@ -49,7 +60,15 @@ One of the first models that ensured system adaptivity is an autonomic component
   \label{design:autonomic-component}
 \end{figure}
 
-Since designed platform operates on multiple layers, we can extend that model by using concept of a multi-hierarchical autonomic system \cite{LiWoZh05}. Figure \ref{design:hierarchical-autonomic-system} illustrates that hierarchy, were each level represents a different perspective on an application scaling. Using terminology characteristic to a autonomic system, first three hierarchy levels (application tuning, container, stack) are centralized and controlled by a single elasticity controller at each level, while the last inter-cloud level is a decentralized one - each cloud instance is fully independent.
+Since designed platform operates on multiple layers, we can extend that model by using concept of a multi-hierarchical autonomic system \cite{LiWoZh05}. Figure \ref{design:hierarchical-autonomic-system} illustrates that hierarchy, were each level represents a different perspective on an application scaling. Using terminology characteristic to a autonomic system, first three hierarchy levels (application tuning, container, stack) are centralised and controlled by a single elasticity controller at each level, while the last inter-cloud level is a decentralized one - each cloud instance is fully independent.
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{chapter-5/hierarchical-autonomic-system}
+  \end{center}
+  \caption{Cloud-SAP as an hierarchical autonomic system}
+  \label{design:hierarchical-autonomic-system}
+\end{figure}
 
 As \cite{IBM06} states, each autonomic component has modules that are responsible for:
 \begin{itemize}
@@ -75,18 +94,13 @@ Due to the hierarchy of our architecture, each level manages an underlying auton
 
 \subsubsection{Execution}
 
+
 \subsection{Cloud federation}
 Opis najwyzej warstwy, ze ma brokery, wykorzystuje kilka chmur.
 
-\subsection{Architecture overview}
-Taking above-mentioned points into account, we can distinguish two pivotal components responsible for auto-scaling and cooperation in intercloud respectively. While each auto-scaling component is entirely dedicated to a given cloud provider, the intercloud module has distributed components such as client and broker and can correspond to a variety of different auto-scaling components. Figure X illustrates overall architecture.
 
-(Diagram komponentowy)
+\section{Auto-scaling module}
 
-\section{Container controller}
-
-\section{Stack controller}
-
-\section{Cloud controller, cloud broker and client application}
+\section{Cloud federation}
 
 \section{Solution discussion}

@@ -17,7 +17,7 @@ We carried out a number of tests which aim to prove the solution be better than 
 The aim of this test case is to test the primary use case of the proposed solution -- deployment of a service with the emphasis of client's \textbf{cost}. It should show that the platform chooses the best mapping between the stacks and cloud providers so that the client's pays the \textbf{lowest} possible price.
 
 \subsection*{Preconditions}
-Service specification (\ref{lst:service-spec-test-cost}) forms an input to the application. Its elements are different software stacks that are parts of the whole service. Each cloud provider has its own price for a given software stack which is shown in table \ref{tbl:test-service-deployment-cost}. Diagram \ref{tbl:test-service-deployment-cost-diagram} illustrates the overall configuration.
+Service specification (\ref{lst:service-spec-test-cost}) forms an input to the application. Its elements are different software stacks that are parts of the whole service. Each cloud provider has its own price for a given software stack which is shown in table \ref{tbl:test-service-deployment-cost}. Diagram \ref{eval:deployment-cost-physical-nodes} illustrates the simplified environment setup.
 
 \begin{table}
   \centering
@@ -36,7 +36,14 @@ Service specification (\ref{lst:service-spec-test-cost}) forms an input to the a
   \label{tbl:test-service-deployment-cost}
 \end{table}
 
-(JEB deployment diagram, podzial na wezly)
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=0.6\textwidth]{chapter-7/deployment-cost-physical-nodes}
+  \end{center}
+  \caption{Deployment cost: environment configuration}
+  \label{eval:deployment-cost-physical-nodes}
+\end{figure}
+
 
 \subsection*{Results}
 Table \ref{tbl:test-service-deployment-cost-mapping} shows obtained mapping between stacks and cloud providers. Taking into account this result, figure \ref{ch7:service-deployment-cost} shows comparison of cost the client would have to pay with and without such a mapping.
@@ -68,16 +75,31 @@ Table \ref{tbl:test-service-deployment-cost-mapping} shows obtained mapping betw
 
 \subsection*{Conclusion}
 
-
 \section{Auto-scaling -- single-provider based}
 \subsection*{Description}
 \subsection*{Preconditions}
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{chapter-7/auto-scaling-1cp-physical-nodes}
+  \end{center}
+  \caption{Auto-scaling - single-provider based: environment configuration}
+  \label{eval:auto-scaling-1cp-physical-nodes}
+\end{figure}
+
 \subsection*{Results}
 \subsection*{Conclusion}
 
 \section{Auto-scaling -- multiple-provider based}
 \subsection*{Description}
 \subsection*{Preconditions}
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{chapter-7/auto-scaling-2cp-physical-nodes}
+  \end{center}
+  \caption{Auto-scaling - multiple-provider based: environment configuration}
+  \label{eval:auto-scaling-1cp-physical-nodes}
+\end{figure}
+
 \subsection*{Results}
 \subsection*{Conclusion}
 
@@ -104,11 +126,20 @@ The service comprises a simple java enterprise application, deployed in a master
 
 The description of a service expressed in Carina format can be found in listing \ref{lst:carina-config}.
 
-- TODO dodać konfigurację każdej z maszyn wirtualnych
+- TODO dodać konfigurację każdej z maszyn wirtualnych 
 
 \subsubsection{Hardware configuration}
 All virtual machines were deployed on one node which had 3G RAM, AMD Athlon\texttrademark 64 X2 Dual Core Processor with each core of 2000 MHz frequency and a hard drive with a capacity of 160 GB. Diagram presents the physical configuration of nodes.
-- jeb physical diagram
+
++ fizycznych
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=0.6\textwidth]{chapter-7/deployment-time-physical-nodes}
+  \end{center}
+  \caption{Deployment time - solution comparison: physical environment setup}
+  \label{eval:deployment-time-physical-nodes}
+\end{figure}
 
 \subsubsection{Environment configuration}
 Deployment diagram for \emph{Carina} implementation is shown in figure \ref{ch7:deployment-time-test-deployment-time-carina-deployment-diagram} and for \emph{Cloud-SAP} in figure \ref{ch7:deployment-time-test-deployment-time-components}.
@@ -123,12 +154,11 @@ Deployment diagram for \emph{Carina} implementation is shown in figure \ref{ch7:
 
 \begin{figure}[!ht]
   \begin{center}
-    \includegraphics{chapter-7/deployment-time-components}
+    \includegraphics[width=\textwidth]{chapter-7/deployment-time-components}
   \end{center}
-  \caption{Deployment diagram of \emph{Carina}}
+  \caption{Deployment diagram of \emph{Cloud-SAP}}
   \label{ch7:deployment-time-test-deployment-time-components}
 \end{figure}
-
 
 \subsection*{Results}
 Obtained results are shown in table \ref{tbl:test-service-deployment-time} and in figure \ref{ch7:deployment-time-test}. For a given number of instances we ordered deploying a service 10 times and the values shown in those figures are an average of these runs.
@@ -159,6 +189,7 @@ Obtained results are shown in table \ref{tbl:test-service-deployment-time} and i
 \end{figure}
 
 \subsection*{Conclusion}
+
 
 \section{Deployment time -- hypervisor comparison}
 \subsection*{Description}
