@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'models/service_specification'
 require 'cloud-broker-amqp/message-handler/autoscaling_message_handler'
+require 'securerandom'
 
 
 describe AutoscalingMessageHandler do
@@ -39,7 +40,7 @@ describe AutoscalingMessageHandler do
 
   def create_service_spec
     ServiceSpecification.create(
-      :name => 'service name',
+      :name => "service name #{SecureRandom.urlsafe_base64(4)}",
       :client_endpoint => 'pussylord.com:4125',
       :stacks => stacks_attributes
     )
@@ -49,7 +50,7 @@ describe AutoscalingMessageHandler do
   let(:message_attributes) do 
     {
       :type => 'java',
-      :service_id => service_spec.id
+      :service_name => service_spec.name
     }
   end
   let(:message) { message_attributes.to_json }

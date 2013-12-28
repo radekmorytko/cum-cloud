@@ -24,7 +24,7 @@ class OfferRetriever
       [:type, :instances].reduce({}) { |acc, v| acc[v] = attributes[v]; acc }
     end 
     {
-      :service_id => service_specification.id,
+      :service_name => service_specification.name,
 
       # for a given stack select only limited no of attributes
       :stacks => stacks_attributes,

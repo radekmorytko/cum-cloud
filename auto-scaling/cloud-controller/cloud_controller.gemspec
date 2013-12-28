@@ -34,4 +34,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rufus-scheduler"
   spec.add_development_dependency "data_mapper"
   spec.add_development_dependency "dm-sqlite-adapter"
+  spec.add_development_dependency "net-ssh"
 end

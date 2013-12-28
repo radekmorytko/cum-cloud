@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'cloud-broker-amqp/offer_retriever'
 require 'models/service_specification'
 require 'models/stack'
+require 'securerandom'
 
 describe OfferRetriever do
   let(:publisher) { double(:publish => true) }
@@ -61,7 +62,7 @@ describe OfferRetriever do
 
   def create_service_spec(stacks_attributes)
     ServiceSpecification.create(
-      :name => 'service name',
+      :name => "service name #{SecureRandom.urlsafe_base64(4)}",
       :client_endpoint => 'pussylord.com:4126',
       :stacks => stacks_attributes
     )

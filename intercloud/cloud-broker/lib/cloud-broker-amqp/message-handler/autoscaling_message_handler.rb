@@ -10,12 +10,12 @@ class AutoscalingMessageHandler
   end
 
   def handle_message(metadata, payload)
-    @@logger.info("Handling an autoscaling message")
+    @@logger.info("Handling an autoscaling message: #{payload}")
     message        = JSON.parse(payload)
 
-    service_id     = message['service_id']
+    service_name   = message['service_name']
     stack_type     = message['type']
-    stack_to_scale = ServiceSpecification.get(service_id)
+    stack_to_scale = ServiceSpecification.get(service_name)
                                          .stacks(:type => stack_type)
                                          .first
     stack_to_scale.update(:status => :scaling)

@@ -10,7 +10,7 @@ class CloudOfferHandler
   #
   # Offer is of the form:
   # {
-  #   'service_id': ID,
+  #   'service_name': ID,
   #   'controller_id': CID,  <- cloud controller routing key
   #   'offers': [
   #     {'cost': X, 'type': Y},
@@ -22,7 +22,7 @@ class CloudOfferHandler
 
     message = JSON.parse(payload)
     @@logger.debug("Message: #{message}")
-    service_specification = ServiceSpecification.get(message['service_id'])
+    service_specification = ServiceSpecification.get(message['service_name'])
     message['offers'].each { |offer| create_offer(service_specification, offer, message['controller_id']) }
   end
 

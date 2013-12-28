@@ -44,6 +44,6 @@ class CloudBrokerWS < Sinatra::Base
     # create stacks for the give service spec
     create_stacks(message['stacks'], service_specification)
     fetch_cloud_offers(service_specification)
-    Rack::Response.new(service_specification.id.to_s, 201)
+    Rack::Response.new(service_specification.name, 201)
   end
 end

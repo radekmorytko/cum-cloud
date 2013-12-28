@@ -124,7 +124,7 @@ module AutoScaling
       service_specification = JSON.parse(payload)
       offer = @service_offer_preparer.prepare_offer(service_specification)
       if offer
-        response = @offer_response_preparer.publishify_offer(offer, :service_id => service_specification['service_id'])
+        response = @offer_response_preparer.publishify_offer(offer, :service_name => service_specification['service_name'])
         respond_with(response, service_specification['offers_routing_key'])
         @@logger.info("Respondend with an offer: #{response}")
       else

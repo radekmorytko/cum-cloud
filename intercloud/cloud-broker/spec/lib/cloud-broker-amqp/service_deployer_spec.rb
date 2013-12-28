@@ -1,6 +1,7 @@
 require 'spec_helper'
 require 'cloud-broker-amqp/service_deployer'
 require 'resource-mapping/offer_selector'
+require 'securerandom'
 
 describe ServiceDeployer do
   let(:publisher) { double('Publisher', :publish => true) }
@@ -8,7 +9,7 @@ describe ServiceDeployer do
 
   let(:service_specification) do
     ServiceSpecification.create(
-      :name => 'weszlo.com',
+      :name => "weszlo.com #{SecureRandom.urlsafe_base64(4)}",
       :client_endpoint => '192.168.0.166'
     )
   end

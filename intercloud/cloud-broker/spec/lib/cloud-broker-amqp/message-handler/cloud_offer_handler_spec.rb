@@ -35,7 +35,7 @@ describe CloudOfferHandler do
 
   def create_service_spec
     ServiceSpecification.create(
-      :name => 'service name',
+      :name => "service name #{SecureRandom.urlsafe_base64(4)}",
       :client_endpoint => 'pussylord.com:4125',
       :stacks => stacks_attributes
     )
@@ -43,7 +43,7 @@ describe CloudOfferHandler do
   let(:service_spec) { create_service_spec }
   let(:message) do
     JSON.generate({
-      :service_id    => service_spec.id,
+      :service_name    => service_spec.name,
       :controller_id => 'cack-controller',
       :offers        => stacks_attributes.map { |sa| { :type => sa[:type], :cost => 24  } }
     })
@@ -51,7 +51,7 @@ describe CloudOfferHandler do
 
   it 'creates offers for stacks of a service specification' do
     subject.handle_message(nil, message)
-    expect(ServiceSpecification.get(service_spec.id).stacks.reduce(0) { |sum, s| sum + s.offers(:examined => false).count }).to be > 0
+    expect(ServiceSpecification.get(service_spec.name).stacks.reduce(0) { |sum, s| sum + s.offers(:examined => false).count }).to be > 0
   end
 
 end

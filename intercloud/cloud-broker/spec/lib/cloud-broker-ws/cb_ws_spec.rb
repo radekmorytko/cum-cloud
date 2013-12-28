@@ -2,6 +2,7 @@ require 'spec_helper'
 require 'rack/test'
 require 'cloud-broker-ws/cb_ws'
 require 'common/config_utils'
+require 'securerandom'
 
 
 describe 'CloudBrokerWS' do
@@ -49,7 +50,7 @@ describe 'CloudBrokerWS' do
     end
     let(:service_spec) do
       JSON.generate({
-        :name => 'sample service',
+        :name => "sample service #{SecureRandom.urlsafe_base64(4)}",
         :stacks => stacks_attributes
       })
     end 

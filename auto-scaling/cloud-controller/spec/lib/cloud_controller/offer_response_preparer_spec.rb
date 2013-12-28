@@ -6,7 +6,7 @@ describe OfferResponsePreparer do
 
   describe 'when has valid input parameters' do
     let(:offer) { [] }
-    let(:options) { { :service_id => 'kubus puchatek' } }
+    let(:options) { { :service_name => 'kubus puchatek' } }
 
     subject { preparer.publishify_offer(offer, options)}
     it { should be_instance_of String }
