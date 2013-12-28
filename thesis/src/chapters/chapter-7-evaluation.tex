@@ -94,7 +94,8 @@ This test involves the steps of
   \end{inparaenum}
 
 \subsection*{Preconditions}
-Before performing any tests all virtual machines present at the deployment node are removed.
+It is assumed that \emph{Cloud-SAP} and \emph{Carina} according with \emph{OpenVZ} as an underlying virtualization technology are correctly installed and configured.
+Each test case must be run in an isolation so before performing any test all virtual machines present at the deployment node are removed.
 \subsubsection{OpenNebula configuration}
 To ensure objectivity in tests, OpenNebula was configured in both products in the same way. One of the key factors that could influence the deployment time is the configuration of scheduler. Its parameters are shown in the listing \ref{lst:one-scheduler-config}.
 \lstinputlisting[caption=OpenNebula scheduler configuration, label=lst:one-scheduler-config]{deployment-time-test-sched-config}
@@ -110,11 +111,27 @@ All virtual machines were deployed on one node which had 3G RAM, AMD Athlon\text
 - jeb physical diagram
 
 \subsubsection{Environment configuration}
-Components that were used during tests are shown in figure .
-- jeb logical diagram
+Deployment diagram for \emph{Carina} implementation is shown in figure \ref{ch7:deployment-time-test-deployment-time-carina-deployment-diagram} and for \emph{Cloud-SAP} in figure \ref{ch7:deployment-time-test-deployment-time-components}.
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-7/deployment-time-carina-deployment-diagram}
+  \end{center}
+  \caption{Deployment diagram of \emph{Carina}}
+  \label{ch7:deployment-time-test-deployment-time-carina-deployment-diagram}
+\end{figure}
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-7/deployment-time-components}
+  \end{center}
+  \caption{Deployment diagram of \emph{Carina}}
+  \label{ch7:deployment-time-test-deployment-time-components}
+\end{figure}
+
 
 \subsection*{Results}
-Obtained results are shown in table \ref{tbl:test-service-deployment-time} and in figure \ref{ch7:deployment-time-test}.
+Obtained results are shown in table \ref{tbl:test-service-deployment-time} and in figure \ref{ch7:deployment-time-test}. For a given number of instances we ordered deploying a service 10 times and the values shown in those figures are an average of these runs.
 
 \begin{table}
   \centering
