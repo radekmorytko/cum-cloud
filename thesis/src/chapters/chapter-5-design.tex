@@ -1,8 +1,6 @@
 \chapter{Design of Cloud-SAP}
 
-\chapterintro{ This chapter introduces the high-level design of Cloud-SAP.
-  Further elaboration on the layers of the proposed platform is presented
-  and detailed discussion about the each layer is held.
+\chapterintro{ This chapter introduces the high-level design of Cloud-SAP, highlighting its core concepts and indicating possible implementation ideas.
 }
 
 \section{Requirements}
@@ -34,9 +32,7 @@ Diagram \ref{design:hld-overview} illustrates exemplary Cloud-SAP deployment, am
 	\item stack layer: horizontal scaling
 	\item inter-cloud layer: scaling out across different cloud providers
 \end{itemize}
-The last mentioned layer - inter-cloud - cooperates with different cloud providers, hence, it requires additional work that has to be done. In fact, these extra tasks are delegated to a inter-cloud broker, responsible for a dialog in a cloud federation.
-
-Diagram \ref{design:csap-layers} depicts that multi-layered structure.
+The last mentioned layer - inter-cloud - cooperates with different cloud providers, hence, it requires additional work to be done. In fact, these extra tasks are delegated to a inter-cloud broker, responsible for a dialog in a cloud federation.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -49,9 +45,7 @@ Diagram \ref{design:csap-layers} depicts that multi-layered structure.
 \subsection{Auto-scaling subsystem}
 
 \subsubsection{Autonomic components}
-Each layer of the Cloud-SAP (shown in figure \ref{design:csap-layers}) must be characterised by an ability to adapt to a given application usage. As the previous chapter stated, this can be achieved by adding an elasticity controller to each layer. This observation is a foundation of proposed architecture.
-
-One of the first models that ensured system adaptivity is an autonomic component, concept based on a feed-back loop, initially proposed by IBM \cite{IBM06}. Figure \ref{design:autonomic-component} depicts that architecture. 
+Each layer of the Cloud-SAP (shown in figure \ref{design:csap-layers}) must be characterised by an ability to adapt to a given application usage. One of the first models that ensured system adaptivity is an autonomic component, concept based on a feed-back loop, initially proposed by IBM \cite{IBM06}. Figure \ref{design:autonomic-component} depicts that architecture. This observation is a foundation of proposed architecture - adaptivity is achieved by enriching each layer with an elasticity controller that is in fact an autonomic component.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -61,8 +55,20 @@ One of the first models that ensured system adaptivity is an autonomic component
   \label{design:autonomic-component}
 \end{figure}
 
+Due to the fact that designed platform operates on multiple layers, we can extend idea of an autonomic component by using concept of a multi-hierarchical autonomic system \cite{LiWoZh05}. Figure \ref{design:hierarchical-autonomic-system} illustrates that hierarchy, were each level represents a different perspective on an application scaling. First three hierarchy levels (application tuning, container, stack) are centralised and controlled by a single elasticity controller at each level, while the last inter-cloud level is a decentralized one - each cloud instance is fully independent.
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=0.8\textwidth]{chapter-5/hierarchical-autonomic-system}
+  \end{center}
+  \caption{Cloud-SAP as an hierarchical autonomic system}
+  \label{design:hierarchical-autonomic-system}
+\end{figure}
+
+Considering hierarchy of our architecture, each level manages an underlying autonomic component, while being managed by an upper layer at the very same time.
+
 \subsubsection{Monitoring}
-Monitoring module of each autonomic component aims to gather data from Sensors of a managed resource. While design of Cloud-SAP doesn't have any specific requirements regarding underlying monitoring mechanism there are a few aspects that should be taken into consideration. Table \ref{tab:monitoring-module-issues-summary} summarises main points.
+Monitoring module of each elasticity controller aims to gather data from \textit{Sensors} of a managed resource. While design of Cloud-SAP doesn't have any specific requirements regarding underlying monitoring mechanism, there are a few aspects that should be taken into consideration. Table \ref{tab:monitoring-module-issues-summary} summarises main points.
 
 \begin{table}[!htbp]
 \begin{tabularx}{\textwidth}[]{ X X X }
@@ -112,31 +118,33 @@ standard-based &
 
 \end{table}
 
-Cloud-SAP is entirely focused on further data processing, consequently whether to store monitoring data or not is entirely implementation dependant.
+Cloud-SAP is entirely focused on further data processing, consequently decision whether to store monitoring data or not is entirely implementation dependent.
 
 \subsubsection{Analysis}
+Analyse module applies a specified mathematical model to a gathered data and yields a conclusion on top of that. There is a vast number of models that can be used for that purpose, for example \cite{LiWoZh05} enumerates:
+\begin{itemize}
+ \item Queue-based Performance Models
+ \item Dynamic models
+ \item Monotonic static models
+ \item Policy based models
+\end{itemize}
 
+It is vital that Cloud-SAP implementation use predictive approach \cite{JiPeLiCh11} and track changes \cite{ZhYaWo05} in a system, giving a solid foundation for a knowledge base that can contribute to a better data analysis in future.
 
 \subsubsection{Planning}
+Planning module is responsible for scheduling actions that have to be taken to solve problems reported by an earlier analysis. This may involve:
+\begin{itemize}
+ \item reserving some resources (for example to deploy a new virtual machine)
+ \item handling situation where multiple entities compete about the resources (for example by a prioritization)
+\end{itemize}
+
+It is possible, however, that resolving issues is not possible at a current layer. It that case, the upper-layer is responsible for handling it.
 
 \subsubsection{Execution}
+It is expected that execution module manage resource by performing various operations on resource's effector. Each layer is characterised by different actions that can be taken, for example: application server reconfiguration, vertical or horizontal scaling.
 
 \subsubsection{Knowledge base}
-
-\subsubsection{Hierarchical autonomic-system}
-Due to the fact that designed platform operates on multiple layers, we can extend idea of an autonomic component by using concept of a multi-hierarchical autonomic system \cite{LiWoZh05}. Figure \ref{design:hierarchical-autonomic-system} illustrates that hierarchy, were each level represents a different perspective on an application scaling. Using terminology characteristic to a autonomic system, first three hierarchy levels (application tuning, container, stack) are centralised and controlled by a single elasticity controller at each level, while the last inter-cloud level is a decentralized one - each cloud instance is fully independent.
-
-\begin{figure}[!ht]
-  \begin{center}
-    \includegraphics[width=0.8\textwidth]{chapter-5/hierarchical-autonomic-system}
-  \end{center}
-  \caption{Cloud-SAP as an hierarchical autonomic system}
-  \label{design:hierarchical-autonomic-system}
-\end{figure}
-
-Due to the hierarchy of our architecture, each level manages an underlying autonomic component, while being managed by an upper layer at the very same time.
-
-
+Knowledge base is represented as a set of rules, policies shared across autonomous components.
 
 \subsection{Cloud federation}
 Opis najwyzej warstwy, ze ma brokery, wykorzystuje kilka chmur.
