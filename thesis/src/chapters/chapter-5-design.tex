@@ -27,13 +27,14 @@ Next section states the general overview of the proposed solution, while the con
   \label{design:hld-overview}
 \end{figure}
 
-As diagram \ref{design:hld-overview} illustrates, we can distinguish two main components of proposed solution: auto-scaling module and inter-cloud broker. Together, they can be seen as an hierarchical autonomic system, where each layer corresponds to a different scalability perspective:
+Diagram \ref{design:hld-overview} illustrates exemplary Cloud-SAP deployment, among depicted components we can distinguish two main parts of proposed solution: auto-scaling subsystem and inter-cloud broker. Auto-scaling subsystem is responsible for scaling users' application, taking into account different scalability perspectives, handled by a different layers:
 \begin{itemize}
 	\item application platform layer: application platform tuning
 	\item container layer: vertical scaling
 	\item stack layer: horizontal scaling
 	\item inter-cloud layer: scaling out across different cloud providers
 \end{itemize}
+The last mentioned layer - inter-cloud - cooperates with different cloud providers, hence, it requires additional work that has to be done. In fact, these extra tasks are delegated to a inter-cloud broker, responsible for a dialog in a cloud federation.
 
 Diagram \ref{design:csap-layers} depicts that multi-layered structure.
 
@@ -84,9 +85,9 @@ pull based &
 \textbf{data format} & & \\ \specialrule{.1em}{.05em}{.05em}
 binary &
 -- space-effective
-
+& 
 -- unreadable for human
-& \\ \hline
+\\ \hline
 character-based &
 -- human readable
 &
@@ -112,8 +113,6 @@ standard-based &
 \end{table}
 
 Cloud-SAP is entirely focused on further data processing, consequently whether to store monitoring data or not is entirely implementation dependant.
-
-Among the currently available monitoring systems remarkable are Cloud Watch \cite{CloudWatch}, OpenNebula (Information Manager / Virtual Machine Manager) \cite{OpenNebula} there are also open approaches such as Ganglia Monitoring System \cite{MaChCu04}.
 
 \subsubsection{Analysis}
 
@@ -144,6 +143,16 @@ Opis najwyzej warstwy, ze ma brokery, wykorzystuje kilka chmur.
 
 
 \section{Auto-scaling module}
+
+\subsection{Application platform layer}
+
+\subsection{Container layer}
+Among the currently available monitoring systems remarkable are Cloud Watch \cite{CloudWatch}, OpenNebula (Information Manager / Virtual Machine Manager) \cite{OpenNebula} there are also open approaches such as Ganglia Monitoring System \cite{MaChCu04}.
+
+\subsection{Stack layer}
+
+\subsection{Cloud layer}
+
 
 \section{Cloud federation}
 
