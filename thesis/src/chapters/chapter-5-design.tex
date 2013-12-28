@@ -45,7 +45,7 @@ Diagram \ref{design:csap-layers} depicts that multi-layered structure.
   \label{design:csap-layers}
 \end{figure}
 
-\subsection{Auto-scaling module}
+\subsection{Auto-scaling subsystem}
 
 \subsubsection{Autonomic components}
 Each layer of the Cloud-SAP (shown in figure \ref{design:csap-layers}) must be characterised by an ability to adapt to a given application usage. As the previous chapter stated, this can be achieved by adding an elasticity controller to each layer. This observation is a foundation of proposed architecture.
@@ -60,7 +60,72 @@ One of the first models that ensured system adaptivity is an autonomic component
   \label{design:autonomic-component}
 \end{figure}
 
-Since designed platform operates on multiple layers, we can extend that model by using concept of a multi-hierarchical autonomic system \cite{LiWoZh05}. Figure \ref{design:hierarchical-autonomic-system} illustrates that hierarchy, were each level represents a different perspective on an application scaling. Using terminology characteristic to a autonomic system, first three hierarchy levels (application tuning, container, stack) are centralised and controlled by a single elasticity controller at each level, while the last inter-cloud level is a decentralized one - each cloud instance is fully independent.
+\subsubsection{Monitoring}
+Monitoring module of each autonomic component aims to gather data from Sensors of a managed resource. While design of Cloud-SAP doesn't have any specific requirements regarding underlying monitoring mechanism there are a few aspects that should be taken into consideration. Table \ref{tab:monitoring-module-issues-summary} summarises main points.
+
+\begin{table}[!htbp]
+\begin{tabularx}{\textwidth}[]{ X X X }
+\specialrule{.1em}{.05em}{.05em}
+ & \textbf{Advantages} & \textbf{Disadvantages} \\ \specialrule{.1em}{.05em}{.05em} 
+
+ 
+\textbf{data exchange model} & & \\ \specialrule{.1em}{.05em}{.05em}
+push based &
+-- notification driven: all changes are reflected immediately in the system
+&
+-- requires additional agent at monitored component
+\\ \hline
+pull based & 
+-- more calculations are being done at monitoring module side (doesn't involve additional load at managed component)
+& 
+-- some monitoring cycles can be redundant if scheduler is not properly tuned
+\\ \hline
+
+\textbf{data format} & & \\ \specialrule{.1em}{.05em}{.05em}
+binary &
+-- space-effective
+
+-- unreadable for human
+& \\ \hline
+character-based &
+-- human readable
+&
+-- ineffective in terms of space
+\\ \hline
+
+\textbf{communication protocol} & & \\ \specialrule{.1em}{.05em}{.05em}
+vendor specific &
+-- provides specific data to a given managed component (ie. virtual machine / container)
+& 
+-- may cause incompatibility problem while expanding cloud-sap system to a consecutive cloud instances
+\\ \hline
+standard-based &
+-- supports scaling across multiple cloud instances as long as they support standard
+&
+-- gathered data may be inadequate to a specific needs
+\\ \hline
+\end{tabularx}
+
+\caption{Monitoring - summary of issues}
+\label{tab:monitoring-module-issues-summary}
+
+\end{table}
+
+Cloud-SAP is entirely focused on further data processing, consequently whether to store monitoring data or not is entirely implementation dependant.
+
+Among the currently available monitoring systems remarkable are Cloud Watch \cite{CloudWatch}, OpenNebula (Information Manager / Virtual Machine Manager) \cite{OpenNebula} there are also open approaches such as Ganglia Monitoring System \cite{MaChCu04}.
+
+\subsubsection{Analysis}
+
+
+\subsubsection{Planning}
+
+\subsubsection{Execution}
+
+\subsubsection{Knowledge base}
+
+\subsubsection{Hierarchical autonomic-system}
+Due to the fact that designed platform operates on multiple layers, we can extend idea of an autonomic component by using concept of a multi-hierarchical autonomic system \cite{LiWoZh05}. Figure \ref{design:hierarchical-autonomic-system} illustrates that hierarchy, were each level represents a different perspective on an application scaling. Using terminology characteristic to a autonomic system, first three hierarchy levels (application tuning, container, stack) are centralised and controlled by a single elasticity controller at each level, while the last inter-cloud level is a decentralized one - each cloud instance is fully independent.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -70,29 +135,8 @@ Since designed platform operates on multiple layers, we can extend that model by
   \label{design:hierarchical-autonomic-system}
 \end{figure}
 
-As \cite{IBM06} states, each autonomic component has modules that are responsible for:
-\begin{itemize}
-	\item monitoring
-	\item analysis
-	\item planning
-	\item action execution
-\end{itemize}
-
-While the managed component has:
-\begin{itemize}
-	\item sensors
-	\item effectors
-\end{itemize}
-
 Due to the hierarchy of our architecture, each level manages an underlying autonomic component, while being managed by an upper layer at the very same time.
 
-\subsubsection{Monitoring}
-
-\subsubsection{Analysis}
-
-\subsubsection{Planning}
-
-\subsubsection{Execution}
 
 
 \subsection{Cloud federation}
