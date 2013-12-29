@@ -126,7 +126,7 @@ end
 task :run_test => [:run_cloud_controller, :run_cloud_broker, :prepare_client] do
   logger.info "Executing test case!"
   # Wait for CC and CB
-  sleep 10 
+  sleep 20 
   # Shoot in da face
   `cd #{client_path} && bin/intercloud_client deploy -e payload.json`
   Process.wait cc_pid
