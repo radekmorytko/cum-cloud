@@ -1,0 +1,14 @@
+ENVIRONMENT = {
+	'testenv' => {
+    ...
+    :elasticity_policy   => {
+      :mode => 'auto',
+      :min => 2,
+      :max => 4,
+      :priority => 10,
+      :period => 2,
+      :scaleup_expr   => 'avgcpu > 60',
+      :scaledown_expr => 'avgcpu < 20'
+    }
+  }
+}
