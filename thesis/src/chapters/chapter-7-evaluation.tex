@@ -99,7 +99,69 @@ The mapping mechanism is simple yet considerably powerful -- in this simple scen
 
 \section{Auto-scaling -- single-provider based}
 \subsection*{Description}
+\begin{asparaenum}
+\item[\textbf{Motivation}]The aim of this test-case is to show that introducing a multi-layered auto-scaling platform is of a great benefit in terms of cost and resource usage for cloud consumers and cloud providers respectively. What is more, this test should prove that once there are many levels on which scaling operations can be performed, there are significant reduction in costs paid by consumers.
+We want to prove it by comparing our proof-of-concept product to \emph{Carina} \cite{Carina}. \emph{Carina} embraces a whole range of various scaling policies for users' environments (environment, in this context, means an application with all its software dependencies that are to be deployed on the cloud), but there is only one way in which they are executed -- by managing the number of virtual machines (i.e. horizontal scaling). Quite on the contrary, \emph{Cloud-SAP} has mechanisms that allow to scale the environment vertically in the first place and if that turns out to be not sufficient, horizontally. This test shows the influence of lack/presence of this feature on price and resource consumption.
+\item[\textbf{Scenario}] The test scenario involves
+  \begin{inparaenum}[a)]
+    \item deployment of a sample environment on the cloud,
+    \item substitute the real module responsible for collecting CPU usage date for a mock one,
+    \item monitoring the scaling actions performed by each solution,
+    \item evaluation of the cost the client has to pay for the service.
+  \end{inparaenum}
+  Deployment of a service is done in a product-specific manner (up to the point where the vm deployment request is passed to OpenNebula). Mocking the CPU usage was possible by replacing the part in \emph{InformationManager} responsible the collecting CPU data in a host for a request to a web service which generated a time-based mocked-values. Choosing the appropriate function is another issue and is discussed in the next paragraph.
+\end{asparaenum}
+
+\subsubsection*{CPU usage function}
+We wanted to ensure that both solutions, \emph{Carina} and \emph{Cloud-SAP}, collected the same data regarding the CPU usage for the given time. What is more, the curve should resemble CPU usage in the real business scenarios as much as possible. Thus, we took into account the following factors:
+\begin{itemize}
+  \item every peak in CPU usage should be followed by a gradual descent as each solution performs scaling actions,
+  \item (boundary conditions) CPU usage should be between 0 and 100 and, additionally, should exceed the previously set scaling threshold value of each solutions so that it would trigger the scaling policies evaluation
+  \item once the scaling operations have completed, CPU usage should be constant at a rate which would not introduce any changes in the environment settings (such as the number of virtual machines and parameters of any virtual machine)
+\end{itemize}
+This resulted in the function whose formula is in \eqref{eq:cpu-mock-usage} and figure in \ref{eval:auto-scaling-1cp-cpu-usage-function}.
+\begin{eqnarray}
+  %f(x) = (1751 *x)/132+(3 *x**2)/8-(31* x**3)/264
+  %x <= 11.583 ? f(x) : ( x <= 21.441 ?  f(x - 10) : 25 )
+  f(x) &=& -\frac{31}{264}x^3+\frac{3}{8}x^2+\frac{1751}{132}x \nonumber \\
+  CPU\_usage(t) &=& \left\{
+  \begin{array}{l l l}
+    f(t) & \quad 0 & \le t < 11.583 \\
+    f(t-10) & \quad 11.583 & \le t < 21.441 \\
+    25 & \quad 21.441 & \le  t \\
+\end{array} \right.
+\label{eq:cpu-mock-usage}
+\end{eqnarray}
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-7/cpu-usage-mock}
+  \end{center}
+  \caption{Auto-scaling - single-provider based: CPU usage function}
+  \label{eval:auto-scaling-1cp-cpu-usage-function}
+\end{figure}
+
+Because \emph{Carina} is capable of only horizontal scaling and \emph{Cloud-SAP} of both horizontal and vertical, one can question whether the descent in CPU usage can be actually the same in both cases. To answer this question we want to look into the description of the virtual machines comprising the deployed environment. It states that each VM can use up to 30\% power of the CPU of a host. Thus, we can be fairly sure that adding another virtual machine that uses 0.3 CPU capacity of its host is equivalent with changing the CPU usage settings of already deployed VM from 30 to 60\%.
 \subsection*{Preconditions}
+\subsubsection*{Auto-scaling policy specifications}
+\subsubsection*{Hardware and VM configuration}
+All virtual machines were deployed onto \emph{Node1}, which uses \emph{OpenVZ} as a virtualization technology and whose hardware configuration can be found in table \ref{tbl:test-deployment-time-common-hardware-configuration}. \emph{OpenNebula} was installed on a \emph{Frontend1} virtual machine and its configuration is in the same table. \emph{Carina} required the usage of 2 virtual machines which were deployed on \emph{Desktop} with KVM as a hypervisor and whose configuration is in table \ref{tbl:test-auto-scaling-1cp-hardware-configuration}. Diagram \ref{eval:auto-scaling-1cp-physical-nodes} illustrates the physical setup of the test-case.
+
+\begin{table}
+  \centering
+  \begin{tabular}{ | l | l | l | l | }
+    \hline                        
+    Name & CPU & RAM & HD \\
+    \hline
+    (virtual machine) carina-frontend  & 1 CPU & 1GB & 6GB \\
+    (virtual machine) carina-management-vm  & 1 CPU & 1GB & 9GB \\
+    \hline  
+  \end{tabular}
+  \caption{Configuration of hardware/virtual machines used during tests}
+  \label{tbl:test-auto-scaling-1cp-hardware-configuration}
+\end{table}
+
+\subsubsection*{Hardware and VM configuration}
 \begin{figure}[!ht]
   \begin{center}
     \includegraphics[width=0.8\textwidth]{chapter-7/auto-scaling-1cp-physical-nodes}
@@ -119,7 +181,7 @@ The mapping mechanism is simple yet considerably powerful -- in this simple scen
     \includegraphics[width=0.8\textwidth]{chapter-7/auto-scaling-2cp-physical-nodes}
   \end{center}
   \caption{Auto-scaling - multiple-provider based: environment configuration}
-  \label{eval:auto-scaling-1cp-physical-nodes}
+  \label{eval:auto-scaling-2cp-physical-nodes}
 \end{figure}
 
 \subsection*{Results}

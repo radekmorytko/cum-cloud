@@ -33,6 +33,7 @@
 \RequirePackage{listings}
 \RequirePackage{tabularx}
 \RequirePackage{amsfonts}
+\RequirePackage{amsmath}
 \RequirePackage{ctable}
 \RequirePackage{courier}
 \RequirePackage{caption}
