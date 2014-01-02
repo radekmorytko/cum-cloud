@@ -119,7 +119,7 @@ We wanted to ensure that both solutions, \emph{Carina} and \emph{Cloud-SAP}, col
   \item (boundary conditions) CPU usage should be between 0 and 100 and, additionally, should exceed the previously set scaling threshold value of each solutions so that it would trigger the scaling policies evaluation
   \item once the scaling operations have completed, CPU usage should be constant at a rate which would not introduce any changes in the environment settings (such as the number of virtual machines and parameters of any virtual machine)
 \end{itemize}
-This resulted in the function whose formula is in \eqref{eq:cpu-mock-usage} and figure in \ref{eval:auto-scaling-1cp-cpu-usage-function}.
+This resulted in the function whose formula is in \eqref{eq:cpu-mock-usage} and plot in figure \ref{eval:auto-scaling-1cp-cpu-usage-function}.
 \begin{eqnarray}
   %f(x) = (1751 *x)/132+(3 *x**2)/8-(31* x**3)/264
   %x <= 11.583 ? f(x) : ( x <= 21.441 ?  f(x - 10) : 25 )
@@ -144,25 +144,27 @@ This resulted in the function whose formula is in \eqref{eq:cpu-mock-usage} and 
 Because \emph{Carina} is capable of only horizontal scaling and \emph{Cloud-SAP} of both horizontal and vertical, one can question whether the descent in CPU usage can be actually the same in both cases. To answer this question we want to look into the description of the virtual machines comprising the deployed environment. It states that each VM can use up to 30\% power of the CPU of a host. Thus, we can be fairly sure that adding another virtual machine that uses 0.3 CPU capacity of its host is equivalent with changing the CPU usage settings of already deployed VM from 30 to 60\%.
 \subsection*{Preconditions}
 \subsubsection*{Environment specification}
-Deployment diagrams show the placement of each component in both installations. They are shown in figures \ref{eval:auto-scaling-1cp-carina-deployment-diagram} and \ref{eval:auto-scaling-1cp-cloud-sap-deployment-diagram}.
+\begin{asparaenum}
+  \item[\textbf{Deployment diagrams}] Deployment diagrams show the placement of each component in both installations. They are shown in figures \ref{eval:auto-scaling-1cp-carina-deployment-diagram} and \ref{eval:auto-scaling-1cp-cloud-sap-deployment-diagram}.
 
-\begin{figure}[!ht]
-  \begin{center}
-    \includegraphics{chapter-7/cpu-usage-carina-deployment-diagram}
-  \end{center}
-  \caption{Auto-scaling - single-provider based: deployment diagram of Carina}
-  \label{eval:auto-scaling-1cp-carina-deployment-diagram}
-\end{figure}
+  \begin{figure}[!ht]
+    \begin{center}
+      \includegraphics{chapter-7/cpu-usage-carina-deployment-diagram}
+    \end{center}
+    \caption{Auto-scaling - single-provider based: deployment diagram of Carina}
+    \label{eval:auto-scaling-1cp-carina-deployment-diagram}
+  \end{figure}
 
-\begin{figure}[!ht]
-  \begin{center}
-    \includegraphics{chapter-7/cpu-usage-cloud-sap-deployment-diagram}
-  \end{center}
-  \caption{Auto-scaling - single-provider based: deployment diagram of Cloud-SAP}
-  \label{eval:auto-scaling-1cp-cloud-sap-deployment-diagram}
-\end{figure}
-
-Auto-scaling policy specifications
+  \begin{figure}[!ht]
+    \begin{center}
+      \includegraphics{chapter-7/cpu-usage-cloud-sap-deployment-diagram}
+    \end{center}
+    \caption{Auto-scaling - single-provider based: deployment diagram of Cloud-SAP}
+    \label{eval:auto-scaling-1cp-cloud-sap-deployment-diagram}
+  \end{figure}
+\item[\textbf{Auto-scaling policy specifications}] As it is shown in figure \ref{eval:auto-scaling-1cp-cpu-usage-function}, we set in both products the threshold values of CPU usage that trigger performing auto-scaling actions to 20 and 60 percent. To apply this setting, the auto-scaling part of service specification looks as follows: in Carina \ldots \ldots ; in Cloud-SAP it is a matter of setting appropriate arguments to a specific policy. In this case the policy is \emph{threshold\_model} and values are 20 and 60 for lower and upper bound respectively. The auto-scaling part from service specification is shown in listing \ref{lst:auto-scaling-1cp-cloud-sap-service-spec}.
+  \lstinputlisting[caption=Cloud-SAP service specification used for testing auto-scaling with 1 cloud provider, label=lst:auto-scaling-1cp-cloud-sap-service-spec]{auto-scaling-1cp-cloud-sap-service-spec}
+\end{asparaenum}
 
 \subsubsection*{Hardware VM configuration}
 All virtual machines were deployed onto \emph{Node1}, which uses \emph{OpenVZ} as a virtualization technology and whose hardware configuration can be found in table \ref{tbl:test-deployment-time-common-hardware-configuration}. \emph{OpenNebula} was installed on a \emph{Frontend1} virtual machine and its configuration is in the same table. \emph{Carina} required the usage of 2 virtual machines which were deployed on \emph{Desktop} with KVM as a hypervisor and whose configuration is in table \ref{tbl:test-auto-scaling-1cp-hardware-configuration}. Diagram \ref{eval:auto-scaling-1cp-physical-nodes} illustrates the physical setup of the test-case.
