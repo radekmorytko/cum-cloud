@@ -147,5 +147,5 @@ set colorbox vertical origin screen 0.9, 0.2, 0 size screen 0.05, 0.6, 0 front b
 set loadpath 
 set fontpath 
 set fit noerrorvariables
-plot './deployment-time-test.data' i 0 using 1:2 w li t "Cloud-SAP", '' i 1 u 1:2 w li title "Carina"
+plot './deployment-time-test.data' i 0 using 1:2 w li t "Cloud-SAP" lt 2 lc rgb "#1076c1" lw 2, '' i 1 u 1:2 w li title "Carina" lt 1 lc rgb "#101EC1" lw 2
 #    EOF
