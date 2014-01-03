@@ -115,7 +115,7 @@ We want to prove it by comparing our proof-of-concept product to \emph{Carina} \
 \subsubsection*{CPU usage function}
 We wanted to ensure that both solutions, \emph{Carina} and \emph{Cloud-SAP}, collected the same data regarding the CPU usage for the given time. What is more, the curve should resemble CPU usage in the real business scenarios as much as possible. Thus, we took into account the following factors:
 \begin{itemize}
-  \item every peak in CPU usage should be followed by a gradual descent as each solution performs scaling actions,
+  \item every peak in CPU usage should be followed by a gradual descent which would mimic the real auto-scaling actions executed by each solution,
   \item (boundary conditions) CPU usage should be between 0 and 100 and, additionally, should exceed the previously set scaling threshold value of each solutions so that it would trigger the scaling policies evaluation
   \item once the scaling operations have completed, CPU usage should be constant at a rate which would not introduce any changes in the environment settings (such as the number of virtual machines and parameters of any virtual machine)
 \end{itemize}
@@ -192,7 +192,11 @@ All virtual machines were deployed onto \emph{Node1}, which uses \emph{OpenVZ} a
   \label{eval:auto-scaling-1cp-physical-nodes}
 \end{figure}
 
-\subsection*{Results}
+\subsection*{Expectations}
+As auto-scaling behaviour of both products is determined by CPU usage of the deployed service, we can predict the outcome of the test by thorough analysis of the plot in figure \ref{eval:auto-scaling-1cp-cpu-usage-function}.
+
+The first conclusion is that all auto-scaling actions are performed after exceeding the upper threshold value of CPU usage, this is 60 percent in our case what happens about 5 minutes after the deployment of an environment is completed. CPU consumption remains high for about 2 minutes what enables both products to take appropriate, auto-scaling steps. We expect \emph{Carina} to deploy another virtual machine and \emph{Cloud-SAP} to scale vertically. Then it gradually goes down, which simulates that all taken actions have successfully completed. Then, for another several minutes, the cycle recurs, but this time we expect the proposed solution to scale horizontally. \emph{Carina} is expected to behave as in the previous cycle. Once the cycle has completed, after roughly 21 minutes, the value of CPU consumption remains constant at 25 percent and the test is completed.
+  \subsection*{Results}
 \subsection*{Conclusion}
 
 \section{Auto-scaling -- multiple-provider based}
