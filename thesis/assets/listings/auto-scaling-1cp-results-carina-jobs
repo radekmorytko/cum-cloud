@@ -1,0 +1,5 @@
+ID   ENVID     CONFIG_NAME      TYPE      SUBMIT_TIME                  STATUS
+--   -----     -----------      ----      -----------                  ------
+206     12         testenv      CREATE    Tue Dec 31 14:38:23 +0000 2013 DONE  
+207     12         testenv     SCALEUP    Tue Dec 31 14:48:07 +0000 2013 DONE  
+208     12         testenv     SCALEUP    Tue Dec 31 14:58:07 +0000 2013 DONE  

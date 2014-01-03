@@ -146,7 +146,7 @@ Because \emph{Carina} is capable of only horizontal scaling and \emph{Cloud-SAP}
 \subsubsection*{Environment specification}
 \begin{asparaenum}
   \item[\textbf{Auto-scaling policy specifications}] As it is shown in figure \ref{eval:auto-scaling-1cp-cpu-usage-function}, we set in both products the threshold values of CPU usage that trigger performing auto-scaling actions to 20 and 60 percent. To apply this setting, the auto-scaling part of service specification looks as follows: in Carina the user has to add the parameters of an auto-scaling policy in a hash that describes the environment under key \emph{:elasticy\_policy}. It is possible to specify the minimal and the maximal number of virtual machines that forms the environment and, what is most important, expressions which evaluation results in scaling the application. The part responsible for this is shown in listing \ref{lst:auto-scaling-1cp-carina-service-spec}.\lstinputlisting[caption=Carina service specification used for testing auto-scaling with 1 cloud provider, label=lst:auto-scaling-1cp-carina-service-spec]{auto-scaling-1cp-carina-service-spec} In Cloud-SAP it is a matter of setting appropriate arguments to a specific policy. In this case the policy is \emph{threshold\_model} and values are 20 and 60 for lower and upper bound respectively. The auto-scaling part from service specification is shown in listing \ref{lst:auto-scaling-1cp-cloud-sap-service-spec}. \lstinputlisting[caption=Cloud-SAP service specification used for testing auto-scaling with 1 cloud provider, label=lst:auto-scaling-1cp-cloud-sap-service-spec]{auto-scaling-1cp-cloud-sap-service-spec}
-  \item[\textbf{OpenNebulaa/Carina/Cloud-SAP configuration}] Since Carina and Cloud-SAP used two different instances of OpenNebula installed on separate virtual machines, it is essential the configuration be the same on each of them. Listing \ref{lst:auto-scaling-1cp-one-config} shows the most important OpenNebula excerpt from settings file used in this test case -- polling interval specification, which was set to 30 seconds. To ensure that both products can actually use up-to-date data, they should evaluate their policies every 30 seconds or longer. In Carina the user cannot specify this value, because it is hard-coded in source code to 60 seconds. In Cloud-SAP, however, this value was set in a configuration file and was equal to 60 seconds as well as in Carina. \lstinputlisting[caption=OpenNebula configuration excerpt -- information manager, label=lst:auto-scaling-1cp-one-config]{auto-scaling-1cp-one-config}
+  \item[\textbf{OpenNebulaa/Carina/Cloud-SAP configuration}] Since Carina and Cloud-SAP used two different instances of OpenNebula installed on separate virtual machines, it is essential the configuration be the same on each of them. Listing \ref{lst:auto-scaling-1cp-one-config} shows the most important OpenNebula excerpt from settings file used in this test case -- polling interval specification, which was set to 30 seconds. To ensure that both products can actually use up-to-date data, they should evaluate their policies every 30 seconds or longer. In Carina the user cannot specify this value, because it is hard-coded in source code to 60 seconds. In Cloud-SAP, however, this value was set in a configuration file and was equal to 60 seconds as well as in Carina. \lstinputlisting[caption=OpenNebula configuration excerpt -- information manager, label=lst:auto-scaling-1cp-one-config]{auto-scaling-1cp-one-config}. Vertical scaling mechanism in \emph{Cloud-SAP} is implemented in a way that causes exponential growth of CPU resources consumption. When there is a need to perform a scaling action on CPU usage, current value is taken and increased by 30\%.
   \item[\textbf{Deployment diagrams}] Deployment diagrams show the placement of each component in both installations. They are shown in figures \ref{eval:auto-scaling-1cp-carina-deployment-diagram} and \ref{eval:auto-scaling-1cp-cloud-sap-deployment-diagram}.
 
   \begin{figure}[!ht]
@@ -196,8 +196,38 @@ All virtual machines were deployed onto \emph{Node1}, which uses \emph{OpenVZ} a
 As auto-scaling behaviour of both products is determined by CPU usage of the deployed service, we can predict the outcome of the test by thorough analysis of the plot in figure \ref{eval:auto-scaling-1cp-cpu-usage-function}.
 
 The first conclusion is that all auto-scaling actions are performed after exceeding the upper threshold value of CPU usage, this is 60 percent in our case what happens about 5 minutes after the deployment of an environment is completed. CPU consumption remains high for about 2 minutes what enables both products to take appropriate, auto-scaling steps. We expect \emph{Carina} to deploy another virtual machine and \emph{Cloud-SAP} to scale vertically. Then it gradually goes down, which simulates that all taken actions have successfully completed. Then, for another several minutes, the cycle recurs, but this time we expect the proposed solution to scale horizontally. \emph{Carina} is expected to behave as in the previous cycle. Once the cycle has completed, after roughly 21 minutes, the value of CPU consumption remains constant at 25 percent and the test is completed.
-  \subsection*{Results}
+\subsection*{Results}
+  In the first place it is worth discussing the results of \emph{Carina} and \emph{Cloud-SAP} separately and then compare resource consumption of each solution and its influence on cost paid by the end-user.
+
+\begin{asparaenum}
+  \item[\textbf{Carina}] As \emph{Carina} is capable only of horizontal scaling, in discussion of its resource usage we can confine ourselves to counting the number of deployed virtual machines in the given time intervals. In the log files we can trace all actions that were triggered during the test case. As listing \ref{lst:auto-scaling-1cp-results-carina-jobs} shows, they completely met the expectations expressed in the previous section -- there were two ''SCALEUP'' jobs which resulted in increase of the total number of virtual machines comprising the environment.  \lstinputlisting[caption=Carina environment manager logs with taken actions (\emph{jobs}), label=lst:auto-scaling-1cp-results-carina-jobs]{auto-scaling-1cp-results-carina-jobs}. Since the base configuration assumed that the environment consists of 2 virtual machines, we can say that about 10 minutes after deployment of an environment, the number of VMs increased to 3, and after another 10 minutes, to 4.
+  \item[\textbf{Cloud-SAP}] Our proof-of-concept solution behaved exactly as expected. To make the discussion more clear, there is an excerpt from a log file of this test run in listing \ref{lst:auto-scaling-1cp-results-csap-logs}. \lstinputlisting[caption=Cloud-SAP logs excerpt regarding auto-scaling actions, label=lst:auto-scaling-1cp-results-csap-logs]{auto-scaling-1cp-results-csap-logs}
+
+Deployment finished at 15:25:45 and at this time we started the mock-cpu-usage web service. When the platform concluded that there are insufficient resources, it tried for three times changing parameters (virtual CPU used by the vm) of the virtual machines forming the service. Once scaling vertically was not possible such an information was passed to cloud controller which performed scaling across different cloud providers.
+\end{asparaenum}
+
+\subsubsection*{Cost}
+In our scenario cost is roughly equivalent with the CPU usage, so the plot of a cost virtually presents the cpu usage. Figure \ref{eval:auto-scaling-1cp-cost-comparison} shows cpu usage by environment when deployed and configured by two competing products.
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-7/auto-scaling-1cp-cost-comparison}
+  \end{center}
+  \caption{Auto-scaling - single-provider based: comparison of cost/CPU usage}
+  \label{eval:auto-scaling-1cp-cost-comparison}
+\end{figure}
+If we were to roughly estimate the cost in both solutions it would be equal in Carina:
+\begin{equation}
+  7\cdot 0.3 + 10\cdot 0.6 + 8\cdot 0.9 = 15.3 \quad \text{[currency unit]}
+\end{equation}
+and in Cloud-SAP:
+\begin{equation}
+  7.0166\cdot 0.3 + 2\cdot 0.39 + 2.01667\cdot0.507 + 7.05\cdot 0.659 + 6.91667\cdot 0.959 \approx 15.186483
+\end{equation}
+
 \subsection*{Conclusion}
+The obtained results shows that the proposed solution has enormous potential in terms of better utilization of available resources of the cloud and reducing cost paid by cloud consumers.
+
+Judging by the plot of cost (figure \ref{eval:auto-scaling-1cp-cost-comparison}), we can be fairly sure that it is possible to obtain better results by proper tuning of the scaling vertical mechanism. In particular, one can consider changing the default CPU growth from 1.3 to other or apply a different strategy, for example a growth by a constant rate. What is more, in order to get the best results, the policy scaling interval must be chosen with a great care with the consideration of specific parameters of a given environment.
 
 \section{Auto-scaling -- multiple-provider based}
 \subsection*{Description}
