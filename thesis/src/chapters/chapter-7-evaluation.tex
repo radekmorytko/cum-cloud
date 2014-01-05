@@ -146,7 +146,7 @@ Because \emph{Carina} is capable of only horizontal scaling and \emph{Cloud-SAP}
 \subsubsection*{Environment specification}
 \begin{asparaenum}
   \item[\textbf{Auto-scaling policy specifications}] As it is shown in figure \ref{eval:auto-scaling-1cp-cpu-usage-function}, we set in both products the threshold values of CPU usage that trigger performing auto-scaling actions to 20 and 60 percent. To apply this setting, the auto-scaling part of service specification looks as follows: in Carina the user has to add the parameters of an auto-scaling policy in a hash that describes the environment under key \emph{:elasticy\_policy}. It is possible to specify the minimal and the maximal number of virtual machines that forms the environment and, what is most important, expressions which evaluation results in scaling the application. The part responsible for this is shown in listing \ref{lst:auto-scaling-1cp-carina-service-spec}.\lstinputlisting[caption=Carina service specification used for testing auto-scaling with 1 cloud provider, label=lst:auto-scaling-1cp-carina-service-spec]{auto-scaling-1cp-carina-service-spec} In Cloud-SAP it is a matter of setting appropriate arguments to a specific policy. In this case the policy is \emph{threshold\_model} and values are 20 and 60 for lower and upper bound respectively. The auto-scaling part from service specification is shown in listing \ref{lst:auto-scaling-1cp-cloud-sap-service-spec}. \lstinputlisting[caption=Cloud-SAP service specification used for testing auto-scaling with 1 cloud provider, label=lst:auto-scaling-1cp-cloud-sap-service-spec]{auto-scaling-1cp-cloud-sap-service-spec}
-  \item[\textbf{OpenNebulaa/Carina/Cloud-SAP configuration}] Since Carina and Cloud-SAP used two different instances of OpenNebula installed on separate virtual machines, it is essential the configuration be the same on each of them. Listing \ref{lst:auto-scaling-1cp-one-config} shows the most important OpenNebula excerpt from settings file used in this test case -- polling interval specification, which was set to 30 seconds. To ensure that both products can actually use up-to-date data, they should evaluate their policies every 30 seconds or longer. In Carina the user cannot specify this value, because it is hard-coded in source code to 60 seconds. In Cloud-SAP, however, this value was set in a configuration file and was equal to 60 seconds as well as in Carina. \lstinputlisting[caption=OpenNebula configuration excerpt -- information manager, label=lst:auto-scaling-1cp-one-config]{auto-scaling-1cp-one-config}. Vertical scaling mechanism in \emph{Cloud-SAP} is implemented in a way that causes exponential growth of CPU resources consumption. When there is a need to perform a scaling action on CPU usage, current value is taken and increased by 30\%.
+  \item[\textbf{OpenNebula/Carina/Cloud-SAP configuration}] Since Carina and Cloud-SAP used two different instances of OpenNebula installed on separate virtual machines, it is essential the configuration be the same on each of them. Listing \ref{lst:auto-scaling-1cp-one-config} shows the most important OpenNebula excerpt from settings file used in this test case -- polling interval specification, which was set to 30 seconds. To ensure that both products can actually use up-to-date data, they should evaluate their policies every 30 seconds or longer. In Carina the user cannot specify this value, because it is hard-coded in source code to 60 seconds. In Cloud-SAP, however, this value was set in a configuration file and was equal to 60 seconds as well as in Carina. \lstinputlisting[caption=OpenNebula configuration excerpt -- information manager, label=lst:auto-scaling-1cp-one-config]{auto-scaling-1cp-one-config}. Vertical scaling mechanism in \emph{Cloud-SAP} is implemented in a way that causes exponential growth of CPU resources consumption. When there is a need to perform a scaling action on CPU usage, current value is taken and increased by 30\%.
   \item[\textbf{Deployment diagrams}] Deployment diagrams show the placement of each component in both installations. They are shown in figures \ref{eval:auto-scaling-1cp-carina-deployment-diagram} and \ref{eval:auto-scaling-1cp-cloud-sap-deployment-diagram}.
 
   \begin{figure}[!ht]
@@ -231,7 +231,60 @@ Judging by the plot of cost (figure \ref{eval:auto-scaling-1cp-cost-comparison})
 
 \section{Auto-scaling -- multiple-provider based}
 \subsection*{Description}
+
+\subsubsection{Motivation} This test case aims to prove that scaling across multiple cloud providers is vitally important while ensuring appropriate Quality-of-Service, especially in cases of increased number of resource requests. Such scaling scenario, known also as cloud-bursting, can be also perceived as proof of benefits arising from offloading application load to an external provider. In order to verify our concept we compare number of transactions per second handled by Cloud-SAP and Carina. While our proof of concept solution features multi-layer scaling and is cloud federation aware, Carina adopts only horizontal scaling. It is expected that test case prove benefits emerging from enriching application platform provider with an cloud federation awareness.
+ 
+\subsubsection{Scenario}
+Testing requires following steps to be done:
+\begin{enumerate}
+\item deploy exemplary service
+\item observe system behaviour under load, simulated by a resource usage mock. It is vital that resource usage exceed single provider capabilities
+\item assess system characteristics, including number of handled transactions per second and cost of application deployment
+\end{enumerate}
+
+\subsubsection*{Load simulation}
+Similarly to a previous test case, we leveraged a resource mock that allows us to precisely control monitoring information returned to an system. Besides, again, in order to simplify test case, we were solely focused on a CPU usage. The only requirement that CPU usage have to be met was that function should at some point exceed upper threshold limit and stay at that level, triggering successive auto-scaling events that at some point surpassing single cloud provider resources. Equation \eqref{eq:cpu-mock-usage-2cp} results in such scenario and is illustrated in figure \ref{eval:auto-scaling-2cp-cpu-usage-function}.
+\begin{equation}
+ f(x) = \frac{29}{1500}x^3-\frac{21}{20}x^2+\frac{533}{30}x
+ \label{eq:cpu-mock-usage-2cp}
+\end{equation}
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-7/cpu-usage-mock-multiple}
+  \end{center}
+  \caption{Auto-scaling - multiple-provider based: CPU usage function}
+  \label{eval:auto-scaling-2cp-cpu-usage-function}
+\end{figure}
+
 \subsection*{Preconditions}
+
+\begin{asparaenum}
+  \item[\textbf{Auto-scaling policy specifications}] Policies used in this test are based on a threshold model with the following properties:
+  \begin{itemize}
+   \item value below 20 should trigger scaling down event
+   \item value grater than 60 should trigger scaling up event
+  \end{itemize}
+  However, considering the fact that we are entirely focused on scaling up, only the upper limit is relevant in our case. Listings \ref{lst:auto-scaling-2cp-carina-service-spec} and \ref{lst:auto-scaling-2cp-cloud-sap-service-spec} presents scaling policies for Carina and Cloud-SAP respectively.
+  
+  \lstinputlisting[caption=Carina service specification used for testing auto-scaling with 2 cloud providers, label=lst:auto-scaling-2cp-carina-service-spec]{auto-scaling-2cp-carina-service-spec}
+  \lstinputlisting[caption=Cloud-SAP service specification used for testing auto-scaling with 2 cloud providers, label=lst:auto-scaling-2cp-cloud-sap-service-spec]{auto-scaling-2cp-cloud-sap-service-spec}
+  
+  \item[\textbf{OpenNebula/Carina/Cloud-SAP configuration}] 
+  Common components to Carina and Cloud-SAP, namely OpenNebula instances and computing nodes, were configured in the same fashion. Listings \ref{lst:auto-scaling-2cp-one-config} and \ref{lst:auto-scaling-2cp-sched-config} depicts key configuration elements of OpenNebula monitoring mechanism and scheduler.
+  
+  \lstinputlisting[caption=OpenNebula configuration excerpt -- virtual machine and information manager, label=lst:auto-scaling-2cp-one-config]{auto-scaling-2cp-one-config}
+  \lstinputlisting[caption=OpenNebula configuration excerpt -- virtual machine and information manager, label=lst:auto-scaling-2cp-sched-config]{auto-scaling-2cp-sched-config}
+  
+  \item[\textbf{Deployment diagrams}] 
+
+  \end{asparaenum}
+
+
+\subsubsection*{Environment specification}
+
+\subsubsection*{Hardware/VM configuration}
+
 \begin{figure}[!ht]
   \begin{center}
     \includegraphics[width=0.8\textwidth]{chapter-7/auto-scaling-2cp-physical-nodes}
@@ -239,6 +292,9 @@ Judging by the plot of cost (figure \ref{eval:auto-scaling-1cp-cost-comparison})
   \caption{Auto-scaling - multiple-provider based: environment configuration}
   \label{eval:auto-scaling-2cp-physical-nodes}
 \end{figure}
+
+\subsection*{Expectations}
+
 
 \subsection*{Results}
 \subsection*{Conclusion}
@@ -327,12 +383,5 @@ Obtained results are shown in table \ref{tbl:test-service-deployment-time} and i
   \label{ch7:deployment-time-test}
 \end{figure}
 
-\subsection*{Conclusion}
-
-
-\section{Deployment time -- hypervisor comparison}
-\subsection*{Description}
-\subsection*{Preconditions}
-\subsection*{Results}
 \subsection*{Conclusion}
 
