@@ -8,16 +8,19 @@ require 'rest_client'
 task :default => :run
 
 ##### Endpoint URL
-resource_usage_endpoint     = ENV['RESOURCE_USAGE_ENDPOINT'] || '192.168.0.18:4567'
-test_length                 = ENV['TEST_LENGTH'] || '720'
+resource_usage_endpoint     = ENV['RESOURCE_USAGE_ENDPOINT'] || '192.168.0.32:4567'
+test_length                 = ENV['TEST_LENGTH'] || '1500'
 
 ##### Paths
 base_path                   = File.dirname(__FILE__)
 templates_path              = "#{base_path}/config-templates"
 
+as_1_path                   = "#{base_path}/../../auto-scaling"
 client_path                 = "#{base_path}/../../intercloud/client"
 cb_path                     = "#{base_path}/../../intercloud/cloud-broker"
 cc_path                     = "#{base_path}/../../auto-scaling/cloud-controller"
+as_2_path                   = "/tmp/auto-scaling"
+cc_2_path                   = "#{as_2_path}/cloud-controller"
 
 config_files = {
   :client => {
@@ -31,9 +34,14 @@ config_files = {
     :tmp    => "#{cb_path}/config/config.yaml.backup"
   },
   :cloud_controller => {
-    :new    => "#{base_path}/config-cloud-controller.yaml",
-    :actual => "#{cc_path}/config/config.yaml",
-    :tmp    => "#{cc_path}/config/config.yaml.backup"
+      :new    => "#{base_path}/config-cloud-controller.yaml",
+      :actual => "#{cc_path}/config/config.yaml",
+      :tmp    => "#{cc_path}/config/config.yaml.backup"
+  },
+  :cloud_controller_2 => {
+      :new    => "#{base_path}/config-cloud-controller.yaml",
+      :actual => "#{cc_2_path}/config/config.yaml",
+      :tmp    => "#{cc_2_path}/config/config.yaml.backup"
   }
 }
 ##### End-Of Paths
@@ -50,7 +58,8 @@ unique_str = '_' + SecureRandom.urlsafe_base64(3).to_s
    autoscaling_queue_name
    id
   ).each { |key| @settings['cloud_broker'][key] <<= unique_str }
-@settings['cloud_controller']['controller_routing_key'] <<= unique_str
+@settings['cloud_controller_1']['controller_routing_key'] <<= unique_str
+@settings['cloud_controller_2']['controller_routing_key'] <<= unique_str
 ## End-Of settings modification
 
 logger       = Logger.new(STDOUT)
@@ -58,6 +67,7 @@ logger.level = Logger::DEBUG
 
 cc_pid = nil
 cb_pid = nil
+cc_2_pid = nil
 
 start_time = nil
 end_time   = nil
@@ -110,7 +120,7 @@ task :run => :cleanup do end
 task :cleanup => :run_test do
   logger.info "Cleaning up"
 
-  kill_processes(cb_pid, cc_pid)
+  kill_processes(cb_pid, cc_pid, cc_2_pid)
 
   config_files.each_value do |path_hash|
     if File.exists? path_hash[:tmp]
@@ -123,7 +133,7 @@ task :cleanup => :run_test do
   FileUtils.remove_file "#{client_path}/payload.json"
 end
 
-task :run_test => [:run_cloud_controller, :run_cloud_broker, :prepare_client] do
+task :run_test => [:run_cloud_controller_1, :run_cloud_controller_2, :run_cloud_broker, :prepare_client] do
   logger.info "Executing test case!"
   # Wait for CC and CB
   sleep 20 
@@ -132,14 +142,24 @@ task :run_test => [:run_cloud_controller, :run_cloud_broker, :prepare_client] do
   Process.wait cc_pid
 end
 
-task :run_cloud_controller => :prepare_cc_config do
-  logger.info "Running cloud controller; my pid #{$$}"
+task :run_cloud_controller_1 => :prepare_cc_config_1 do
+  logger.info "Running cloud controller 1; my pid #{$$}"
   # Hash KEY specify a file descriptor in the CHILD process
   # Hash VALUE specify a file descriptor in THIS process
   cc_pid = spawn('bin/intercloud_controller',
                  :chdir => cc_path,
                  STDOUT => STDOUT
-                )
+  )
+end
+
+task :run_cloud_controller_2 => :prepare_cc_config_2 do
+  logger.info "Running cloud controller 2; my pid #{$$}"
+  # Hash KEY specify a file descriptor in the CHILD process
+  # Hash VALUE specify a file descriptor in THIS process
+  cc_2_pid = spawn('bin/intercloud_controller',
+                 :chdir => cc_2_path,
+                 STDOUT => STDOUT
+  )
 end
 
 task :run_cloud_broker => :prepare_cloud_broker_config do
@@ -161,11 +181,21 @@ task :prepare_client do
   FileUtils.cp 'payloads/payload.json', client_path
 end
 
-task :prepare_cc_config do
+task :prepare_cc_config_1 do
   logger.debug "Creating cloud controller config file"
-  create_config("#{templates_path}/config-cloud-controller.yaml.erb",
+  create_config("#{templates_path}/config-cloud-controller-1.yaml.erb",
                 config_files[:cloud_controller][:new])
   move_config(config_files[:cloud_controller])
+end
+
+task :prepare_cc_config_2 do
+  `rm -rf #{as_2_path}`
+  FileUtils.cp_r(as_1_path, as_2_path, :remove_destination => true)
+
+  logger.debug "Creating cloud controller 2 config file"
+  create_config("#{templates_path}/config-cloud-controller-2.yaml.erb",
+                config_files[:cloud_controller_2][:new])
+  move_config(config_files[:cloud_controller_2])
 end
 
 task :prepare_cloud_broker_config do

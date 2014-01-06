@@ -1,5 +1,5 @@
 {
-  "name":"Deployment time test service",
+  "name":"Auto-scaling 2CP test service",
   "stacks":[
   {
     "type":"java",

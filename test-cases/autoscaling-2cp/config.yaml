@@ -11,6 +11,13 @@ cloud_broker:
   host: 127.0.0.1
   port: 46712
 
-cloud_controller:
-  controller_routing_key: sap-cc
+cloud_controller_1:
+  controller_routing_key: sap-cc-1
+  frontend: 192.168.0.32
+  java_price: 50
+
+cloud_controller_2:
+  controller_routing_key: sap-cc-2
+  frontend: 192.168.0.36
+  java_price: 60
 
