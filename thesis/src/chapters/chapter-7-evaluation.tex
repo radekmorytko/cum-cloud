@@ -258,7 +258,7 @@ Similarly to a previous test case, we leveraged a resource mock that allows us t
 \end{figure}
 
 \subsection*{Preconditions}
-
+\subsubsection*{Environment specification}
 \begin{asparaenum}
   \item[\textbf{Auto-scaling policy specifications}] Policies used in this test are based on a threshold model with the following properties:
   \begin{itemize}
@@ -274,14 +274,26 @@ Similarly to a previous test case, we leveraged a resource mock that allows us t
   Common components to Carina and Cloud-SAP, namely OpenNebula instances and computing nodes, were configured in the same fashion. Listings \ref{lst:auto-scaling-2cp-one-config} and \ref{lst:auto-scaling-2cp-sched-config} depicts key configuration elements of OpenNebula monitoring mechanism and scheduler.
   
   \lstinputlisting[caption=OpenNebula configuration excerpt -- virtual machine and information manager, label=lst:auto-scaling-2cp-one-config]{auto-scaling-2cp-one-config}
-  \lstinputlisting[caption=OpenNebula configuration excerpt -- virtual machine and information manager, label=lst:auto-scaling-2cp-sched-config]{auto-scaling-2cp-sched-config}
+  \lstinputlisting[caption=OpenNebula configuration excerpt -- scheduler, label=lst:auto-scaling-2cp-sched-config]{auto-scaling-2cp-sched-config}
   
-  \item[\textbf{Deployment diagrams}] 
+  \item[\textbf{Deployment diagrams}] Components that took part during testing are show in figures \ref{eval:auto-scaling-2cp-carina-deployment-diagram} and \ref{eval:autoscale-2cp-cloud-sap-deployment-diagram}.
 
-  \end{asparaenum}
-
-
-\subsubsection*{Environment specification}
+  \begin{figure}[!ht]
+    \begin{center}
+      \includegraphics{chapter-7/autoscale-2cp-cloud-sap-deployment-diagram}
+    \end{center}
+    \caption{Auto-scaling - multiple-provider based: deployment diagram of Carina}
+    \label{eval:autoscale-2cp-cloud-sap-deployment-diagram}
+  \end{figure}
+  
+  \begin{figure}[!ht]
+    \begin{center}
+      \includegraphics{chapter-7/cpu-usage-carina-deployment-diagram}
+    \end{center}
+    \caption{Auto-scaling - multiple-provider based: deployment diagram of Carina}
+    \label{eval:auto-scaling-2cp-carina-deployment-diagram}
+  \end{figure}
+\end{asparaenum}
 
 \subsubsection*{Hardware/VM configuration}
 

@@ -1,0 +1,22 @@
+{
+  "name":"Deployment time test service",
+  "stacks":[
+  {
+    "type":"java",
+    "instances":2,
+    "policy_set":{
+      "min_vms":1,
+      "max_vms":10,
+      "policies":[
+      {
+        "name":"threshold_model",
+        "arguments": {
+          "min":"20",
+          "max":"60"
+        }
+      }
+      ]
+    }
+  }
+  ]
+}

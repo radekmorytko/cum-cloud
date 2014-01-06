@@ -1,0 +1,16 @@
+# This test case configuration
+
+amqp:
+  host: 192.168.0.12
+
+cloud_broker:
+  id: sap-broker
+  offers_exchange_name: fanout
+  offers_routing_key: offers_rk
+  autoscaling_queue_name: scaling
+  host: 127.0.0.1
+  port: 46712
+
+cloud_controller:
+  controller_routing_key: sap-cc
+
