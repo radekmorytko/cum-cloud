@@ -100,7 +100,7 @@ end
 
 Signal.trap('INT') {
   # this will cause to run cleanup task
-  kill_processes(cb_pid, cc_pid)
+  kill_processes(cb_pid, cc_pid, cc_2_pid)
 }
 
 Signal.trap('USR1') {
