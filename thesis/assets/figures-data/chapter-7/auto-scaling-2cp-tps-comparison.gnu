@@ -16,7 +16,7 @@
 # set terminal wxt 0
 # set output
 set term epslatex size 6,3 standalone color colortext 10
-set output 'cpu-usage-mock-multiple.tex'
+set output 'auto-scaling-2cp-tps-comparison.tex'
 unset clip points
 set clip one
 unset clip two
@@ -47,7 +47,7 @@ set format cb "% g"
 set angles radians
 unset grid
 set key title ""
-set key inside right top vertical Right noreverse enhanced autotitles nobox
+set key inside right bottom vertical Right noreverse enhanced autotitles nobox
 set key noinvert samplen 4 spacing 1 width 0 height 0 
 set key maxcolumns 0 maxrows 0
 unset label
@@ -116,14 +116,14 @@ set xlabel "Time [minutes]"
 set xlabel  offset character 0, 0, 0 font "" textcolor lt -1 norotate
 set x2label "" 
 set x2label  offset character 0, 0, 0 font "" textcolor lt -1 norotate
-set xrange [ * : * ] noreverse nowriteback  # (currently [0.00000:27.0000] )
-set x2range [ * : * ] noreverse nowriteback  # (currently [0.00000:27.0000] )
-set ylabel "CPU [percentage]" 
+set xrange [ * : * ] noreverse nowriteback  # (currently [0.00000:25.0000] )
+set x2range [ * : * ] noreverse nowriteback  # (currently [0.00000:25.0000] )
+set ylabel "Transactions per second" 
 set ylabel  offset character 0, 0, 0 font "" textcolor lt -1 rotate by -270
 set y2label "" 
 set y2label  offset character 0, 0, 0 font "" textcolor lt -1 rotate by -270
-set yrange [ * : * ] noreverse nowriteback  # (currently [0.00000:80.0000] )
-set y2range [ * : * ] noreverse nowriteback  # (currently [0.00000:71.1283] )
+set yrange [ * : * ] noreverse nowriteback  # (currently [0.200000:1.00000] )
+set y2range [ * : * ] noreverse nowriteback  # (currently [0.300000:0.969000] )
 set zlabel "" 
 set zlabel  offset character 0, 0, 0 font "" textcolor lt -1 norotate
 set zrange [ * : * ] noreverse nowriteback  # (currently [-10.0000:10.0000] )
@@ -134,7 +134,6 @@ set zero 1e-08
 set lmargin  -1
 set bmargin  -1
 set rmargin  -1
-set key inside right bottom vertical Right noreverse enhanced autotitles nobox
 set tmargin  -1
 set locale "pl_PL.UTF-8"
 set pm3d explicit at s
@@ -147,7 +146,5 @@ set colorbox vertical origin screen 0.9, 0.2, 0 size screen 0.05, 0.6, 0 front b
 set loadpath 
 set fontpath 
 set fit noerrorvariables
-f(x) = (533 *x)/30-(21 *x**2)/20+(29* x**3)/1500
-GPFUN_f = "f(x) = (533 *x)/30-(21 *x**2)/20+(29* x**3)/1500"
-plot [0:27] f(x) ti 'CPU usage' lc rgb "#1076c1", 60 lt 6 lw 2 lc rgb "#101EC1" ti 'Scaling threshold'
+plot './auto-scaling-2cp-tps-comparison.data' i 0 w l t 'Cloud-SAP' lw 2 lc rgb "#1076c1" , '' i 1 w l t 'Carina' lt 2 lw 2 lc rgb "#101EC1", '' i 2 w l t 'Cloud Provider 1 limit' lt 4 lw 2 lc rgb "#ff0000"
 #    EOF
