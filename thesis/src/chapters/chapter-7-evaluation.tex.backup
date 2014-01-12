@@ -97,7 +97,6 @@ Table \ref{tbl:test-service-deployment-cost-mapping} shows obtained mapping betw
 Obtained results clearly show that our proof-of-concept product met expectations of this test case as the client was offered the cheapest deployment scheme among various cloud providers for a given software stack.
 The mapping mechanism is simple yet considerably powerful -- in this simple scenario the savings were significant since they constituted nearly 20 percent of the price offered by \emph{Cloud Provider 2}. This shows that implementing similar solutions in the real world could be of great benefit to cloud consumers.
 
-\newpage
 \section{Auto-scaling -- single-provider based}
 \subsection*{Description}
 \begin{asparaenum}
@@ -230,7 +229,6 @@ The obtained results shows that the proposed solution has enormous potential in 
 
 Judging by the plot of cost (figure \ref{eval:auto-scaling-1cp-cost-comparison}), we can be fairly sure that it is possible to obtain better results by proper tuning of the scaling vertical mechanism. In particular, one can consider changing the default CPU growth from 1.3 to other or apply a different strategy, for example a growth by a constant rate. What is more, in order to get the best results, the policy scaling interval must be chosen with a great care with the consideration of specific parameters of a given environment.
 
-\newpage
 \section{Auto-scaling -- multiple-provider based}
 \subsection*{Description}
 
@@ -310,22 +308,11 @@ Figure \ref{eval:auto-scaling-2cp-physical-nodes} depicts physical configuration
 \end{figure}
 
 \subsection*{Expectations}
-Taking CPU usage function into account, we can predict outcome of the test. Scaling policy is violated in 5th minute, hence, it is expected that first scaling event occur after that point. Moreover, since that moment, CPU usage remains beyond threshold implying successive scaling actions.
-
+Taking CPU usage function into account, we can predict expected outcome of the tests. Scaling policy's threshold is exceed in 5th minute, triggering scaling events. Moreover, since that moment, CPU usage remains beyond threshold implying successive policy violations.
 Due to the fact that Cloud-SAP favours fine-grained scaling actions such as vertical scaling, it is expected that these actions occur sooner than horizontal scaling. However, at some point Cloud Provider 1 capacity won't be sufficient, hence, another stack instance (one master instance, two slaves) will be deployed on Cloud Provider 2. Subsequent scaling actions will take place solely on a Cloud Provider 2 and will involve further vertical scaling.
-
-Carina, on the other hand, supports solely horizontal scaling using single cloud provider. On top of that, it is assumed that succeeding slaves instances will be added to a service up to the point where Cloud Provider won't have enough resources to proceed with further scaling requests.
+Carina, on the other hand, supports solely horizontal scaling using single cloud provider. 
 
 \subsection*{Results}
-
-\subsubsection*{Cloud-SAP}
-
-
-\subsubsection*{Carina}
-
-\subsubsection*{Transactions per second}
-Chart \ref{eval:auto-scaling-2cp-tps-comparison} illustrates how service capabilities changed over the time. Service capability is expressed as number of transaction per second that can be handled. Please note, that this measure while giving good insight into application potential is hard to simulate, hence, we assumed that 1 VCPU provides enough resources to successfully serve 100 TPS. Knowing that, we roughly estimate total service capacity. 
-
 \begin{figure}[!ht]
   \begin{center}
     \includegraphics{chapter-7/auto-scaling-2cp-tps-comparison}
@@ -335,9 +322,7 @@ Chart \ref{eval:auto-scaling-2cp-tps-comparison} illustrates how service capabil
 \end{figure}
 
 \subsection*{Conclusion}
-Analysing test output and expected result, one can see that our expectation has been satisfied. Cloud-SAP has been proven to be a better solution, offering greater capabilities to a service. This was possible by exploiting resources of two federated cloud providers.
 
-\newpage
 \section{Deployment time -- solution comparison}
 \subsection*{Description}
 In this test we want to compare our solution to one of those available at the market which use \emph{OpenNebula} as an underlying tool for managing resources of a data center and \emph{OpenVZ} as a hypervisor in terms of \textbf{deployment time}, one of the most important factors of products whose main purpose is to scale applications.

@@ -118,7 +118,7 @@ set x2label ""
 set x2label  offset character 0, 0, 0 font "" textcolor lt -1 norotate
 set xrange [ * : * ] noreverse nowriteback  # (currently [0.00000:25.0000] )
 set x2range [ * : * ] noreverse nowriteback  # (currently [0.00000:25.0000] )
-set ylabel "Transactions per second" 
+set ylabel "Capability [TPS]" 
 set ylabel  offset character 0, 0, 0 font "" textcolor lt -1 rotate by -270
 set y2label "" 
 set y2label  offset character 0, 0, 0 font "" textcolor lt -1 rotate by -270

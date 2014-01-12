@@ -38,11 +38,11 @@ config_files = {
       :actual => "#{cc_path}/config/config.yaml",
       :tmp    => "#{cc_path}/config/config.yaml.backup"
   },
-  :cloud_controller_2 => {
-      :new    => "#{base_path}/config-cloud-controller.yaml",
-      :actual => "#{cc_2_path}/config/config.yaml",
-      :tmp    => "#{cc_2_path}/config/config.yaml.backup"
-  }
+#  :cloud_controller_2 => {
+#      :new    => "#{base_path}/config-cloud-controller.yaml",
+#      :actual => "#{cc_2_path}/config/config.yaml",
+#      :tmp    => "#{cc_2_path}/config/config.yaml.backup"
+#  }
 }
 ##### End-Of Paths
 
@@ -51,7 +51,8 @@ config_files = {
 @settings = YAML.load_file("#{base_path}/config.yaml")
 
 ## Modify settings so that some ids and keys are unique per each invocation
-unique_str = '_' + SecureRandom.urlsafe_base64(3).to_s
+#unique_str = '_' + SecureRandom.urlsafe_base64(3).to_s
+unique_str = ''
 %w(
    offers_exchange_name
    offers_routing_key
@@ -103,7 +104,10 @@ Signal.trap('INT') {
   kill_processes(cb_pid, cc_pid, cc_2_pid)
 }
 
+first = true
 Signal.trap('USR1') {
+  return if first == false
+
   end_time = Time.new
   puts "Deployment completed!"
   puts "Resetting time at resource usage mock"
@@ -111,7 +115,8 @@ Signal.trap('USR1') {
   puts "Test length: #{test_length}"
   start_time = Time.new
   sleep 1 while(Time.new - start_time < test_length.to_i)
-  kill_processes(cb_pid, cc_pid)
+  kill_processes(cb_pid, cc_pid, cc_2_pid)
+  first = false
 }
 
 # Mock used to set the appropriate order
@@ -133,7 +138,7 @@ task :cleanup => :run_test do
   FileUtils.remove_file "#{client_path}/payload.json"
 end
 
-task :run_test => [:run_cloud_controller_1, :run_cloud_controller_2, :run_cloud_broker, :prepare_client] do
+task :run_test => [:run_cloud_controller_1, :run_cloud_broker, :prepare_client] do
   logger.info "Executing test case!"
   # Wait for CC and CB
   sleep 20 
@@ -150,6 +155,7 @@ task :run_cloud_controller_1 => :prepare_cc_config_1 do
                  :chdir => cc_path,
                  STDOUT => STDOUT
   )
+
 end
 
 task :run_cloud_controller_2 => :prepare_cc_config_2 do
@@ -190,7 +196,7 @@ end
 
 task :prepare_cc_config_2 do
   `rm -rf #{as_2_path}`
-  FileUtils.cp_r(as_1_path, as_2_path, :remove_destination => true)
+  FileUtils.cp_r(as_1_path, as_2_path)
 
   logger.debug "Creating cloud controller 2 config file"
   create_config("#{templates_path}/config-cloud-controller-2.yaml.erb",
