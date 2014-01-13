@@ -150,10 +150,11 @@ set colorbox default
 set colorbox vertical origin screen 0.9, 0.2, 0 size screen 0.05, 0.6, 0 front bdefault
 set loadpath 
 set fontpath 
-set linetype 5 lw 1 lc rgb "forest-green"
-set linetype 4 lw 1 lc rgb "sea-green"
-set linetype 3 lw 1 lc rgb "dark-green"
-set linetype 1 lw 1 lc rgb "light-green"
+set linetype 5 lw 1 lc rgb "#1076c1"
+set linetype 4 lw 1 lc rgb "#62BCFF"
+set linetype 3 lw 1 lc rgb "#159CFF"
+set linetype 2 lw 1 lc rgb "#91D6FF"
+set linetype 1 lw 1 lc rgb "#315E7F"
 set fit noerrorvariables
 i = 23
 plot './case-study-service-deployment-reduced-client-costs.data' using 5:key(1) ti col, '' using 2 ti col pt 1, '' using 3 ti col, '' using 4 ti col

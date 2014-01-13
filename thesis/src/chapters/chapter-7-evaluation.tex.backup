@@ -17,10 +17,10 @@ Many of the carried out tests were run on the same hardware and/or used the same
 
 \begin{table}
   \centering
-  \begin{tabular}{ | l | l | l | l | }
-    \hline                        
-    Name & CPU & RAM & HD \\
-    \hline
+  \begin{tabular}{ l l l l }
+    \specialrule{.1em}{.05em}{.05em}                  
+    \textbf{Name} & CPU & RAM & HD \\
+    \specialrule{.1em}{.05em}{.05em} 
     (device) Desktop        & Intel(R) Core(TM) i5-2500 CPU @ 3.30GHz & 8GB & 1TB \\
     (device) Node1        & AMD Athlon\texttrademark 64 X2 Dual Core, 2000MHz & 3GB & 160GB \\
     (device) Node3        & AMD Sempron(tm) Processor 3000+ & 2.5GB & 160GB \\
@@ -303,7 +303,7 @@ Similarly to a previous test case, we leveraged a resource mock that allows us t
 
 \subsubsection*{Hardware/VM configuration}
 
-Figure \ref{eval:auto-scaling-2cp-physical-nodes} depicts physical configuration of the environment. In short, setup was as follows: all \emph{Cloud-SAP} components, apart from cloud client deployed on \emph{Laptop}, were provisioned on \emph{Desktop}. \emph{Cloud Proivder 1 (CP-1)} is \emph{OpenNebula} instance known as \emph{Frontend1} which uses \emph{Node1} as a computing node and is deployed on \emph{Desktop}, while \emph{CP\-2} uses \emph{Frontend2} and \emph{Node2}. Specification of nodes is listed in table: \ref{tbl:test-deployment-time-common-hardware-configuration}. Deployment cost of a java stack was 50 and 60 using CP-1 and CP-2, respectively.
+Figure \ref{eval:auto-scaling-2cp-physical-nodes} depicts physical configuration of the environment. In short, setup was as follows: all \emph{Cloud-SAP} components, apart from cloud client deployed on \emph{Laptop}, were provisioned on \emph{Desktop}. \emph{Cloud Proivder 1 (CP-1)} is \emph{OpenNebula} instance known as \emph{Frontend1} which uses \emph{Node1} as a computing node and is deployed on \emph{Desktop}, while \emph{CP\-2} uses \emph{Frontend2} and \emph{Node2}. Specification of nodes is listed in table: \ref{tbl:test-deployment-time-common-hardware-configuration}. Deployment cost of a java stack was 50 and 60 using \emph{CP-1} and \emph{CP-2}, respectively.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -436,4 +436,6 @@ Obtained results are shown in table \ref{tbl:test-service-deployment-time} and i
 \end{figure}
 
 \subsection*{Conclusion}
+As one can can notice, deployment of a java stack takes using \emph{Cloud-SAP} lasts longer than when using \emph{Carina} for the same purpose. Moreover, the more instances are in such stack, the greater difference is. This difference in provisioning time is mainly driven by the fact that \emph{Cloud-SAP} uses a great deal of components in comparison to \emph{Carina}, what is a direct consequence of chosen architecture. Specifically, the request from a client is passed to a broker, then the best provider is chosen and finally the deployment using the select provider and its \emph{Applfow} server takes place. Contrary, \emph{Carina} directly operates on \emph{OpenNebula} giving much simpler flow.
 
+Noticeably, deployment time never was a crucial issue for \emph{Cloud-SAP}, hence, this issue is of a little importance. What is actually important for \emph{Cloud-SAP} is deployment cost and service performance. In other words, slightly greater deployment time is a price that is paid to be sure that resources are deployed optimally and with Quality-of-Service guarantee.

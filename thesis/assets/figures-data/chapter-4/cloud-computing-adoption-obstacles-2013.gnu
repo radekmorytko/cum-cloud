@@ -146,5 +146,5 @@ set loadpath
 set fontpath 
 set fit noerrorvariables
 GNUTERM = "wxt"
-plot './cloud-computing-adoption-obstacles-2013-data' u 0:2:xtic(1) w boxes lc rgb "blue" notitle, '' u 0:2:2 w labels center offset 0,1 notitle
+plot './cloud-computing-adoption-obstacles-2013-data' u 0:2:xtic(1) w boxes lc rgb "#1076c1" notitle, '' u 0:2:2 w labels center offset 0,1 notitle
 #    EOF

@@ -13,4 +13,4 @@ set xlabel "Number of processors"
 set ylabel "Speedup"
 set xrange [1:10]
 
-plot 1/(a + 1/x*(1 - a)) title "30\\% sequential", 1/(b + 1/x*(1 - b)) title "50\\% sequential", 1/(c + 1/x*(1 - c)) title "70\\% sequential", 1/(d + 1/x*(1 - d)) title "90\\% sequential"
+plot 1/(a + 1/x*(1 - a)) title "30\\% sequential" lc rgb "#1486C7", 1/(b + 1/x*(1 - b)) title "50\\% sequential" lc rgb "#66C7FF", 1/(c + 1/x*(1 - c)) title "70\\% sequential" lc rgb "#33647F", 1/(d + 1/x*(1 - d)) title "90\\% sequential" lc rgb "#30CDFF"

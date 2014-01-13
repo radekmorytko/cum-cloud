@@ -145,5 +145,5 @@ set loadpath
 set fontpath 
 set fit noerrorvariables
 GNUTERM = "wxt"
-plot './threshold-model.data' using 1:2:(1.0) smooth acsplines title "resource usage", 20 title "lower boundary" lt 11, 60 title "higher boundary"
+plot './threshold-model.data' using 1:2:(1.0) smooth acsplines title "resource usage" lc rgb "#1486C7", 20 title "lower boundary" lt 11 lc rgb "#30CDFF", 60 title "higher boundary" lc rgb "#1486C7"
 #    EOF

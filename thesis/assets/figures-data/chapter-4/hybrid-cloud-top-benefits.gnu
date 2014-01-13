@@ -145,6 +145,7 @@ set colorbox vertical origin screen 0.9, 0.2, 0 size screen 0.05, 0.6, 0 front b
 set loadpath 
 set fontpath 
 set fit noerrorvariables
+unset key
 GNUTERM = "wxt"
-plot './hybrid-cloud-top-benefits' u 0:2:xtic(1) w boxes lc rgb "green" notitle, '' u 0:2:2 w labels center offset 0,1 notitle
+plot './hybrid-cloud-top-benefits' u 0:2:xtic(1) w boxes lc rgb "#1076c1", '' u 0:2:2 w labels center offset 0,1 notitle
 #    EOF

@@ -1,0 +1,11 @@
+D, [2014-01-03T15:43:48.782879 #2740] DEBUG -- : CONTAINER Analyzing data {:container=>#<AutoScaling::Container @id=1 @correlation_id=875 @ip=#<IPAddr: IPv4:192.168.0.100/255.255.255.255> @type=:master @probed="1388501025" @requirements={"cpu"=>1.8824555100000004, "memory"=>512} @stack_id=1>, :metrics=>{"CPU"=>["71", "70"]}}
+D, [2014-01-03T15:43:48.783877 #2740] DEBUG -- : CONTAINER Concluded that currently {"id":1,"correlation_id":875,"ip":"192.168.0.100","type":"master","probed":"1388501025","requirements":{"cpu":1.8824555100000004,"memory":512},"stack_id":1} is insufficient (by key: CPU)
+...
+D, [2014-01-03T15:43:48.784777 #2740] DEBUG -- : CONTAINER Attempt to scale CPU up for a container: {"id":1,"correlation_id":875,"ip":"192.168.0.100","type":"master","probed":"1388501025","requirements":{"cpu":1.8824555100000004,"memory":512},"stack_id":1}
+I, [2014-01-03T15:43:49.512883 #2740]  INFO -- : CONTAINER Cannot reserve: 2.447192163000001 with {:memory=>358.76171875, :cpu=>1.9480000000000002} at node1 (AutoScaling::InsufficientResources)
+...
+I, [2014-01-03T15:43:49.514541 #2740]  INFO -- : STACK Got unprocessed conclusion: insufficient_cpu for {"id":2,"correlation_id":876,"ip":"192.168.0.101","type":"slave","probed":"1388501010","requirements":{"cpu":1.8824555100000004,"memory":512},"stack_id":1}
+...
+I, [2014-01-03T15:43:50.279589 #2740]  INFO -- : STACK Cannot reserve: {:cpu=>1.8824555100000004, :memory=>512.0} with {:cpu=>0.3675444899999998, :memory=>2673.109375} (AutoScaling::InsufficientResources)
+I, [2014-01-03T15:43:50.279955 #2740]  INFO -- : STACK Delegating execution to a cloud-controller
+I, [2014-01-03T15:43:50.280566 #2740]  INFO -- : Received request of insufficient_slaves to be performed on a stack #<AutoScaling::Stack @id=1 @correlation_id=628 @type=:java @state=:deployed @data=nil @service_name="Deployment time test service">
