@@ -436,4 +436,6 @@ Obtained results are shown in table \ref{tbl:test-service-deployment-time} and i
 \end{figure}
 
 \subsection*{Conclusion}
+As one can can notice, deployment of a java stack takes using \emph{Cloud-SAP} lasts longer than when using \emph{Carina} for the same purpose. Moreover, the more instances are in such stack, the greater difference is. This difference in provisioning time is mainly driven by the fact that \emph{Cloud-SAP} uses a great deal of components in comparison to \emph{Carina}, what is a direct consequence of chosen architecture. Specifically, the request from a client is passed to a broker, then the best provider is chosen and finally the deployment using the select provider and its \emph{Applfow} server takes place. Contrary, \emph{Carina} directly operates on \emph{OpenNebula} giving much simpler flow.
 
+Noticeably, deployment time never was a crucial issue for \emph{Cloud-SAP}, hence, this issue is of a little importance. What is actually important for \emph{Cloud-SAP} is deployment cost and service performance. In other words, slightly greater deployment time is a price that is paid to be sure that resources are deployed optimally and with Quality-of-Service guarantee.
