@@ -7,7 +7,8 @@ module AutoScaling
   class Service
     include DataMapper::Resource
 
-    property :name, String, :key => true, :unique => true
+    property :id, Serial, :key => true
+    property :name, String
     property :autoscaling_queue_name, String, :required => true
 
     has n, :stacks

@@ -51,6 +51,8 @@ module AutoScaling
     #   :memory => 3
     # }
     def reserve?(stack_data)
+      return true
+
       needs = resources(stack_data['type'])
       needs.each {|k, v| needs[k] = v * stack_data['instances'].to_i}
 
@@ -62,6 +64,8 @@ module AutoScaling
     end
 
     def scale_up(container, parameter, requested)
+      raise InsufficientResources.new("CONTAINER Cannot reserve")
+
       @reservation.synchronize do
         host = @cloud_provider.host_by_container(container.correlation_id)
         current_state = @cloud_provider.monitor_host(host)
@@ -87,6 +91,8 @@ module AutoScaling
     #   :memory => 3
     # }
     def reserve(units)
+      raise InsufficientResources.new("STACK Cannot")
+
       @reservation.synchronize do
         backup = @capacity.clone
 
