@@ -93,6 +93,7 @@ Table \ref{tbl:test-service-deployment-cost-mapping} shows obtained mapping betw
   \label{ch7:service-deployment-cost}
 \end{figure}
 
+\newpage
 \subsection*{Conclusion}
 Obtained results clearly show that our proof-of-concept product met expectations of this test case as the client was offered the cheapest deployment scheme among various cloud providers for a given software stack.
 The mapping mechanism is simple yet considerably powerful -- in this simple scenario the savings were significant since they constituted nearly 20 percent of the price offered by \emph{Cloud Provider 2}. This shows that implementing similar solutions in the real world could be of great benefit to cloud consumers.
@@ -168,6 +169,7 @@ Because \emph{Carina} is capable of only horizontal scaling and \emph{Cloud-SAP}
 
   \end{asparaenum}
 
+\newpage
 \subsubsection*{Hardware/VM configuration}
 All virtual machines were deployed onto \emph{Node1}, which uses \emph{OpenVZ} as a virtualization technology and whose hardware configuration can be found in table \ref{tbl:test-deployment-time-common-hardware-configuration}. \emph{OpenNebula} was installed on a \emph{Frontend1} virtual machine and its configuration is in the same table. \emph{Carina} required the usage of 2 virtual machines which were deployed on \emph{Desktop} with KVM as a hypervisor and whose configuration is in table \ref{tbl:test-auto-scaling-1cp-hardware-configuration}. Diagram \ref{eval:auto-scaling-1cp-physical-nodes} illustrates the physical setup of the test-case. 
 
@@ -192,7 +194,6 @@ All virtual machines were deployed onto \emph{Node1}, which uses \emph{OpenVZ} a
   \caption{Auto-scaling - single-provider based: environment configuration}
   \label{eval:auto-scaling-1cp-physical-nodes}
 \end{figure}
-
 
 
 \subsection*{Expectations}
@@ -264,6 +265,7 @@ Similarly to a previous test case, we leveraged a resource mock that allows us t
   \label{eval:auto-scaling-2cp-cpu-usage-function}
 \end{figure}
 
+
 \subsection*{Preconditions}
 \subsubsection*{Environment specification}
 \begin{asparaenum}
@@ -282,13 +284,13 @@ Similarly to a previous test case, we leveraged a resource mock that allows us t
   
   \lstinputlisting[caption=OpenNebula configuration excerpt -- virtual machine and information manager, label=lst:auto-scaling-2cp-one-config]{auto-scaling-2cp-one-config}
   
-  \item[\textbf{Deployment diagrams}] Components that took part during testing are show in figures \ref{eval:auto-scaling-2cp-carina-deployment-diagram} and \ref{eval:autoscale-2cp-cloud-sap-deployment-diagram}.
+  \item[\textbf{Deployment diagrams}] Components that took part during testing are show in figures \ref{eval:autoscale-2cp-cloud-sap-deployment-diagram} and \ref{eval:auto-scaling-2cp-carina-deployment-diagram}.
 
   \begin{figure}[!ht]
     \begin{center}
       \includegraphics{chapter-7/autoscale-2cp-cloud-sap-deployment-diagram}
     \end{center}
-    \caption{Auto-scaling - multiple-provider based: deployment diagram of Carina}
+    \caption{Auto-scaling - multiple-provider based: deployment diagram of \emph{Cloud-SAP}}
     \label{eval:autoscale-2cp-cloud-sap-deployment-diagram}
   \end{figure}
   
@@ -296,7 +298,7 @@ Similarly to a previous test case, we leveraged a resource mock that allows us t
     \begin{center}
       \includegraphics{chapter-7/cpu-usage-carina-deployment-diagram}
     \end{center}
-    \caption{Auto-scaling - multiple-provider based: deployment diagram of Carina}
+    \caption{Auto-scaling - multiple-provider based: deployment diagram of \emph{Carina}}
     \label{eval:auto-scaling-2cp-carina-deployment-diagram}
   \end{figure}
 \end{asparaenum}
@@ -307,12 +309,13 @@ Figure \ref{eval:auto-scaling-2cp-physical-nodes} depicts physical configuration
 
 \begin{figure}[!ht]
   \begin{center}
-    \includegraphics[width=0.7\textwidth]{chapter-7/auto-scaling-2cp-physical-nodes}
+    \includegraphics[width=0.6\textwidth]{chapter-7/auto-scaling-2cp-physical-nodes}
   \end{center}
   \caption{Auto-scaling - multiple-provider based: environment configuration}
   \label{eval:auto-scaling-2cp-physical-nodes}
 \end{figure}
 
+\newpage
 \subsection*{Expectations}
 Taking CPU usage function into account, we can predict outcome of the test. Scaling policy is violated in 5th minute, hence, it is expected that first scaling event occur after that point. Moreover, since that moment, CPU usage remains beyond threshold implying successive scaling actions.
 
@@ -388,6 +391,7 @@ All virtual machines were deployed on a host named \emph{Node1}, whose configura
   \label{eval:deployment-time-physical-nodes}
 \end{figure}
 
+\newpage
 \subsubsection{Environment configuration}
 Deployment diagram for \emph{Carina} implementation is shown in figure \ref{ch7:deployment-time-test-deployment-time-carina-deployment-diagram} and for \emph{Cloud-SAP} in figure \ref{ch7:deployment-time-test-cloud-sap-deployment-diagram}.
 
@@ -407,6 +411,7 @@ Deployment diagram for \emph{Carina} implementation is shown in figure \ref{ch7:
   \label{ch7:deployment-time-test-cloud-sap-deployment-diagram}
 \end{figure}
 
+\newpage
 \subsection*{Results}
 Obtained results are shown in table \ref{tbl:test-service-deployment-time} and in figure \ref{ch7:deployment-time-test}. For a given number of instances we ordered deploying a service 10 times and the values shown in those figures are an average of these runs.
 
