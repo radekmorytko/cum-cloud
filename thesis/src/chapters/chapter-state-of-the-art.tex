@@ -1,11 +1,13 @@
 \chapter{State of the art} 
 
+\chapterintro{This chapter presents recent achievements in a field of providing platform as a service by examining four vital products: Carina, OneFlow, CloudFoundry and OpenShift. It fouces mainly on aspects of adaptivity, scalability and cloud federation awareness.}
+
 \section{Requirements}
 One can notice that elements that yields a solution for a problem stated in the first chapter, which is ensuring that users' application provide appropriate Quality-of-Service for its customers in a most-cost effective manner, were gradually introduced in previous chapters:
 
 \begin{itemize}
-	\item \emph{scalability} - ability to improve application performance by enriching resources
 	\item \emph{adaptivity} - ability to adapt (i.e. scale) appropriately to a current usage pattern
+	\item \emph{scalability} - ability to improve application performance by enriching resources
 	\item \emph{inter-cloud awareness} - ability to compose an application deployment using different cloud providers; cooperation with different cloud provider to supply application with extra resources while performing application scaling
 \end{itemize}
 
@@ -52,10 +54,66 @@ Limitations
 \section{OneFlow}
 
 \section{OpenShift}
+The section aims to answer the question: \emph{Why OpenShift is good, if at all, at what it does?} Following sections give insight into \emph{OpenShift} \cite{OpenShift} features and technical concepts, especially covering: multi-tenacy, auto-scaling and platform deployment.
+
+\subsection{Introduction}
+\emph{OpenShift} is a developed by \emph{RedHat} Platform-as-a-Service for applications. It is available in two different flavours:
+\begin{itemize}
+ \item OpenShift Enterprise, (private cloud)
+ \item OpenShift Online / FreeShift, hosted by RedHat (public cloud)
+\end{itemize}
+
+The latter is freely available, but it is limited to only 3 gears (a 'gear' is a resource maintained by \emph{OpenShift}, such as a application server or database). Beside this, source code of this platform is hosted on github as a \emph{OpenShift Origin}, licensed with \emph{Apache License 2.0}.
+
+\subsection{Features}
+Key, high level features that distinguishes \emph{OpenShift} are:
+\begin{itemize}
+  \item \emph{Accelerated Application Service Delivery} by on-demand and self-provision application stack access
+  \item \emph{Minimised Vendor Lock-in} by portability (there is no proprietary APIs, technologies)
+  \item \emph{Automatic Application Scaling}
+\end{itemize}
+
+Beside this, main features include:
+\begin{itemize}
+  \item \emph{Polyglot} - there is a number of built in application stacks (jee, ruby, python, databases); user is allowed to defined one himself through a concept of 'cartridge'
+  \item \emph{One Click Deploy} - application are managed by OpenShift through git repository. Deploying new version of application comes down to pushing new version application's source code.
+  \item \emph{SELinux-based Secure Containers for multi-tenancy}
+  \item \emph{Automatic Application Stack Provisioning}, it is only necessary to specify required cartridge (application stack) and all the dependencies are provided by platform
+\end{itemize}
+
+\subsection{Key technical concepts}
+
+\subsubsection{Multi-tenancy}
+In \emph{OpenShift}, each application is represented as a set of gears. For example, gear is a database or application server. Such gears are hosted on \emph{OpenShift Nodes}. There is a many-to-one relationship between gear and \emph{OpenShift Nodes}. What is leveraged to achieve this multi-tenancy is:
+\begin{itemize}
+ \item SELinux, isolation between application running at the same node
+ \item Control Groups (cgroups), fine-grained control over the memory / CPU / IO utlization / networking on per process basis
+ \item Kernel namespaces, groups of processes are separated, so that they cannot see resources in other groups
+\end{itemize}
+
+\subsubsection{Auto-scaling}
+While creating new application, it is possible to specify whether application should scale (later this setting cannot be changed). Provided that scaling is enabled, additional gear is allocated to host \emph{HAProxy} \cite{HAProxy}.
+
+In order to scale, \emph{OpenShift} uses a relatively straightforward algorithm \cite{OpenShiftScaling}:
+\emph{
+\begin{quote}
+The algorithm for scaling up and scaling down is based on the number of concurrent requests to your application. OpenShift allocates 10 connections per gear - if HAProxy sees that you're sustaining 90% of your peak capacity, it adds another gear. If your demand falls to 50% of your peak capacity for several minutes, HAProxy removes that gear.
+\end{quote}}
+
+\subsubsection{Cloud federation}
+Before getting into discussion about possible work in a cloud federation environment, it is necessary to recap \emph{OpenShift's} deployment process.
+
+\begin{asparaenum}
+  \item[\textbf{Deployment}] As one may notice in 'Multi-tenancy' section, \emph{OpenShift} does not provision application as virtual machines. Instead they are simply processes running on \emph{OpenShift Nodes}, which themselves are instances of \emph{RedHat Enterprise Linux}. The \emph{OpenShift Enterprise (private cloud )} is a flavour that allows for choosing underlying infrastructure running \emph{RHEL}. It can be a physical node as well as virtual machine, managed, for example, by OpenStack. 
+
+  \item[\textbf{Hybrid configuration}] As previous point highlights, \emph{OpenShift} doesn't use any notion of a datacenter / service provider. Consequently, it not possible to \emph{OpenShift} to cooperate in an intra-datacenter / service provider environment.
+\end{asparaenum}
+
+\subsection{Summary}
+Summing up, key advantage of the \emph{OpenShift} seems to be it simplicity: creating and deploying applications using \emph{OpenShift} is as simple as it gets. Beside this, built in support for most popular technologies and simple API for OpenShift attractive platform. Having that said, auto-scaling and being constraint to a single cloud provider may be not sufficient in complex scenarios.
 
 % radek
 \section{CloudFoundry}
-
 
 
 % radek
