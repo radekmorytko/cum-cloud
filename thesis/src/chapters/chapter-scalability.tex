@@ -29,24 +29,24 @@ It is commonly agreed that there are two main possible ways the resource can be 
 
 What makes scaling application particularly interesting are the benefits offered by a cloud computing, especially the illusion of a virtually infinite computing infrastructure \cite{VaRoBu11}. Making use of virtualization technologies, which often underpins cloud computing platform, allows for resource manipulation in a dynamic, on-demand manner. Although, cloud computing offers additional scaling capabilities, it increases solution complexity since they operate in different layers: server, platform, network as stated in \cite{VaRoBu11}. However, since platform containers are often represented either as virtual machines or another isolated environment (e.g. OpenShift leverages SELinux and cgroups) they are similar in nature to server scaling and supports both scaling up and out. Therefore, the remaining of this chapter is focused solely on server scaling, omitting network scaling as it lays outside of scope of this dissertation.
 
-Having that said, common sense dictates that adding resources is only a part of the success - it should be accompanied by tuning application platform configuration. For example, adding supplementary CPUs without increasing thread pool size that handle requests makes a little sense. Similarly, in context of a Java application, we have to increase heap size, to make a good use of extra memory. While importance of application tuning cannot be underestimated, its detailed analysis lies outside of the scope of this dissertation. Figure \ref{ch2:scalability-layers} presents different scalability layers and actions that can be taken at each level to improve application performance.
+Having that said, common sense dictates that adding resources is only a part of the success - it should be accompanied by tuning application platform configuration. For example, adding supplementary CPUs without increasing thread pool size that handle requests makes a little sense. Similarly, in context of a Java application, we have to increase heap size, to make a good use of extra memory. While importance of application tuning cannot be underestimated, its detailed analysis lies outside of the scope of this dissertation. Figure \ref{fig:scalability-layers} presents different scalability layers and actions that can be taken at each level to improve application performance.
 
 \begin{figure}[!ht]
   \begin{center}
-    \includegraphics{chapter-2/scalability-layers}
+    \includegraphics{chapter-scalability/scalability-layers}
   \end{center}
   \caption{Scalability layers}
-  \label{ch2:scalability-layers}
+  \label{fig:scalability-layers}
 \end{figure}
 
-With all that said, there is no silver bullet - not matter what underlying mechanism platform provider decides to use, the application developer is still responsible for creating an application with scaling in-mind. This statement has been already proven in 1967 by Amdahl law, which in short states that sequential component of a parallel algorithm impacts efficiency for a sufficiently large number processors \cite{Am67} as shown in Figure \ref{ch2:amdahl-law}. In other words, adding supplementary resources to a poorly written application (i.e. having a lot of sequential or synchronized components) can be beneficial only to a certain degree. 
+With all that said, there is no silver bullet - not matter what underlying mechanism platform provider decides to use, the application developer is still responsible for creating an application with scaling in-mind. This statement has been already proven in 1967 by Amdahl law, which in short states that sequential component of a parallel algorithm impacts efficiency for a sufficiently large number processors \cite{Am67} as shown in Figure \ref{fig:amdahl-law}. In other words, adding supplementary resources to a poorly written application (i.e. having a lot of sequential or synchronized components) can be beneficial only to a certain degree. 
 
 \begin{figure}[!ht]
   \begin{center}
-    \includegraphics{chapter-2/amdahl-law}
+    \includegraphics{chapter-scalability/amdahl-law}
   \end{center}
   \caption{Amdahl's law}
-  \label{ch2:amdahl-law}
+  \label{fig:amdahl-law}
 \end{figure}
 
 
