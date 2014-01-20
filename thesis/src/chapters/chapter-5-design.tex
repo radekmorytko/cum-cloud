@@ -18,6 +18,31 @@ w kazdej sekcji opis MAPEK - co monitoruje, w jaki sposob analizuje i planuje, w
 
 % darek
 \section{Autonomic container manager}
+It is expected that autonomic container manager supervises lifecycle of a container, modifying its properties accordingly to a current demand.
+
+\subsection{Managed resource}
+Container is an entity that provides an execution environment for an application platform. Whilst Cloud-SAP is a hypervisor agnostic, it is recommended to use operating system level virtualization technique instead of a full virtualization as a underlying mechanism for a container provisioning. Lightweight containers are more suitable for our needs especially because we rely entirely on Linux based operating system. Hence, it not necessary to use hardware-based hypervisor that supports other operating systems. Moreover, lightweight containers have been proved more effective in some scenarios: \cite{RaHiSj13}.
+
+Container uses variety of underlying resources such as storage or network connection. However, for a simplicity, Cloud-SAP doesn't require autonomic container manager to manage them.
+
+\subsubsection{Touchpoint}
+Container's touchpoint externalises hypervisor and operating system APIs. Similarly to all touchpoints, two main parts can be distinguished:
+\begin{itemize}
+ \item \emph{sensors} - set of properties that expose system metrics such as CPU, memory, disk usage, network bandwidth
+ \item \emph{effectors} - a collection of 'set' operations that aims to change container state: increase or decrease CPU or memory, for example. In fact, these operations directly corresponds to hypervisor capabilities.
+\end{itemize}
+
+It is highly recommended that sensors and effectors to be linked together, forming manageability capabilities. In other words, property (i.e. CPU) can be read only when it is possible to set it as well.
+
+\subsection{Autonomic controller}
+As one can see in XXX, autonomic controller has 4
+
+\subsubsection{Monitoring}
+
+\subsubsection{Analysis}
+\subsubsection{Planning}
+\subsubsection{Execution}
+\subsubsection{Knowledge}
 
 % darek
 \section{Autonomic stack manager}
