@@ -1,9 +1,9 @@
 \chapter{State of the art} 
 
-\chapterintro{This chapter presents recent achievements in a field of providing platform as a service by examining four vital products: Carina, OneFlow, CloudFoundry and OpenShift. It fouces mainly on aspects of adaptivity, scalability and cloud federation awareness.}
+\chapterintro{This chapter presents recent achievements in a field of platform-as-a-service model by examining: Carina, OneFlow, CloudFoundry and OpenShift. Especially, it focuses on aspects of adaptivity, scalability and cloud federation awareness.}
 
 \section{Requirements}
-One can notice that elements that yields a solution for a problem stated in the first chapter, which is ensuring that users' application provide appropriate Quality-of-Service for its customers in a most-cost effective manner, were gradually introduced in previous chapters:
+One can notice that elements that yields a solution to a problem stated in the first chapter, which is ensuring that users' application provide appropriate Quality-of-Service for its customers in a most-cost effective manner, were gradually introduced in previous chapters:
 
 \begin{itemize}
 	\item \emph{adaptivity} - ability to adapt (i.e. scale) appropriately to a current usage pattern
@@ -36,6 +36,7 @@ Before delving into more detailed description it is vital to introduce most impo
 Chapter 3 introduced and discussed various types of application scaling. \emph{Carina} offers only one type of scaling and this is \emph{horizontal} scaling -- user's capabilities are limited only to add/remove a virtual machine to/from a given environment. Unfortunately there are no means to modify the parameters of a given or a set of virtual machines.
 
 In this paper we strongly advocate spanning cloud resources across multiple vendors/providers. Despite having in its requirements such a position, \emph{Carina} \textbf{does not} support deployment or scaling of services across different providers. In the environment configuration we define only \textbf{one} endpoint -- this is can be thought of a reference to a cloud provider. As it can be only one per environment, it is not possible to deploy or scale some artifacts across many providers.
+
 \subsubsection{Adaptivity}
 In \emph{Carina} there are mechanisms which can perform application scaling, both in manual and automatic fashion. It is possible for a system administrator to directly modify the existing application and its environment by changing its parameters manually. Automatic management of an environment is done by defining \emph{scaling policies} which can be in two flavours: \emph{time-based} and \emph{load-based}. Those are called by the authors \emph{elasticy policies}.
 
@@ -68,64 +69,88 @@ There are number of things that cause concern:
 
 \section{OneFlow}
 
-\section{OpenShift}
-The section aims to answer the question: \emph{Why OpenShift is good, if at all, at what it does?} Following sections give insight into \emph{OpenShift} \cite{OpenShift} features and technical concepts, especially covering: multi-tenacy, auto-scaling and platform deployment.
-
 \subsection{Introduction}
-\emph{OpenShift} is a developed by \emph{RedHat} Platform-as-a-Service for applications. It is available in two different flavours:
-\begin{itemize}
- \item OpenShift Enterprise, (private cloud)
- \item OpenShift Online / FreeShift, hosted by RedHat (public cloud)
-\end{itemize}
-
-The latter is freely available, but it is limited to only 3 gears (a 'gear' is a resource maintained by \emph{OpenShift}, such as a application server or database). Beside this, source code of this platform is hosted on github as a \emph{OpenShift Origin}, licensed with \emph{Apache License 2.0}.
+\emph{OneFlow} \cite{OneFlow} is a management system integrated into \emph{OpenNebula} that aspires to enhance it with multi-tiered applications (service) deployment and auto-scaling capabilities. It is available as a core part of \emph{OpenNebula} since 4.2 version and released under \emph{Apache License, Version 2.0}. 
 
 \subsection{Features}
-Key, high level features that distinguishes \emph{OpenShift} are:
+In a context of this thesis, \emph{OneFlow} enriches \emph{OpenNebula} with only one, yet powerful feature: application scaling based on policies. Besides this, benefits of using \emph{OneFlow} are as follows:
 \begin{itemize}
-  \item \emph{Accelerated Application Service Delivery} by on-demand and self-provision application stack access
-  \item \emph{Minimised Vendor Lock-in} by portability (there is no proprietary APIs, technologies)
-  \item \emph{Automatic Application Scaling}
+\item defining multi-tiered applications (services) as a collection of applications
+\item providing configurable services from a catalogue and self-service portal
+\item enabling tight, efficient administrative control
+\item fine-grained access control for the secure sharing of services with other users
 \end{itemize}
 
-Beside this, main features include:
+\subsection{Key technical concepts}
+\subsubsection{Adaptivity}
+Adaptivity is achieved by specifying policies, that violated, trigger events impacting service environment. There are two types of policies available:
 \begin{itemize}
-  \item \emph{Polyglot} - there is a number of built in application stacks (jee, ruby, python, databases); user is allowed to defined one himself through a concept of 'cartridge'
-  \item \emph{One Click Deploy} - application are managed by OpenShift through git repository. Deploying new version of application comes down to pushing new version application's source code.
-  \item \emph{SELinux-based Secure Containers for multi-tenancy}
-  \item \emph{Automatic Application Stack Provisioning}, it is only necessary to specify required cartridge (application stack) and all the dependencies are provided by platform
+ \item \emph{Auto-scaling based on metrics} - policy defines an expression that triggers scaling adjustments. Expressions can use performance data sent from virtual machine using \emph{OneGate} as well as virtual machine data such as CPU, memory, network bandwidth
+ \item \emph{Auto-scaling based on schedule} - policy specifies a time or a time recurrence and correlates that information to appropriate service adjustments
+\end{itemize}
+
+Apart from scaling policies, scaling is controlled by a minimal and maximal number of virtual machines that can compose a service.
+
+\subsubsection{Scaling}
+\emph{OneFlow} is capable of \textbf{only} horizontal scaling: it adds or removes virtual machine using \emph{OpenNebula API}, when appropriate event is triggered. Violating given policy results in virtual machine's state transition into \texttt{SCALING}. After proper action is finished, virtual machines converges to a \texttt{COOLDOWN} state. What this simple state transition does is allows an environment to accommodate changes and adjust to a recent changes, disabling scaling for a given period of time.
+
+
+\subsubsection{Cloud federation awareness}
+\emph{OneFlow} itself \textbf{does not} cooperate with different cloud instance. Hence, one is limited to \emph{OpenNebula} hybrid or public cloud capabilities that employs oZones and \emph{AWS}, respectively. Although, they expand single \emph{OpenNebula} instance capacity it is limited in a way that discriminates it as possible solution. Firstly, the problem with oZones is that they require centralised management, while cloud federation is by definition distributed and independent. Secondly, cloud bursting into \emph{AWS} limits instance monitoring capabilities. Consequently, it is not possible to supervise provisioned instances.
+
+\subsection{Summary}
+
+\section{OpenShift}
+
+\subsection{Introduction}
+\emph{OpenShift} is developed by \emph{RedHat} Platform-as-a-Service solution. It is available in two different flavours:
+\begin{itemize}
+ \item \emph{OpenShift Enterprise} (private cloud)
+ \item \emph{OpenShift Online / FreeShift} hosted by RedHat (public cloud)
+\end{itemize}
+
+The latter is freely distributed, but it is limited to only 3 gears (a 'gear' is a resource maintained by \emph{OpenShift}, such as application server or database). Beside this, source code is hosted on github and licensed under \emph{Apache License 2.0}.
+
+\subsection{Features}
+High level features that distinguishes \emph{OpenShift} are as follows:
+\begin{itemize}
+  \item accelerated application service delivery by on-demand and self-provision application stack access
+  \item minimised vendor lock-in by portability (there are no proprietary APIs, technologies)
+  \item automatic application scaling
+\end{itemize}
+
+Beside this, key qualities include:
+\begin{itemize}
+  \item polyglot stacks: there is a number of built in application stacks (Java, Ruby, Python, databases); user is allowed to defined one himself through a concept of 'cartridge'
+  \item one click deployment: application are managed by \emph{OpenShift} through git repository. Deploying new version of application comes down to pushing new version application's source code.
+  \item SELinux-based secure containers for multi-tenancy
+  \item automatic application stack provisioning, it is only necessary to specify required cartridge (application stack) and all the dependencies are provided by platform
 \end{itemize}
 
 \subsection{Key technical concepts}
 
-\subsubsection{Multi-tenancy}
-In \emph{OpenShift}, each application is represented as a set of gears. For example, gear is a database or application server. Such gears are hosted on \emph{OpenShift Nodes}. There is a many-to-one relationship between gear and \emph{OpenShift Nodes}. What is leveraged to achieve this multi-tenancy is:
-\begin{itemize}
- \item SELinux, isolation between application running at the same node
- \item Control Groups (cgroups), fine-grained control over the memory / CPU / IO utlization / networking on per process basis
- \item Kernel namespaces, groups of processes are separated, so that they cannot see resources in other groups
-\end{itemize}
-
-\subsubsection{Auto-scaling}
-While creating new application, it is possible to specify whether application should scale (later this setting cannot be changed). Provided that scaling is enabled, additional gear is allocated to host \emph{HAProxy} \cite{HAProxy}.
-
-In order to scale, \emph{OpenShift} uses a relatively straightforward algorithm \cite{OpenShiftScaling}:
-\emph{
-\begin{quote}
-The algorithm for scaling up and scaling down is based on the number of concurrent requests to your application. OpenShift allocates 10 connections per gear - if HAProxy sees that you're sustaining 90% of your peak capacity, it adds another gear. If your demand falls to 50% of your peak capacity for several minutes, HAProxy removes that gear.
+\subsubsection{Adaptivity}
+\emph{OpenShift}'s adaptivity capabilities are constrained to a simple case: while creating a new application, it is possible to specify whether application should scale. As a consequence, additional gear is allocated to serve \emph{HAProxy} \cite{HAProxy}. There is only \textbf{one built-in} scaling policy that is based on a relatively straightforward algorithm \cite{OpenShiftScaling}:
+\emph{\begin{quote}
+The algorithm for scaling up and scaling down is based on the number of concurrent requests to your application. OpenShift allocates 10 connections per gear - if HAProxy sees that you're sustaining 90\% of your peak capacity, it adds another gear. If your demand falls to 50\% of your peak capacity for several minutes, HAProxy removes that gear.
 \end{quote}}
 
-\subsubsection{Cloud federation}
-Before getting into discussion about possible work in a cloud federation environment, it is necessary to recap \emph{OpenShift's} deployment process.
+\subsubsection{Scalability}
+As previous point implies, OpenShift \textbf{solely} uses horizontal scaling: it adds additional gears if number of requests increases beyond certain level.
 
-\begin{asparaenum}
-  \item[\textbf{Deployment}] As one may notice in 'Multi-tenancy' section, \emph{OpenShift} does not provision application as virtual machines. Instead they are simply processes running on \emph{OpenShift Nodes}, which themselves are instances of \emph{RedHat Enterprise Linux}. The \emph{OpenShift Enterprise (private cloud )} is a flavour that allows for choosing underlying infrastructure running \emph{RHEL}. It can be a physical node as well as virtual machine, managed, for example, by OpenStack. 
+\subsubsection{Cloud federation awareness}
+OpenShift does not use any notion of a cloud provider or datacenter. However, since cartridges are in fact Linux processes running on OpenShift Nodes, it is possible to deploy  OpenShift Enterprise on any infrastructure running RHEL. It can consist of physical nodes as well as virtual machines, managed, for example, by OpenStack. With all that said, is still requires a centralised, OpenShift controlled environment. Hence, OpenShift \textbf{is not} capable to work in a cloud federation.
 
-  \item[\textbf{Hybrid configuration}] As previous point highlights, \emph{OpenShift} doesn't use any notion of a datacenter / service provider. Consequently, it not possible to \emph{OpenShift} to cooperate in an intra-datacenter / service provider environment.
-\end{asparaenum}
+\subsubsection{Multi-tenancy}
+In OpenShift, each application is represented as a set of gears. For example, gear is a database or application server. Gears are hosted on OpenShift Nodes. There is a many-to-one relationship between gear and OpenShift Nodes. What is leveraged to achieve this multi-tenancy is:
+\begin{itemize}
+ \item SELinux, isolation between applications running at the same node
+ \item control groups (cgroups), fine-grained control over the memory / CPU / IO utilisation / networking on per process basis
+ \item kernel namespaces, groups of processes are separated, so that they cannot see resources in other groups
+\end{itemize}
 
 \subsection{Summary}
-Summing up, key advantage of the \emph{OpenShift} seems to be it simplicity: creating and deploying applications using \emph{OpenShift} is as simple as it gets. Beside this, built in support for most popular technologies and simple API for OpenShift attractive platform. Having that said, auto-scaling and being constraint to a single cloud provider may be not sufficient in complex scenarios.
+Summing up, key advantage of the OpenShift seems to be it simplicity: creating and deploying applications using OpenShift is as simple as it gets. Beside this, built in support for most popular technologies and simple API makes OpenShift attractive platform. Having that said, oversimplified auto-scaling and being constrained to a single cloud provider may be not sufficient in complicated scenarios.
 
 % radek
 \section{CloudFoundry}
