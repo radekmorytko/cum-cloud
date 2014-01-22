@@ -99,6 +99,7 @@ Apart from scaling policies, scaling is controlled by a minimal and maximal numb
 \emph{OneFlow} itself \textbf{does not} cooperate with different cloud instance. Hence, one is limited to \emph{OpenNebula} hybrid or public cloud capabilities that employs oZones and \emph{AWS}, respectively. Although, they expand single \emph{OpenNebula} instance capacity it is limited in a way that discriminates it as possible solution. Firstly, the problem with oZones is that they require centralised management, while cloud federation is by definition distributed and independent. Secondly, cloud bursting into \emph{AWS} limits instance monitoring capabilities. Consequently, it is not possible to supervise provisioned instances.
 
 \subsection{Summary}
+Taking everything into consideration, OneFlow is a valuable addition to OpenNebula ecosystem. Undoubtedly, its auto-scaling feature with elastic policy mechanism cannot be underestimated. However, actions taken by scaling mechanism are coarse-grained by being limited to a horizontal scaling. What makes things worse, OneFlow can not leverage resources of multiple providers associated within a cloud federation.
 
 \section{OpenShift}
 
