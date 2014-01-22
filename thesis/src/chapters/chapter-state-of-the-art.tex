@@ -156,11 +156,27 @@ Summing up, key advantage of the OpenShift seems to be it simplicity: creating a
 
 % radek
 \section{CloudFoundry}
-\emph{Cloud Foundry} is an open-source platform-as-a-service solution which can be installed on local or off-premises infrastructure, such as Amazon Web Services, OpenStack or vSphere.
+\subsection{Overview}
+\emph{Cloud Foundry} is a platform-as-a-service solution which can be installed on local or off-premises infrastructure, such as Amazon Web Services, OpenStack or vSphere. It is available in two versions as
+\begin{itemize}
+  \item an open-source project
+  \item a commercial solution, \emph{Pivotal CF}
+\end{itemize}
 
 \subsection{History}
 The project was initially developed by VMWare and its first release was in 2011, It was then that VMware decided to make it available to the general public and released it under Apache License 2.0. For the next consecutive two years, there were maintained two versions of \emph{Cloud Foundry} -- as a hosted solution owned by VMWare and an open-source project. However, in December 2012 VMware and EMC shared information on the \emph{Pivotal Initiative} \cite{PivotalInitiative} -- a virtual organization of people from both companies with background in \emph{big data} and \emph{cloud application platforms}. With the advent of the this new entity, \emph{Pivotal} \cite{GoPivotal}, it was announced the launch of the new product -- Pivotal One, which is powered by \emph{Pivotal CF}, the enterprise version of \emph{Cloud Foundry}. Now users can choose between the open-source and commercial solutions.
 
+\subsection{Features}
+
+\subsection{Key technical concepts}
+
+\subsubsection{Adaptivity}
+\emph{Cloud foundry} does not support auto-scaling -- it is only possible for the cloud consumer to scale the application manually. However, there can be additional tools which can add this functionality, such as \emph{RightScale}.
+
+In terms of monitoring the state of applications, the platform uses \emph{Health Manager} to collect relevant data and then it notifies \emph{Cloud Controller}, which in turn takes appropriate actions. This enables, for example, to spawn a new node if an existing one needs a replacement.
+
+\subsubsection{Scalability}
+\emph{Cloud foundry} support only horizontal scaling.
 
 % radek
 \section{Providers comparison}
