@@ -162,11 +162,21 @@ Summing up, key advantage of the OpenShift seems to be it simplicity: creating a
   \item an open-source project
   \item a commercial solution, \emph{Pivotal CF}
 \end{itemize}
+In this section we want to elaborate only on an open-source project.
 
 \subsection{History}
 The project was initially developed by VMWare and its first release was in 2011, It was then that VMware decided to make it available to the general public and released it under Apache License 2.0. For the next consecutive two years, there were maintained two versions of \emph{Cloud Foundry} -- as a hosted solution owned by VMWare and an open-source project. However, in December 2012 VMware and EMC shared information on the \emph{Pivotal Initiative} \cite{PivotalInitiative} -- a virtual organization of people from both companies with background in \emph{big data} and \emph{cloud application platforms}. With the advent of the this new entity, \emph{Pivotal} \cite{GoPivotal}, it was announced the launch of the new product -- Pivotal One, which is powered by \emph{Pivotal CF}, the enterprise version of \emph{Cloud Foundry}. Now users can choose between the open-source and commercial solutions.
 
 \subsection{Features}
+Below there are listed some of the main functionalities offered by \emph{Cloud Foundry}:
+\begin{itemize}
+  \item Support for multi-provider ecosystem (\emph{Multi-Cloud})
+  \item Reduced the management burden of the life-cycle of an application by a simplified CLI that enables, e.g. faster and instant deployment,
+  \item Dynamic routing which enables and enhances horizontal scaling and updating applications,
+  \item Usage of own-developed lightweight containers (\emph{Warden}), which ensures the proper isolation level and improves the speed of movement of application instances between virtual machines (utilizing \emph{aufs} -- advanced multi layered unification filesystem)
+  \item Health management -- continually monitoring application instances and taking according recovery actions if needed
+  \item Standards-based authorization and authentication system which supports various standards such as LDAP, SAML or OAuth 2.0
+\end{itemize}
 
 \subsection{Key technical concepts}
 
@@ -176,7 +186,7 @@ The project was initially developed by VMWare and its first release was in 2011,
 In terms of monitoring the state of applications, the platform uses \emph{Health Manager} to collect relevant data and then it notifies \emph{Cloud Controller}, which in turn takes appropriate actions. This enables, for example, to spawn a new node if an existing one needs a replacement.
 
 \subsubsection{Scalability}
-\emph{Cloud foundry} support only horizontal scaling.
+\emph{Cloud foundry} supports only horizontal scaling.
 
 % radek
 \section{Providers comparison}
