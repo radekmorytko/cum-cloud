@@ -186,7 +186,12 @@ Below there are listed some of the main functionalities offered by \emph{Cloud F
 In terms of monitoring the state of applications, the platform uses \emph{Health Manager} to collect relevant data and then it notifies \emph{Cloud Controller}, which in turn takes appropriate actions. This enables, for example, to spawn a new node if an existing one needs a replacement.
 
 \subsubsection{Scalability}
-\emph{Cloud foundry} supports only horizontal scaling.
+\emph{Cloud foundry} supports only horizontal scaling not only within one provider, but also across many. This feature is called \emph{Multi-Cloud} in Cloud Foundry nomenclature.
+
+\subsubsection{Cloud-federation awareness}
+As it was stated in previous sections, Cloud Foundry is \emph{cloud-federation aware}, i.e. it allows users to span their applications across many providers, which results in a hybrid solution that comes in many flavours: \emph{public-public}, \emph{public-private} or \emph{private-private}.
+
+% do kminy - dopisac Bosha/DEA/Warden ?
 
 % radek
 \section{Providers comparison}
