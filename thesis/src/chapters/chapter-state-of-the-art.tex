@@ -180,6 +180,13 @@ Below there are listed some of the main functionalities offered by \emph{Cloud F
 
 \subsection{Key technical concepts}
 
+\subsubsection{Cloud Foundry-specific}
+\begin{asparaenum}
+\item[\textbf{Warden}] The main goal of \emph{Warden} is to manage isolated and resource-controller environments called containers. It is responsible for management of the whole lifecycle of an environment and provides API for actually performing any operation on a container. At first, \emph{Warden} used LXC technology under the hood, but now containers are an own product of \emph{Cloud Foundry} community.
+\item[\textbf{Droplet Execution Agent}] \emph{DEA} manages \emph{Warden} containers, stages user's application and runs droplets -- wrappers around already deployed applications.
+\item[\textbf{BOSH}] \emph{BOSH} is a tool chain for release, deployment and lifecycle management of distributed services. Its functionalities can be compared to those offered by \emph{Chef}.
+\end{asparaenum}
+
 \subsubsection{Adaptivity}
 \emph{Cloud foundry} does not support auto-scaling -- it is only possible for the cloud consumer to scale the application manually. However, there can be additional tools which can add this functionality, such as \emph{RightScale}.
 
@@ -191,7 +198,10 @@ In terms of monitoring the state of applications, the platform uses \emph{Health
 \subsubsection{Cloud-federation awareness}
 As it was stated in previous sections, Cloud Foundry is \emph{cloud-federation aware}, i.e. it allows users to span their applications across many providers, which results in a hybrid solution that comes in many flavours: \emph{public-public}, \emph{public-private} or \emph{private-private}.
 
-% do kminy - dopisac Bosha/DEA/Warden ?
+
+\subsection{Summary}
+Owing to the variety of useful features, great support from community and significant IT enterprises such as IBM, VMware to name a few, \emph{Cloud Foundry} can be considered a mature product which can compete with current leaders in the fields, such as Amazon AWS.
+Additionally, it is highly probable that acquiring the hosted solution by \emph{Pivotal} may be of a great benefit to the whole cloud community as the market will be more competitive.
 
 % radek
 \section{Providers comparison}
