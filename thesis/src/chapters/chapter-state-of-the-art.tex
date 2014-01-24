@@ -205,4 +205,128 @@ Additionally, it is highly probable that acquiring the hosted solution by \emph{
 
 % radek
 \section{Providers comparison}
-	
+In this section we would like to compare all depicted providers as well as other solution in terms of \emph{adaptivity} and \emph{scalability}.
+
+Table \ref{tab:cloud-providers-scaling} presents a summary of cloud providers auto-scaling capabilities. Interestingly, all of them are focused solely on horizontal scaling, ignoring advantages offered by a fine-grained approach to scaling that leverage scaling up and application tuning.
+
+\begin{table}[!htbp]
+\begin{tabularx}{\textwidth}[]{ X  X  X  X}
+\specialrule{.1em}{.05em}{.05em} 
+
+  & \textbf{Horizontal scaling} & \textbf{Vertical scaling} & \textbf{Application tuning} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+\multicolumn{4}{ l }{\textbf{Infrastructure provider}} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+Carina & \checkmark & $\times$ & $\times$ \\ \hline
+
+OneFlow & \checkmark & $\times$ & $\times$ \\ \hline
+
+AWS EC2 & \checkmark & $\times$ & $\times$ \\ \hline
+
+\multicolumn{4}{ l }{\textbf{Platform provider}} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+CloudFoundry & $\times$ & $\times$ & $\times$ \\ \hline
+
+OpenShift & \checkmark & $\times$ & $\times$ \\ \hline
+
+AppEngine & \checkmark & $\times$ & $\times$ \\ \hline
+
+Azure & \checkmark & $\times$ & $\times$ \\ \hline
+
+Heroku & $\times$ & $\times$ & $\times$ \\ \hline
+\end{tabularx}
+
+\caption{Comparison of cloud providers scaling capabilities}
+\label{tab:cloud-providers-scaling}
+
+\end{table}
+On the other hand, table \ref{tab:cloud-providers-adaptivity} is a summary with approaches to adaptivity taken by different cloud providers.
+
+\begin{table}[!htbp]
+\begin{tabularx}{\textwidth}[]{ X  X X }
+\specialrule{.1em}{.05em}{.05em} 
+
+  & \textbf{Policies} & \textbf{Data analysis} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+\multicolumn{3}{ l }{\textbf{Infrastructure provider}} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+Carina & 
+-- time frame based
+
+-- expression based (only for CPU)
+&
+-- threshold model that takes into account minimal and maximal permitted instances of an application as well as application priority
+
+\\ \hline
+
+OneFlow 4.2 & 
+-- time frame based with customizable padding 
+
+-- expression based build on custom language, where all vm's metrics are supported
+
+-- customizable adjustment padding, cooldown time
+&
+-- threshold model
+
+\\ \hline
+
+AWS EC2 & 
+-- time frame based
+
+-- expression based, where expressions corresponds to a AutoScalingGroup
+
+-- actions are triggered by a CloudWatch alarms
+
+-- customizable adjustments paddings, types, cooldown time
+&
+-- threshold model, takes into account minimal and maximal permitted instances of an application as well as application priority
+\\ \hline
+
+\multicolumn{3}{ l }{\textbf{Platform provider}} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+CloudFoundry & $\times$ & $\times$ \\ \hline
+
+OpenShift & 
+-- single built-in policy
+
+ &
+-- single built-in threshold model that scales an application when CPU load is greater than 50\% for a given period
+\\ \hline
+
+AppEngine & 
+
+-- built-in policy based on request queue length
+
+-- adjustable minimal, maximal number of application instances, pending latency
+
+ &
+-- queue-based, new instance is provisioned if queue length got too long 
+  \\ \hline
+
+Azure & 
+-- time frame based
+
+-- expression based, where expression can involve either CPU usage or Queue length
+
+-- customizable adjustments paddings, types, cooldown time
+&
+-- threshold model, that takes into account minimal and maximal allowed instances
+ \\ \hline
+
+Heroku & $\times$ & $\times$ \\ \hline
+\end{tabularx}
+
+\caption{Comparison of cloud providers approach to adaptivity}
+\label{tab:cloud-providers-adaptivity}
+
+\end{table}
+
+
+
+
