@@ -1,11 +1,30 @@
-\chapter{Design of Cloud-SAP}
+\chapter{Cloud-SAP}
 
-\chapterintro{ This chapter introduces the high-level design of Cloud-SAP, highlighting its core concepts and indicating possible implementation ideas.
+\chapterintro{ This chapter introduces the reference architecture known as Cloud-SAP, highlights its core concepts and indicates possible implementation ideas.
 }
 
 \section{Motivation}
-Opis, ze wczesniejsze sa niewystarzcajace -> maja braki
-Sys. autonomiczny lata te braki + mozna go zastosowac bo sa spelnione takie a takie wymagania (ich opis jest w blueprint)
+As one can see, latest advances in providing platform-as-a-service still do not yield a comprehensive solution that embraces a range of fine-grained actions relevant to a given situation in an environment, as it was summarised in a previous chapter. All of the presented solutions solely engage horizontal scaling, while other IT processes and corresponding actions such as vertical scaling, cloud bursting or application platform restart remains neglected. What is more, none of the investigated systems is a self-managing one, taking proactive approach in enforcing given QoS. To make matter worse, some platforms such as Carina or OneFlow are provider-specific, hence, requiring vast knowledge and begin time-consuming.
+
+What system has all of the above-mentioned features is an autonomic one \cite{IBM06}, characterised by a self-management ability and driven by a four crucial attributes:
+\begin{itemize}
+ \item \emph{self-configuration} - dynamic adaptation to changing environment such as provisioning new application instances, application tuning, traffic delegation to an external provider
+  \item \emph{self-healing} - discovering, diagnosing and reacting to environment disruption such as container outage
+  \item \emph{self-optimising} - monitoring and tuning resources: migrating containers, offloading traffic, for example
+  \item \emph{self-protecting} - detecting and protecting against threats such as Deny-of-Service by provisioning extra resources
+\end{itemize}
+Beside this, key customer values such as IT process execution cost or time needed to complete it are enhanced through rapid process initiation and reduced time and skill requirements \cite{IBM06}. As specified in blueprint, applying autonomic system to manage application environment is possible because following conditions are met:
+\begin{itemize}
+  \item tasks involved in associated IT process needs to be automated
+  \item it is possible to initiate these processes based on observable and detectable situations
+  \item autonomic manager posses sufficient knowledge
+\end{itemize}
+
+Cloud Self Adaptive Platform (Cloud-SAP) is a reference architecture aspiring to supply application providers with an autonomic computing environment. Figure X shows Cloud-SAP place in an exemplary application provisioning request. 
+
+Service consumers can be both used by an end-user or other system interface, Cloud-SAP is suitable for both cases. Cloud-SAP is entirely cloud provider and resources agnostic as long as they externalise management interfaces.
+
+Successive sections defines core layers of a Cloud-SAP and gives some insight into possible implementation, whilst next chapter presents proof-of-concept implementation.
 
 \section{Overview}
 Przedstawienie domeny - zasobow w naszym systemie, odniesienie tego do blueprint => wynikiem jest pomysl na system / diagram
@@ -21,8 +40,8 @@ ogolny opis systemu - jak sie odnosimy do CHOP, mamy 1 kontroler orkiestrujacy, 
 \end{figure}
 
 % darek
-\section{Application platform manager}
-w kazdej sekcji opis MAPEK - co monitoruje, w jaki sposob analizuje i planuje, wykonuje
+%\section{Application platform manager}
+%w kazdej sekcji opis MAPEK - co monitoruje, w jaki sposob analizuje i planuje, wykonuje
 
 % darek
 \section{Autonomic container manager}
@@ -72,6 +91,3 @@ As it was already mentioned, monitoring module aims to gather data from containe
 
 \section{Summary}
 podsumowanie, wyzwania stojace przed projektem, problemy ale takze obietnica dobrobytu i spokojnej starosci
-
-
-
