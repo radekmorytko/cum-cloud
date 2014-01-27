@@ -12,8 +12,16 @@ Przedstawienie domeny - zasobow w naszym systemie, odniesienie tego do blueprint
 
 ogolny opis systemu - jak sie odnosimy do CHOP, mamy 1 kontroler orkiestrujacy, kompletny system autonomiczny
 
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-design/autonomic-component}
+  \end{center}
+  \caption{autonomic component}
+  \label{img:autonomic-component}
+\end{figure}
+
 % darek
-\section{Application Platform manager}
+\section{Application platform manager}
 w kazdej sekcji opis MAPEK - co monitoruje, w jaki sposob analizuje i planuje, wykonuje
 
 % darek
@@ -32,12 +40,21 @@ Container's touchpoint externalises hypervisor and operating system APIs. Simila
  \item \emph{effectors} - a collection of 'set' operations that aims to change container state: increase or decrease CPU or memory, for example. In fact, these operations directly corresponds to hypervisor capabilities.
 \end{itemize}
 
-It is highly recommended that sensors and effectors to be linked together, forming manageability capabilities. In other words, property (i.e. CPU) can be read only when it is possible to set it as well.
+It is highly recommended for sensors and effectors to be linked, forming together manageability capabilities. In other words, property (i.e. CPU) can be read only when it is possible to set it as well. 
 
 \subsection{Autonomic controller}
-As one can see in XXX, autonomic controller has 4
+Generally speaking, autonomic container controller aims to automate container's management function and externalise its configuration through its interfaces. In order to do achieve that, it implements a control loop that fully covers container life cycle: gathering information about it, analysing it, planning and executing actions on top of that. These four functions along with knowledge necessary to perform them designate modular structure of a controller as shown in figure \ref{img:autonomic-component}.
 
 \subsubsection{Monitoring}
+As it was already mentioned, monitoring module aims to gather data from container's sensors. While design of Cloud-SAP doesn't have any specific requirements regarding underlying monitoring mechanism, there are a few aspects that should be taken into consideration:
+\begin{asparaenum}
+  \item[\textbf{Data filters}]
+
+  \item[\textbf{Persistence}]
+
+  \item[\textbf{Standard compatibility}] Whilst there is no single, industry accepted standard of virtual machine monitoring, there were initiatives such as OCCI \cite{OCCI} that aims to close that gap. Having scaling across multiple cloud instances in mind, it is vital to provide compatibility at a container monitoring level. However, in some cases, standard-defined API may no be sufficient for a specific needs  
+\end{asparaenum}
+
 
 \subsubsection{Analysis}
 \subsubsection{Planning}
