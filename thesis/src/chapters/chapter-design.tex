@@ -13,6 +13,9 @@ What system has all of the above-mentioned features is an autonomic one \cite{IB
   \item \emph{self-optimising} - monitoring and tuning resources: migrating containers, offloading traffic, for example
   \item \emph{self-protecting} - detecting and protecting against threats such as Deny-of-Service by provisioning extra resources
 \end{itemize}
+
+Another indispensable function of any autonomic entity is its ability to detect an undesirable state and take appropriate actions. This is achieved by the presence of a \emph{control loop} which collects data about the environment, analyzes it and takes all needed steps. Not only can the introduced attributes be bound to an autonomic system, but they can also be thought of main and broad categories of a control loop \cite{IBM06}.
+
 Beside this, key customer values such as IT process execution cost or time needed to complete it are enhanced through rapid process initiation and reduced time and skill requirements \cite{IBM06}. As specified in blueprint, applying autonomic system to manage application environment is possible because following conditions are met:
 \begin{itemize}
   \item tasks involved in associated IT process needs to be automated
@@ -20,11 +23,18 @@ Beside this, key customer values such as IT process execution cost or time neede
   \item autonomic manager posses sufficient knowledge
 \end{itemize}
 
-Cloud Self Adaptive Platform (Cloud-SAP) is a reference architecture aspiring to supply application providers with an autonomic computing environment. Figure X shows Cloud-SAP place in an exemplary application provisioning request. 
+Cloud Self Adaptive Platform (Cloud-SAP) is a reference architecture aspiring to supply application providers with an autonomic computing environment. Figure \ref{img:architecture-context} shows Cloud-SAP place in an exemplary application provisioning request. 
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=0.9\textwidth]{chapter-design/architecture-context}
+  \end{center}
+  \caption{Cloud-SAP place in an exemplary application provisioning request}
+  \label{img:architecture-context}
+\end{figure}
 
 Service consumers can be both end-users or other system interfaces, Cloud-SAP is suitable for both cases. Cloud-SAP is entirely cloud provider and resources agnostic as long as they externalise management interfaces.
 
-Successive sections define core layers of a Cloud-SAP and give insights into possible implementation decisions, while next chapter presents proof-of-concept implementation.
+Successive sections define core layers of a Cloud-SAP and give insights into possible implementation decisions, while the next chapter presents proof-of-concept implementation.
 
 \section{Overview}
 Przedstawienie domeny - zasobow w naszym systemie, odniesienie tego do blueprint => wynikiem jest pomysl na system / diagram
@@ -37,6 +47,14 @@ ogolny opis systemu - jak sie odnosimy do CHOP, mamy 1 kontroler orkiestrujacy, 
   \end{center}
   \caption{autonomic component}
   \label{img:autonomic-component}
+\end{figure}
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=\textwidth]{chapter-design/csap-layers}
+  \end{center}
+  \caption{autonomic component}
+  \label{img:csap-layers}
 \end{figure}
 
 % darek
