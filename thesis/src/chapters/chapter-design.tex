@@ -6,7 +6,7 @@
 \section{Motivation}
 As one can see, latest advances in providing platform-as-a-service still do not yield a comprehensive solution that embraces a range of fine-grained actions relevant to a given situation in an environment, as it was summarised in previous chapter. All of the presented solutions solely engage horizontal scaling, while other IT processes and corresponding actions such as vertical scaling, cloud bursting or application platform restart remains neglected. What is more, none of the investigated systems is a self-managing one, taking passive approach in enforcing given QoS. To make matter worse, some platforms such as Carina or OneFlow are provider-specific, hence, requiring vast knowledge and time.
 
-What system has all of the above-mentioned features is an autonomic one \cite{IBM06}, characterised by a self-management ability and driven by a four crucial attributes:
+What system has all of the above-mentioned features is an autonomic one \cite{IBM06}, characterised by a self-management ability and driven by four crucial attributes:
 \begin{itemize}
  \item \emph{self-configuration} - dynamic adaptation to changing environment such as provisioning new application instances, application tuning, traffic delegation to an external provider
   \item \emph{self-healing} - discovering, diagnosing and reacting to environment disruption such as container outage
@@ -14,7 +14,6 @@ What system has all of the above-mentioned features is an autonomic one \cite{IB
   \item \emph{self-protecting} - detecting and protecting against threats such as Deny-of-Service by provisioning extra resources
 \end{itemize}
 
-Another indispensable function of any autonomic entity is its ability to detect an undesirable state and take appropriate actions. This is achieved by the presence of a \emph{control loop} which collects data about the environment, analyzes it and takes all needed steps. Not only can the introduced attributes be bound to an autonomic system, but they can also be thought of main and broad categories of a control loop \cite{IBM06}.
 
 Beside this, key customer values such as IT process execution cost or time needed to complete it are enhanced through rapid process initiation and reduced time and skill requirements \cite{IBM06}. As specified in blueprint, applying autonomic system to manage application environment is possible because following conditions are met:
 \begin{itemize}
@@ -37,25 +36,90 @@ Service consumers can be both end-users or other system interfaces, Cloud-SAP is
 Successive sections define core layers of a Cloud-SAP and give insights into possible implementation decisions, while the next chapter presents proof-of-concept implementation.
 
 \section{Overview}
-Przedstawienie domeny - zasobow w naszym systemie, odniesienie tego do blueprint => wynikiem jest pomysl na system / diagram
+The previous section dealt with all premises that led to a conclusion that the proposed architecture can rely heavily on the concept of an autonomic system. In this section the further elaboration on the solution is presented.
+Figure \ref{img:architecture-context} showed the context which the architecture applies to. As one can see, Cloud-SAP can be seen as a proxy between the user and cloud instances and as a coordinator of the latter. Although cloud instance itself consists of a cloud manager and additional resources, in general, it is perfectly legitimate to consider it a resource as well. 
 
-ogolny opis systemu - jak sie odnosimy do CHOP, mamy 1 kontroler orkiestrujacy, kompletny system autonomiczny
+Before the more detailed diagram of the solution is presented, it is essential to introduce another indispensable function that lies in the heart of any autonomic entity -- its ability to detect an undesirable state and take appropriate actions. This is achieved by the presence of a \emph{control loop} which collects data about the environment, analyzes it and takes all needed steps to recover the system. Not only can the attributes introduced in the previous section be bound to an autonomic system, but they can also be thought of main and broad categories of a control loop \cite{IBM06}.
+
+Having said so, we are ready to give a layered overview of a proposed solution, which is shown in figure \ref{img:csap-layered-structure}.
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=\textwidth]{chapter-design/csap-layers}
+  \end{center}
+  \caption{Cloud-SAP components}
+  \label{img:csap-layered-structure}
+\end{figure}
+
+The building blocks of the architecture are:
+\begin{itemize}
+  \item Managed resources
+  \item Touchpoints
+  \item Touchpoint autonomic managers
+  \item Orchestrating autonomic managers
+\end{itemize}
+As resources were identified on various levels of abstraction, starting from the application that is to be deployed and ending on a cloud instance that aggregates different applications and services, we can think of the last three layers (managed resources, touchpoints and touchpoint autonomic managers) as a one logical component which can aggregate and manage other components. This recursive definition applies to identified managed resources described in the next section, apart from application as we consider it the most fundamental and indivisible resource.
+
+\subsection{Managed resources}
+\emph{Managed resources} form the lowest layer of a stack. When it comes to application provisioning in a cloud environment we can think of the following resources:
+\begin{itemize}
+  \item \emph{Application} -- application itself can be considered resources which can be managed by an external entity, e.g. by restarting/killing it,
+  \item \emph{Execution environment of an application} forms an inherent part of an application lifecycle and its proper tuning can greatly influence its performance,
+  \item \emph{Container} -- an isolated and controlled environment in which applications are deployed,
+  \item \emph{Stack} -- every application has a technology stack associated with it; what is more, if we confine ourselves to map one instance of a container with only one application, we can think of stack as a composition of application (and its execution environment) and a container,
+  \item \emph{Service} -- more complex solutions/applications require interactions with various components that are not necessarily implemented using the same technology stack; service denotes a logical entity that consists of a list of stacks that should form one, indivisible component,
+  \item \emph{Cloud instance} -- an entity able to deploy \emph{services}
+\end{itemize}
+What is more, the listed resources are nested within one another and one's ability to work/run smoothly highly depends on the condition and state of the resource it forms part of. This is shown in figure \ref{img:managed-resources-aggregation}.
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-design/csap-resources-aggregation}
+  \end{center}
+  \caption{\emph{Managed resources} identified by Cloud-SAP and their aggregation}
+  \label{img:managed-resources-aggregation}
+\end{figure}
+
+As it is shown in figure \ref{img:csap-layered-structure}, each \emph{managed resource} can have embedded self-management control loop. The control loop may or may not be externally visible by the manageability interface. For example, an application can have \emph{self-configuring} control loop which performs appropriate runtime tuning of its configuration files, while not being visible (by not providing any API) and manageable by any entity.
+
+\subsection{Touchpoints}
+\emph{Touchpoint} forms the layer above managed resources. It has two main functions \cite{IBM06}:
+\begin{inparaenum}[1)]
+\item provides manageability interface and
+\item implements \emph{sensor} and \emph{effector} behaviour.
+\end{inparaenum}
+
+By means of manageability interface, external entities can control managed resources. It can be done by, e.g. leveraging API, configuration files or logs. Additionally it is possible to obtain information via touchpoint about the state of the resource. \emph{Sensor} and \emph{effector} behaviours refers to mechanisms that allows collecting data and change the behaviour of the resource, respectively.
+
+
+\subsection{Touchpoint Autonomic Manager}
+\emph{Touchpoint Autonomic Manager} is a component that implements the control loop behaviour and, in effect, manages the managed resources through exposed touchpoints. As it was stated in the previous sections, only four types of control loops are of an interest in the proposed architecture, i.e. \emph{self-configuring}, \emph{self-healing}, \emph{self-optimising} and \emph{self-protecting}.
+
+The actions executed by each control loop on the assigned managed resource are defined in a \emph{policy} that is associated with the given autonomic manager. Thus, there is a one-to-one mapping between managed resource and touchpoint, and touchpoint and autonomic manager.
+
+Each autonomic manager implements the control loop which can be split into four consecutive blocks, which share knowledge among one another. The output from one block forms an input to another. However, it is perfectly possible for a block to perform an action for its side effects, e.g. an action can result in producing relevant information contained in log files, which, in turn, comprises a piece of shared knowledge. Each block implements different behaviour based on the abstraction level and resource they operate on (see figure \ref{img:csap-layered-structure}). Nevertheless it is possible to define their generic behaviour, which embraces the following phases that correspond to a given block:
+\begin{itemize}
+  \item \emph{monitor} -- this function of autonomic manager is responsible for collecting and aggregating data about the resource it manages,
+  \item \emph{analyse} -- this part takes the data from \emph{monitor} phase and perform in-depth analysis of it, which can result in, e.g. prediction plans. It is possible to incorporate more complex mechanisms, such as machine-learning, to fully use the obtained information for better prediction models,
+  \item \emph{plan} -- this block is responsible for planning the appropriate action based on the output of the previous block and policies,
+  \item \emph{execute} -- the goal of this function of autonomic manager is to execute the planned action
+\end{itemize}
+What is more, an autonomic manager exposes \emph{sensor} and \emph{effector} manageability interfaces which enables other entities (including other autonomic managers) to manage it in a similar manner as the component itself manages a resource. The image of an autonomic manager with its control loop and provided interface is shown in figure \ref{img:autonomic-component}.
+%The loop which is drawn in the given component denotes a \emph{control loop} that is associated with it.
+
+%Przedstawienie domeny - zasobow w naszym systemie, odniesienie tego do blueprint => wynikiem jest pomysl na system / diagram
+
+%ogolny opis systemu - jak sie odnosimy do CHOP, mamy 1 kontroler orkiestrujacy, kompletny system autonomiczny
+
 
 \begin{figure}[!ht]
   \begin{center}
     \includegraphics{chapter-design/autonomic-component}
   \end{center}
-  \caption{autonomic component}
+  \caption{Autonomic manager}
   \label{img:autonomic-component}
 \end{figure}
 
-\begin{figure}[!ht]
-  \begin{center}
-    \includegraphics[width=\textwidth]{chapter-design/csap-layers}
-  \end{center}
-  \caption{autonomic component}
-  \label{img:csap-layers}
-\end{figure}
+\subsection{Orchestrating autonomic manager}
+
 
 % darek
 %\section{Application platform manager}
