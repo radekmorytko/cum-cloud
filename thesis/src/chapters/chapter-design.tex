@@ -14,8 +14,9 @@ What system has all of the above-mentioned features is an autonomic one \cite{IB
   \item \emph{self-protecting} - detecting and protecting against threats such as Deny-of-Service by provisioning extra resources
 \end{itemize}
 
-
 Beside this, key customer values such as IT process execution cost or time needed to complete it are enhanced through rapid process initiation and reduced time and skill requirements \cite{IBM06}. As specified in blueprint, applying autonomic system to manage application environment is possible because following conditions are met:
+
+These four system capabilities combined together yield a promising architecture from QoS ensuring perspective. Beside this, key customer values such as IT process execution cost or time needed to complete it are enhanced through rapid process initiation and reduced time and skill requirements \cite{IBM06}. As specified in blueprint, applying autonomic system to manage application environment is possible because following conditions are met:
 \begin{itemize}
   \item tasks involved in associated IT process needs to be automated
   \item it is possible to initiate processes based on observable and detectable situations
@@ -133,7 +134,7 @@ As the exemplary actions can be regarded complex ones, they cannot be associated
 
 % darek
 \section{Autonomic container manager}
-It is expected that autonomic container manager supervises lifecycle of a container, modifying its properties accordingly to a current demand.
+It is expected that autonomic container manager supervise lifecycle of a container, modifying its properties accordingly to a current demand.
 
 \subsection{Managed resource}
 Container is an entity that provides an execution environment for an application platform. Whilst Cloud-SAP is a hypervisor agnostic, it is recommended to use operating system level virtualization technique instead of a full virtualization as a underlying mechanism for a container provisioning. Lightweight containers are more suitable for our needs especially because we rely entirely on Linux based operating system. Hence, it not necessary to use hardware-based hypervisor that supports other operating systems. Moreover, lightweight containers have been proved more effective in some scenarios: \cite{RaHiSj13}.
@@ -143,8 +144,8 @@ Container uses variety of underlying resources such as storage or network connec
 \subsubsection{Touchpoint}
 Container's touchpoint externalises hypervisor and operating system APIs. Similarly to all touchpoints, two main parts can be distinguished:
 \begin{itemize}
- \item \emph{sensors} - set of properties that expose system metrics such as CPU, memory, disk usage, network bandwidth
- \item \emph{effectors} - a collection of 'set' operations that aims to change container state: increase or decrease CPU or memory, for example. In fact, these operations directly corresponds to hypervisor capabilities.
+ \item \emph{sensors} - set of properties that expose system metrics such as CPU, memory, disk usage, network bandwidth - lista propertisow, charakterystyka (czy wymagane, co daja, dobra metryka?)
+ \item \emph{effectors} - a collection of 'set' operations that aims to change container state: increase or decrease CPU or memory, for example. In fact, these operations directly corresponds to hypervisor capabilities. - lista wymagancych, + hypervisor, metryka
 \end{itemize}
 
 It is highly recommended for sensors and effectors to be linked, forming together manageability capabilities. In other words, property (i.e. CPU) can be read only when it is possible to set it as well. 
@@ -153,23 +154,42 @@ It is highly recommended for sensors and effectors to be linked, forming togethe
 Generally speaking, autonomic container controller aims to automate container's management function and externalise its configuration through its interfaces. In order to do achieve that, it implements a control loop that fully covers container life cycle: gathering information about it, analysing it, planning and executing actions on top of that. These four functions along with knowledge necessary to perform them designate modular structure of a controller as shown in figure \ref{img:autonomic-component}.
 
 \subsubsection{Monitoring}
-As it was already mentioned, monitoring module aims to gather data from container's sensors. While design of Cloud-SAP doesn't have any specific requirements regarding underlying monitoring mechanism, there are a few aspects that should be taken into consideration:
+As it was already mentioned, monitoring module aims to gather data from container's sensors. While Cloud-SAP does not have any specific requirements regarding underlying monitoring mechanism, there are a few aspects that should be taken into consideration:
 \begin{asparaenum}
-  \item[\textbf{Data filters}]
+  \item[\textbf{Metrics}] rozne opcje: cpu, memory, co wybrac przynajmniej cpu
 
-  \item[\textbf{Persistence}]
+  \item[\textbf{Data filters}] co robic z danymi, agregowac, jesli tak to jak, trzeba niwelowac zaburzenia (art? o monitoringu)
+
+  \item[\textbf{Persistence}] czy przechowywac dane, jesli tak to jakie, potrzebne do analizy, wyciagania wnioskow (dane, reakcja -> odpowiedz)
 
   \item[\textbf{Standard compatibility}] Whilst there is no single, industry accepted standard of virtual machine monitoring, there were initiatives such as OCCI \cite{OCCI} that aims to close that gap. Having scaling across multiple cloud instances in mind, it is vital to provide compatibility at a container monitoring level. However, in some cases, standard-defined API may no be sufficient for a specific needs  
 \end{asparaenum}
 
 
 \subsubsection{Analysis}
+%modele kolejkowe, obliczanie jakiegos scierwa, przynajmniej threshold
+%uwzgledniac cooldown
+
 \subsubsection{Planning}
+%zarzadanie zasobami, czy wystarczajaco
+%opcjonalnie: priorytety (wtedy moze rezerwacja tak jak bylo w sieciach)
+
 \subsubsection{Execution}
+%akcje wykonywane czyli skalowanie up
+
 \subsubsection{Knowledge}
+%???
+%na pewno jest wbudowana: plan -> wykonanie (scaling +/-)
 
 % darek
 \section{Autonomic stack manager}
+\subsection{Managed resource}
+%stos - jako homogeniczna grupa (moze + load balancer)
+%touchpoint - cloud provider: 
+
+%sensory - ruch jaki na ktore
+%efectory - + / - instancja
+
 
 % radek
 \section{Autonomic cloud instance manager}
