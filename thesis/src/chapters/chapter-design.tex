@@ -200,6 +200,15 @@ To be able to handle incoming requests, the manager exposes API a client communi
   \label{img:orchestrating-autonomic-manager}
 \end{figure}
 
+\subsection{Managed resource}
+As it was stated in the previous sections and can be seen in figure \ref{img:orchestrating-autonomic-manager}, \emph{cloud instance autonomic managers} are managed resources of this manager. Each cloud instance is a deployment environment for a service or a stack, i.e. it is possible to span the service across different clouds by deploying stacks which make up the given service to different providers. Of course it is legitimate to deploy the whole service to only one provider.
+\subsubsection*{Touchpoints}
+As the cloud federation manager has to gain information about the state of a given cloud instance and be able to order the deployment of a stack or a service, the cloud instance exposes its manageability interface and its two types:
+\begin{asparaenum}
+\item[\textbf{Sensors}] -- set of attributes which forms the state of a given cloud instance. Attributes should include inter alia overall resources usage, pricing, geographical location. The more thorough elaboration will be held in the section devoted to \emph{plan and execution manager}.
+\item[\textbf{Effectors}] -- set of stack/service management operations, such as deploy, migrate or delete.
+\end{asparaenum}
+
 \subsection{Plan and Execution Autonomic Manager}
 \subsection{Monitor and Analyze Autonomic Manager}
 
