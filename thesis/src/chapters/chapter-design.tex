@@ -176,6 +176,32 @@ As it was already mentioned, monitoring module aims to gather data from containe
 
 % radek
 \section{Autonomic cloud federation manager}
+\emph{Autonomic cloud federation manager} is a building block of the proposed architecture that forms the highest layer of its model (see figure \ref{img:csap-layered-structure}). Additionally, it is an element which directly cooperates with a client by capturing and handling their requests.
+
+This manager has two main responsibilities, which include
+\begin{inparaenum}[1)]
+\item handling deployment of a service requests from the clients and subsequent requests directly applied to that service (e.g. queries about its state), 
+\item scaling the previously-deployed service across different cloud vendors.
+\end{inparaenum}
+The former involves capturing the request from a client, determining the best cloud vendor or vendors for the described service and its deployment. This behaviour is strictly related with \emph{plan} and \emph{execute} functions of an autonomic manager. The latter, on the other hand, involves \emph{monitoring} the dependant autonomic managers that manage in an autonomic fashion cloud instances, \emph{analysing} obtained knowledge and deciding if taking any auto-scaling action is actually necessary to ensure satisfying Quality-of-Service requirements. If such an action is needed, it must be \emph{planned} and \emph{executed}.
+
+The use case of scaling a service withing a federation of cloud vendors can be considered an action which coordinates cloud instance managers. It is perfectly legitimate to view the cloud federation manager as an \emph{orchestrating} one. What is more, such a coordination requires cooperation with not only autonomic managers of a single type, but with the ones that are a mixture of self-healing, self-configuring, self-optimizing and self-protecting. Taking this into account, the orchestration can be classified as an \emph{orchestration across disciplines} \cite{IBM06}.
+
+\subsection{Structure}
+It is clear from the description of requirements of this autonomic manager in the previous section that \emph{plan} and \emph{execution} functions are common for both of them. Therefore the \emph{cloud federation manager} is composed of two internal autonomic managers, which perform complete different functions, the first one -- \emph{monitor} and \emph{analyse} and the second -- \emph{plan} and \emph{execute}, yet they cooperate with each other to realize the full control loop.
+
+To be able to handle incoming requests, the manager exposes API a client communicates with. The complete structure of this component is shown in figure \ref{img:orchestrating-autonomic-manager}. In the next sections a detail description of each internal autonomic manager will be presented.
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=0.7\textwidth]{chapter-design/csap-orchestrating-autonomic-manager}
+  \end{center}
+  \caption{Design of an orchestrating autonomic manager}
+  \label{img:orchestrating-autonomic-manager}
+\end{figure}
+
+\subsection{Plan and Execution Autonomic Manager}
+\subsection{Monitor and Analyze Autonomic Manager}
 
 \section{Summary}
 podsumowanie, wyzwania stojace przed projektem, problemy ale takze obietnica dobrobytu i spokojnej starosci
