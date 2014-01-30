@@ -229,7 +229,7 @@ The use case of scaling a service withing a federation of cloud vendors can be c
 \subsection{Structure}
 It is clear from the description of requirements of this autonomic manager in the previous section that \emph{plan} and \emph{execution} functions are common for both of them. Therefore the \emph{cloud federation manager} is composed of two internal autonomic managers, which perform complete different functions, the first one -- \emph{monitor} and \emph{analyse} and the second -- \emph{plan} and \emph{execute}, yet they cooperate with each other to realize the full control loop.
 
-To be able to handle incoming requests, the manager exposes API a client communicates with. The complete structure of this component is shown in figure \ref{img:orchestrating-autonomic-manager}. In the next sections a detail description of each internal autonomic manager will be presented.
+To be able to handle incoming requests, the manager exposes API a client communicates with. The complete structure of this component is shown in figure \ref{img:orchestrating-autonomic-manager}. In the next sections a detailed description of each internal autonomic manager will be presented.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -249,7 +249,51 @@ As the cloud federation manager has to gain information about the state of a giv
 \end{asparaenum}
 
 \subsection{Plan and Execution Autonomic Manager}
-\subsection{Monitor and Analyze Autonomic Manager}
+The main purpose of this component is to select, based on knowledge provided directly to this manager from \emph{monitor and analyze manager} or a user (i.e. the specification of a service), cloud providers for a given service and carry out the planned action. In the following sections a detailed description of each function is given.
+
+\subsubsection{Plan}
+The aim of this function is to give a detailed plan for the action to be performed. In the context of this dissertation the first output produced by this component, regarding the use cases of deploying a service and dynamically scaling it, is a \emph{service deployment plan}, which is a mapping between available resources (cloud instances in this case) and concrete stacks making up the service. The second, definitely less complex, is a queries scheme about the state of the already-deployed services which is based on user's requests. In this case the component only propagates the request to the execute function. As this is only a mediation, there will be no further elaboration on this aspect.
+
+\begin{asparaenum}
+  \item[\textbf{Problem description}]
+The problem of resource management in cloud computing environments is hard and complex. This is because of several aspects. The first one is the characteristic of resources available in a cloud -- not only are they geographically distributed, but they can be under different administrative domains and can vary in accessibility. This places a heavy burden on cooperation possibilities across cloud providers, both in a technical and non-technical way as providers need to maintain the high level of trust in order to effectively  deliver its products. Additionally, different entities forms the resources -- starting from individual devices, through virtual machines and whole workstations, ending with clusters and data centers. The second one are the increasing Quality-of-Service requirements from the clients. They want resources they use to be reliable, flexible (able to scale according to workload), fault-tolerant, energy-efficient and, of course, cheap. It is clear that clients and cloud vendors have different objectives and supply-and-demand patterns.
+
+There are two main approaches to tackle the problem of effective resource management and scheduling:
+  \begin{itemize}
+    \item \textbf{conventional style}, in which the mapping decision is determined by some \emph{cost function}. The downside of this method is the fact that in many cases the decision is a function of system-centric parameters \cite{buyya2002economic} and because of it the outcome may lead to better utilization of cloud resources, not necessarily the user's application. What is more, this model treats all resources as if their cost was the same and applications are considered equally important what not always is the case. 
+
+      The positive side of this method is the fact that it involves only one entity that governs the scheduling and allocating the resources. What is more, it is up to the platform how many factors should be incorporated in such a function. Depending on the needs, a more sophisticated or simpler matching algorithm be applied, e.g. an algorithm that takes into account only available budget of a client.
+      
+      Legion \cite{chapin1999legion} can be an example of a solution which uses this method.
+    \item \textbf{economics-paradigm based} \cite{buyya2001case}, in which the decision is not made statically by one entity, but is driven by the users' requirements. The model tries to adopt the real-world economic solution that involves markets and brokers on the computational ground. In this paradigm, clients (representing \emph{demand}) want to solve their problems at the lowest possible price while assuring required Quality-of-Service requirements and constraints, such as time frame. Resource providers (representing \emph{supply}) want to maximise the utilization of their resources while keeping their prices at the level that is attractive for other customers.
+      
+      Here are the most common economic models which can be applied to resource scheduling and management \cite{buyya2002economic}:
+      \begin{itemize}
+        \item the commodity market model;
+        \item the posted price model;
+        \item the bargaining model;
+        \item the tendering/contract-net model;
+        \item the auction model;
+        \item the bid-based proportional resource sharing model;
+        \item the community/coalition/bartering model;
+        \item the monopoly and oligopoly
+      \end{itemize}
+  \end{itemize}
+
+\item[\textbf{Function input}] Depending on the actual request, this function can have access to different knowledge that makes its input:
+
+  \begin{asparaenum}
+  \item[\textbf{Service deployment}] When the user wants to deploy a service on a cloud infrastructure, they have to prepare its detailed description containing technical (stacks) and Quality-of-Service requirements.
+  \item[\textbf{Service scaling}] When an application needs to be scaled, there is available additional knowledge that this component should use of -- detailed information about service's performance up to that point, e.g. service resource utilization level (CPU, I/O), response time, its users profile including their geographical location and so on. This knowledge in a form of a prediction model should be passed to the component by the \emph{analyse} function.
+  \end{asparaenum}
+
+\item[\textbf{Function output}] As it was stated in the introductory section, this function produces \emph{service deployment plan}. In the same section we conducted a quick survey of the most common approaches to the resource allocation and mapping problem. The proposed architecture places no restrictions on the chosen approach, as both paradigms can be fitted into it. In the case of \emph{conventional approach}, this component should be equipped with a matching function that takes as an input service description (and the information of its so far execution in the case of an auto-scaling action), offers from cloud providers and make a final decision based on these arguments.
+  In the other case, this component can be thought of a cloud exchange \cite{InterCloud10}, that brings together service producers and consumers.
+\end{asparaenum}
+
+\subsubsection{Execute}
+This function takes either a query about the state of a service or a deployment plan of the given service and passes execution requests to the proper cloud instance autonomic managers.
+\subsection{Monitor and Analyse Autonomic Manager}
 
 \section{Summary}
 %podsumowanie, wyzwania stojace przed projektem, problemy ale takze obietnica dobrobytu i spokojnej starosci
