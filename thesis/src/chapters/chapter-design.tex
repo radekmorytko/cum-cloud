@@ -4,7 +4,7 @@
 }
 
 \section{Motivation}
-As one can see, latest advances in providing platform-as-a-service still do not yield a comprehensive solution that embraces a range of fine-grained actions relevant to a given situation in an environment, as it was summarised in previous chapter. All of the presented solutions solely engage horizontal scaling, while other IT processes and corresponding actions such as vertical scaling, cloud bursting or application platform restart remains neglected. What is more, none of the investigated systems is a self-managing one, taking passive approach in enforcing given QoS. To make matter worse, some platforms such as Carina or OneFlow are provider-specific, hence, requiring vast knowledge and time.
+As one can see, latest advances in providing platform-as-a-service still do not yield a comprehensive solution that embraces a range of fine-grained actions relevant to a given situation in an environment, as it was summarised in previous chapter. All of the presented solutions solely engage horizontal scaling, while other IT processes and corresponding actions such as vertical scaling, cloud bursting or application platform restart remains neglected. What is more, none of the investigated systems is a self-managing one, taking passive approach in enforcing given QoS. To make matter worse, some platforms such as Carina or OneFlow are provider-specific, hence, requiring vast knowledge and time of entities responsible for its supervision.
 
 What system has all of the above-mentioned features is an autonomic one \cite{IBM06}, characterised by a self-management ability and driven by four crucial attributes:
 \begin{itemize}
@@ -57,6 +57,7 @@ The building blocks of the architecture are:
   \item Touchpoints
   \item Touchpoint autonomic managers
   \item Orchestrating autonomic managers
+  \item Knowledge source
 \end{itemize}
 As resources were identified on various levels of abstraction, starting from the application that is to be deployed and ending on a cloud instance that aggregates different applications and services, we can think of the last three layers (managed resources, touchpoints and touchpoint autonomic managers) as a one logical component which can aggregate and manage other components. This recursive definition applies to identified managed resources described in the next section, apart from application as we consider it the most fundamental and indivisible resource.
 
@@ -88,8 +89,7 @@ As it is shown in figure \ref{img:csap-layered-structure}, each \emph{managed re
 \item implements \emph{sensor} and \emph{effector} behaviour.
 \end{inparaenum}
 
-By means of manageability interface, external entities can control managed resources. It can be done by, e.g. leveraging API, configuration files or logs. Additionally it is possible to obtain information via touchpoint about the state of the resource. \emph{Sensor} and \emph{effector} behaviours refers to mechanisms that allows collecting data and change the behaviour of the resource, respectively.
-
+By means of manageability interface, external entities can control managed resources. It can be done by, e.g. leveraging API, configuration files or logs. Additionally, it is possible to obtain information via touchpoint about the state of the resource. \emph{Sensor} and \emph{effector} behaviours refers to mechanisms that allows collecting data and change the behaviour of the resource, respectively.
 
 \subsection{Touchpoint Autonomic Manager}
 \emph{Touchpoint Autonomic Manager} is a component that implements the control loop behaviour and, in effect, manages the managed resources through exposed touchpoints. As it was stated in the previous sections, only four types of control loops are of an interest in the proposed architecture, i.e. \emph{self-configuring}, \emph{self-healing}, \emph{self-optimising} and \emph{self-protecting}.
@@ -128,18 +128,48 @@ When it comes to the complex task of ensuring the Quality of Service requirement
 
 As the exemplary actions can be regarded complex ones, they cannot be associated with actions taken by autonomic managers of only one type. Thus, an orchestrating autonomic manager should coordinate other managers of any type -- an arbitrary mixture of self-healing, self-configuring, self-optimizing and self-protecting managers. Employment of these concepts in Cloud-SAP will be discussed later in detail.
 
+\subsection{Knowledge source}
+\emph{Knowledge source} provides access to knowledge stored for example in a registry, dictionary or database. Depending on implementation, it can be represented as a registry, database or dictionary. It is recommended that knowledge source share knowledge among multiple managers, consequently extending their capabilities.
+
+Knowledge is expressed as data such as symptoms, policies, change requests or history logs. There are three main ways to obtain a knowledge:
+\begin{itemize}
+ \item dynamic
+ 
+\end{itemize}
+
+
 % darek
+%\section{Application manager}
+
 %\section{Application platform manager}
 %w kazdej sekcji opis MAPEK - co monitoruje, w jaki sposob analizuje i planuje, wykonuje
 
 % darek
 \section{Autonomic container manager}
-It is expected that autonomic container manager supervise lifecycle of a container, modifying its properties accordingly to a current demand.
+It is expected that autonomic container manager supervise lifecycle of a container, modifying its properties accordingly to a given condition.
 
 \subsection{Managed resource}
-Container is an entity that provides an execution environment for an application platform. Whilst Cloud-SAP is a hypervisor agnostic, it is recommended to use operating system level virtualization technique instead of a full virtualization as a underlying mechanism for a container provisioning. Lightweight containers are more suitable for our needs especially because we rely entirely on Linux based operating system. Hence, it not necessary to use hardware-based hypervisor that supports other operating systems. Moreover, lightweight containers have been proved more effective in some scenarios: \cite{RaHiSj13}.
+To recap, \emph{container} is an entity that provides an execution environment for an application platform. There is a variety of technologies that intend to provide an isolated, secure execution environment. Table \ref{tab:containeristation-technologies} groups them into three main categories: full virtualization, os-level virtualization, operating system process.
 
-Container uses variety of underlying resources such as storage or network connection. However, for a simplicity, Cloud-SAP doesn't require autonomic container manager to manage them.
+\begin{table}
+  \centering
+  \begin{tabular}{ c  c  c  c }
+    \specialrule{.1em}{.05em}{.05em} 
+    & \textbf{Full virtualization} & \textbf{OS-level virtualization} & \textbf{OS process} \\
+    \specialrule{.1em}{.05em}{.05em} 
+    Features &  &  & \\ \hline
+    Examples &  &  & \\
+    \hline
+  \end{tabular}
+  \caption{Containerisation technologies}
+  \label{tab:containeristation-technologies}
+\end{table}
+
+While choosing containerisation technique is entirely left to an implementation, Cloud-SAP recommends using os-level virtualization or operating system processes as they involve lesser resources and are more flexible, especially in terms of dynamic adjustment. Moreover, lightweight containers have been proved more effective than full virtualization in some scenarios: \cite{RaHiSj13}.
+
+Not only can container be a managed resource but also it can have embedded control loop, depending on chosen mechanism. For example, Xen uses mechanism called 'memory ballooning' to intelligently distribute memory resources among guest systems what is in fact an example of self-optimising control loop. Though, embedded container loops are interesting they does not lie in Cloud-SAP area of interests and as a consequence are not further discussed.
+
+Container uses variety of underlying resources such as storage or network connection. However, for simplicity, Cloud-SAP does not take them into consideration and therefore they are represented merely as a container properties not first-class resources.
 
 \subsubsection{Touchpoint}
 Container's touchpoint externalises hypervisor and operating system APIs. Similarly to all touchpoints, two main parts can be distinguished:
@@ -151,7 +181,7 @@ Container's touchpoint externalises hypervisor and operating system APIs. Simila
 It is highly recommended for sensors and effectors to be linked, forming together manageability capabilities. In other words, property (i.e. CPU) can be read only when it is possible to set it as well. 
 
 \subsection{Autonomic controller}
-Generally speaking, autonomic container controller aims to automate container's management function and externalise its configuration through its interfaces. In order to do achieve that, it implements a control loop that fully covers container life cycle: gathering information about it, analysing it, planning and executing actions on top of that. These four functions along with knowledge necessary to perform them designate modular structure of a controller as shown in figure \ref{img:autonomic-component}.
+\emph{Autonomic container controller} aims to automate container's management function and externalise its configuration through its interfaces. In order to do achieve that, it implements a control loop that fully covers container life cycle: gathering information about it, analysing it, planning and executing actions on top of that. These four functions along with knowledge necessary to perform them designate modular structure of a controller as shown in figure \ref{img:autonomic-component}.
 
 \subsubsection{Monitoring}
 As it was already mentioned, monitoring module aims to gather data from container's sensors. While Cloud-SAP does not have any specific requirements regarding underlying monitoring mechanism, there are a few aspects that should be taken into consideration:
