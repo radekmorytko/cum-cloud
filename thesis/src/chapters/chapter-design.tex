@@ -288,7 +288,7 @@ There are two main approaches to tackle the problem of effective resource manage
   \end{asparaenum}
 
 \item[\textbf{Function output}] As it was stated in the introductory section, this function produces \emph{service deployment plan}. In the same section we conducted a quick survey of the most common approaches to the resource allocation and mapping problem. The proposed architecture places no restrictions on the chosen approach, as both paradigms can be fitted into it. In the case of \emph{conventional approach}, this component should be equipped with a matching function that takes as an input service description (and the information of its so far execution in the case of an auto-scaling action), offers from cloud providers and make a final decision based on these arguments.
-  In the other case, this component can be thought of a cloud exchange \cite{InterCloud10}, that brings together service producers and consumers.
+  In the other case, this component can be thought of a cloud exchange \cite{InterCloud10}, that brings together service producers and consumers. Autonomic cloud instance managers could be considered bid-makers and would compete with one another for the client. What is more, if the model is bid-based, the client can have implemented behaviour that would also allow them to participate in auctions. This could be done by introducing another component that would act in user's name.
 \end{asparaenum}
 
 \subsubsection{Execute}
