@@ -104,12 +104,6 @@ Each autonomic manager implements the control loop which can be split into four 
   \item \emph{execute} -- the goal of this function of autonomic manager is to execute the planned action
 \end{itemize}
 What is more, an autonomic manager exposes \emph{sensor} and \emph{effector} manageability interfaces which enables other entities (including other autonomic managers) to manage it in a similar manner as the component itself manages a resource. The image of an autonomic manager with its control loop and provided interface is shown in figure \ref{img:autonomic-component}.
-%The loop which is drawn in the given component denotes a \emph{control loop} that is associated with it.
-
-%Przedstawienie domeny - zasobow w naszym systemie, odniesienie tego do blueprint => wynikiem jest pomysl na system / diagram
-
-%ogolny opis systemu - jak sie odnosimy do CHOP, mamy 1 kontroler orkiestrujacy, kompletny system autonomiczny
-
 
 \begin{figure}[!ht]
   \begin{center}
@@ -129,12 +123,20 @@ When it comes to the complex task of ensuring the Quality of Service requirement
 As the exemplary actions can be regarded complex ones, they cannot be associated with actions taken by autonomic managers of only one type. Thus, an orchestrating autonomic manager should coordinate other managers of any type -- an arbitrary mixture of self-healing, self-configuring, self-optimizing and self-protecting managers. Employment of these concepts in Cloud-SAP will be discussed later in detail.
 
 \subsection{Knowledge source}
-\emph{Knowledge source} provides access to knowledge stored for example in a registry, dictionary or database. Depending on implementation, it can be represented as a registry, database or dictionary. It is recommended that knowledge source share knowledge among multiple managers, consequently extending their capabilities.
+\emph{Knowledge source} provides access to knowledge stored, for example, in a registry, dictionary or database. It is recommended that knowledge source share knowledge among multiple managers, consequently extending their capabilities by performing additional tasks covering recognising particular symptoms or applying specified policies, for instance.
 
-Knowledge is expressed as data such as symptoms, policies, change requests or history logs. There are three main ways to obtain a knowledge:
+
+Whilst knowledge can be expressed as symptoms, policies, change requests or history logs, Cloud-SAP differentiates its two main types:
 \begin{itemize}
- \item dynamic
- 
+ \item \emph{policy} - set of constraints that, when evaluated, influence system behaviour and possibly trigger further actions. Cloud-SAP does not specify policy format, however, it is vital to employ only one format in whole system so it can be freely exchanged
+ \item \emph{problem determination knowledge} - correlation of data, symptoms and decision trees determining actions that can be taken to eliminate symptoms
+\end{itemize}
+
+An autonomic manager can obtain knowledge in one of three ways:
+\begin{itemize}
+ \item \emph{receive it dynamically} - a common way for passing a policy to a manager. 
+ \item \emph{retrieve it from external knowledge source} - an approach for obtaining symptom definitions or historical knowledge. For example, detailed history of a resource, its problems and actions taken can be retrieved from a log file.
+ \item \emph{create it dynamically} - monitoring and execution phase are strictly correlated and consequently data received from sensors, actions taken by effectors and their result can be stored as a knowledge and provide valuable information during future problem investigations
 \end{itemize}
 
 
