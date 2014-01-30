@@ -140,9 +140,9 @@ An autonomic manager can obtain knowledge in one of three ways:
 \end{itemize}
 
 
-\section{Application manager}
+\section{Autonomic application manager}
 
-\section{Application platform manager}
+\section{Autonomic application platform manager}
 %w kazdej sekcji opis MAPEK - co monitoruje, w jaki sposob analizuje i planuje, wykonuje
 
 % darek
@@ -152,16 +152,47 @@ It is expected that autonomic container manager supervise lifecycle of a contain
 \subsection{Managed resource}
 To recap, \emph{container} is an entity that provides an execution environment for an application platform. There is a variety of technologies that intend to provide an isolated, secure execution environment. Table \ref{tab:containeristation-technologies} groups them into three main categories: full virtualization, os-level virtualization, operating system process.
 
-\begin{table}
+\begin{table}[!htbp]
   \centering
-  \begin{tabular}{ c  c  c  c }
+  \begin{tabularx}{\textwidth}[]{ X X X X }
     \specialrule{.1em}{.05em}{.05em} 
     & \textbf{Full virtualization} & \textbf{OS-level virtualization} & \textbf{OS process} \\
     \specialrule{.1em}{.05em}{.05em} 
-    Features &  &  & \\ \hline
-    Examples &  &  & \\
-    \hline
-  \end{tabular}
+    \textbf{Features} & 
+-- complete simulation of machine's hardware
+
+-- full isolation
+
+-- host system is not shared among guests
+
+    &
+-- isolation is based on user-spaces
+
+-- shared kernel
+
+-- lesser overhead than full virutalization
+
+-- effective i/o operations
+    & 
+-- custom solution that uses processes, cgroups, SELinux, for example
+
+-- lesser overhead possible
+    
+\\ \hline
+\textbf{Examples} &
+-- KVM
+
+-- Xen
+
+-- VMware &
+
+-- LXC
+
+-- OpenVZ
+&
+-- OpenShift containers
+\\ \hline
+  \end{tabularx}
   \caption{Containerisation technologies}
   \label{tab:containeristation-technologies}
 \end{table}
@@ -173,13 +204,7 @@ Not only can container be a managed resource but also it can have embedded contr
 Container uses variety of underlying resources such as storage or network connection. However, for simplicity, Cloud-SAP does not take them into consideration and therefore they are represented merely as a container properties not first-class resources.
 
 \subsubsection{Touchpoint}
-Container's touchpoint externalises hypervisor and operating system APIs. Similarly to all touchpoints, two main parts can be distinguished:
-\begin{itemize}
- \item \emph{sensors} - set of properties that expose system metrics such as CPU, memory, disk usage, network bandwidth - lista propertisow, charakterystyka (czy wymagane, co daja, dobra metryka?)
- \item \emph{effectors} - a collection of 'set' operations that aims to change container state: increase or decrease CPU or memory, for example. In fact, these operations directly corresponds to hypervisor capabilities. - lista wymagancych, + hypervisor, metryka
-\end{itemize}
-
-It is highly recommended for sensors and effectors to be linked, forming together manageability capabilities. In other words, property (i.e. CPU) can be read only when it is possible to set it as well. 
+Container's touchpoint externalises hypervisor and operating system APIs. Similarly to all touchpoints, sensors for gathering data and effectors for influencing it can be distinguished. It is highly recommended for them to be linked, forming together manageability capabilities. In other words, property (i.e. CPU) can be read only when it is possible to set it as well. For instance, free / used CPU, free / used memory, network bandwidth, disk usage can be measured. Cloud-SAP requires free CPU to be at least supported.
 
 \subsection{Autonomic controller}
 \emph{Autonomic container controller} aims to automate container's management function and externalise its configuration through its interfaces. In order to do achieve that, it implements a control loop that fully covers container life cycle: gathering information about it, analysing it, planning and executing actions on top of that. These four functions along with knowledge necessary to perform them designate modular structure of a controller as shown in figure \ref{img:autonomic-component}.
