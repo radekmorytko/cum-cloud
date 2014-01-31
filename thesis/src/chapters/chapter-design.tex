@@ -147,7 +147,11 @@ An autonomic manager can obtain knowledge in one of three ways:
 
 % darek
 \section{Autonomic container manager}
-It is expected that autonomic container manager supervise lifecycle of a container, modifying its properties accordingly to a given condition.
+It is expected that autonomic container manager:
+\begin{inparaenum}[1)]
+ \item supervises lifecycle of a container: provisions, monitors, migrates and destroys a container
+ \item modifies container its properties (i.e. increasing CPU, memory) accordingly to a given condition to ensure that service request are served with a sufficient Quality-of-Service
+\end{inparaenum}
 
 \subsection{Managed resource}
 To recap, \emph{container} is an entity that provides an execution environment for an application platform. There is a variety of technologies that intend to provide an isolated, secure execution environment. Table \ref{tab:containeristation-technologies} groups them into three main categories: full virtualization, os-level virtualization, operating system process.
@@ -197,7 +201,7 @@ To recap, \emph{container} is an entity that provides an execution environment f
   \label{tab:containeristation-technologies}
 \end{table}
 
-While choosing containerisation technique is entirely left to an implementation, Cloud-SAP recommends using os-level virtualization or operating system processes as they involve lesser resources and are more flexible, especially in terms of dynamic adjustment. Moreover, lightweight containers have been proved more effective than full virtualization in some scenarios: \cite{RaHiSj13}.
+While choosing containerisation technique is entirely left to an implementation, Cloud-SAP recommends using os-level virtualization or operating system processes as they involve lesser resources and are more flexible, especially in terms of dynamic adjustment. Moreover, lightweight containers have been proved more effective than full virtualization in some scenarios \cite{RaHiSj13}.
 
 Not only can container be a managed resource but also it can have embedded control loop, depending on chosen mechanism. For example, Xen uses mechanism called 'memory ballooning' to intelligently distribute memory resources among guest systems what is in fact an example of self-optimising control loop. Though, embedded container loops are interesting they does not lie in Cloud-SAP area of interests and as a consequence are not further discussed.
 
@@ -207,16 +211,16 @@ Container uses variety of underlying resources such as storage or network connec
 Container's touchpoint externalises hypervisor and operating system APIs. Similarly to all touchpoints, sensors for gathering data and effectors for influencing it can be distinguished. It is highly recommended for them to be linked, forming together manageability capabilities. In other words, property (i.e. CPU) can be read only when it is possible to set it as well. For instance, free / used CPU, free / used memory, network bandwidth, disk usage can be measured. Cloud-SAP requires free CPU to be at least supported.
 
 \subsection{Autonomic controller}
-\emph{Autonomic container controller} aims to automate container's management function and externalise its configuration through its interfaces. In order to do achieve that, it implements a control loop that fully covers container life cycle: gathering information about it, analysing it, planning and executing actions on top of that. These four functions along with knowledge necessary to perform them designate modular structure of a controller as shown in figure \ref{img:autonomic-component}.
+\emph{Autonomic container controller} aims to automate container's management function and externalise its configuration through its interfaces. In order to do achieve that, it implements a control loop that fully covers container life cycle. It is suggested for a controller to fully support self-management by implementing \emph{self-configuring, self-healing, self-optimising, self-healing} control loops, however, \emph{self-configuring} is the only one required. Modular structure of a controller is designated by its main four functions: data monitoring, data analysis, action planning and execution along with a knowledge necessary to perform these operations as shown in figure \ref{img:autonomic-component}. 
 
 \subsubsection{Monitoring}
 As it was already mentioned, monitoring module aims to gather data from container's sensors. While Cloud-SAP does not have any specific requirements regarding underlying monitoring mechanism, there are a few aspects that should be taken into consideration:
 \begin{asparaenum}
-  \item[\textbf{Metrics}] rozne opcje: cpu, memory, co wybrac przynajmniej cpu
+  \item[\textbf{Metrics}] There is a variety of metrics describing container state: CPU, memory, disk usage, swap, network bandwidth, to name a few. Significantly, there is no point in monitoring data that client is not interested in. In case when his policies relies entirely on CPU measurements, memory or bandwidth is irrelevant.
 
-  \item[\textbf{Data filters}] co robic z danymi, agregowac, jesli tak to jak, trzeba niwelowac zaburzenia (art? o monitoringu)
+  \item[\textbf{Data filters}] Provided that data is gathered from a container, not all of it needs to be analysed. Specifically, there may be some random peaks in a measurements, caused by a temporary distortions such as garbage collecting. Therefore, Cloud-SAP recommends to transform data using aggregation functions like average, median or apply low or high-pass filters.
 
-  \item[\textbf{Persistence}] czy przechowywac dane, jesli tak to jakie, potrzebne do analizy, wyciagania wnioskow (dane, reakcja -> odpowiedz)
+  \item[\textbf{Persistence}] Should data be used in knowledge creation and proactive approach, it is persisted, especially along with processes applied by an executor. As a consequence, future control loop iterations can be more effective by taking into account past symptoms and configuration adjustments. Decision whether to store data in databases, files, external location is entirely left to an implementation.
 
   \item[\textbf{Standard compatibility}] Whilst there is no single, industry accepted standard of virtual machine monitoring, there were initiatives such as OCCI \cite{OCCI} that aims to close that gap. Having scaling across multiple cloud instances in mind, it is vital to provide compatibility at a container monitoring level. However, in some cases, standard-defined API may no be sufficient for a specific needs  
 \end{asparaenum}
@@ -227,6 +231,7 @@ As it was already mentioned, monitoring module aims to gather data from containe
 \subsubsection{Planning}
 
 \subsubsection{Execution}
+Execution module is simple yet it plays a role that cannot be underestimated: carrying procedure scheduled beforehand during planning. To do so, it leverages effectors and API exposed by a container. In case of a self-learning system, change plan and its effects should be recorded to serve as a reference point in future.
 
 \subsubsection{Knowledge}
 
