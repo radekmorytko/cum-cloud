@@ -318,7 +318,18 @@ There are two main approaches to tackle the problem of effective resource manage
 
 \subsubsection{Execute}
 This function takes either a query about the state of a service or a deployment plan of the given service and passes execution requests to the proper cloud instance autonomic managers.
+
 \subsection{Monitor and Analyse Autonomic Manager}
+\subsubsection*{Introduction}
+In many cases designers of applications cannot in advance foresee the detailed requirements of resources of their products, e.g. the number of virtual machines comprising it. This is especially true in case of \emph{start-ups} when it is not known whether the product will catch public attention and who exactly matches the target audience. In such circumstances the cloud provider should be able to quickly adapt to new conditions to prevent the service from being unable to work properly, e.g. take into account the geographical location of the application's users and deploy a service in close proximity to them so as to minimize the latency.
+
+As it was discussed in earlier chapters, the above-mentioned use case refers to \emph{scaling} capabilities of a cloud provider. However, even if a cloud provider has \emph{auto-scaling} mechanisms, there can be unacceptable delays in application response time because of the \emph{reactive} nature of the feature -- the system decides to scale the application based on the \emph{current} resource consumption and utilization rate. Since it involves instantiating and provisioning virtual machines there is always a time overhead associated with it. Hence, there is a need that a system could \emph{predict} demands and behaviours of a hosted service in a \emph{proactive} way. 
+
+The goal of this component is to gather data about current performance of a deployed service and based on it perform an in-depth analysis which results in a resource usage prediction model and auto-scaling schemes. This is the objective of the \emph{monitor} and \emph{analyse} functions, respectively.
+
+\subsubsection*{Prediction models}
+\subsubsection{Monitor}
+\subsubsection{Analyse}
 
 \section{Summary}
 %podsumowanie, wyzwania stojace przed projektem, problemy ale takze obietnica dobrobytu i spokojnej starosci
