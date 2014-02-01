@@ -371,6 +371,13 @@ As it was discussed in earlier chapters, the above-mentioned use case refers to 
 The goal of this component is to gather data about current performance of a deployed service and based on it perform an in-depth analysis which results in a resource usage prediction model and auto-scaling schemes. This is the objective of the \emph{monitor} and \emph{analyse} functions, respectively.
 
 \subsubsection*{Prediction models}
+One way to divide prediction models into categories is to classify each one as a \emph{reactive} or a \emph{proactive} one. Since in the introductory section there were given reasons why the reactive approach is inefficient, here is a short overview of proactive approaches to the issue.
+
+Using pattern-matching algorithms is one method to tackle the problem and this approach was presented in \cite{caron2010forecasting}. In their work, the algorithm analyses past usage data of an application and tries to identify the most similar patterns to current resource usage characteristics by using a pattern-matching algorithm. Then the obtained patterns are interpolated and the final prediction model is evaluated.
+
+A performance prediction model and only its statistical evaluation is presented in \cite{islam2012empirical}. In that work, the usage of two machine-learning algorithms, \emph{Error Correction Neural Network} and \emph{Linear Regression}, is proposed. Additionally, the authors analyse the problem from an application's provider point of view contrary to most of the work in the field.
+
+An analysis regarding the effectiveness of usage a proactive approach rather than static allocation methods can be found in \cite{kupferman2009scaling}, where a set of scoring metrics is proposed as an efficiency evaluator.
 \subsubsection{Monitor}
 \subsubsection{Analyse}
 
