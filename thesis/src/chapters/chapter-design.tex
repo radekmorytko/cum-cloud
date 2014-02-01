@@ -142,8 +142,7 @@ An autonomic manager can obtain knowledge in one of three ways:
 
 \section{Autonomic application manager}
 
-\section{Autonomic application platform manager}
-%w kazdej sekcji opis MAPEK - co monitoruje, w jaki sposob analizuje i planuje, wykonuje
+\section{Autonomic execution environment manager}
 
 % darek
 \section{Autonomic container manager}
@@ -229,9 +228,23 @@ As it was already mentioned, monitoring module aims to gather data from containe
 \subsubsection{Analysis}
 
 \subsubsection{Planning}
+During planning phase, procedure to enact desired state in resource is created. Depending on problem it may involve only one step on a complex workflow. Before implementing planning module, following issues should be taken into consideration:
+\begin{asparaenum}
+ \item[\textbf{Priorities}] One of key benefits of a containerisation is multi-tenancy. However, as a consequence, containers contends again each other to get access to resources. This issue can be mitigated by one of the following: \begin{inparaenum}[1)]
+    \item avoid overprovisioning, each tenant has guaranteed resource pool
+    \item prioritise tenant, each tenant has assigned priority that indicates its business value; that priority is used to favour one tenant at the expense of the others.
+ \end{inparaenum}
+ 
+ \item[\textbf{Reservations}] As previous point indicates, different containers may have different priorities. Therefore, it is suggested to guarantee that most valuable containers have their QoS requirements satisfied by resource reservation. Inspired by a computer networks, there are at least to ways to retain a certain resource level: 
+\begin{inparaenum}[1)]
+    \item use parameters such as priority to favour given containers when it is not possible to content every single tenant \cite{nichols1998definition}
+    \item secure in advance to retain resource throughout container lifecycle, possibly by using common history patterns \cite{braden1997resource}
+ \end{inparaenum}
+\end{asparaenum}
+
 
 \subsubsection{Execution}
-Execution module is simple yet it plays a role that cannot be underestimated: carrying procedure scheduled beforehand during planning. To do so, it leverages effectors and API exposed by a container. In case of a self-learning system, change plan and its effects should be recorded to serve as a reference point in future.
+Execution module role is simple yet it plays a role that cannot be underestimated: carrying procedure scheduled beforehand during planning. To do so, it leverages effectors and API exposed by a container. In case of a self-learning system, change plan and its effects should be recorded to serve as a reference point in future.
 
 \subsubsection{Knowledge}
 
