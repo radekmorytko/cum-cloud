@@ -234,16 +234,30 @@ As it was already mentioned, monitoring module aims to gather data from containe
 
 
 \subsubsection{Analysis}
-The analysis module processes data received from monitoring component. It aims to evaluate it against various models and possibly determine if container require further intervention. The analyse function can employ variety of models, performing complex simulations or predictions. As \cite{LiWoZh05} proposes, it analysis can be based on:
+The analysis module processes data received from monitoring component. It aims to evaluate it against various models and possibly determine if container require further intervention. The analyse function can employ variety of models, performing complex simulations or predictions. Analysis can be based on one or more of the followings models \cite{LiWoZh05}:
 \begin{itemize}
- \item Queue-based Performance Models
- \item Dynamic models
- \item Monotonic static models
- \item Policy based models
-\end{itemize}
-Self-learning container manager should also use a predictive approach \cite{JiPeLiCh11} and track changes made in a container \cite{ZhYaWo05}.
+ \item[\textbf{Queue-based performance models}] This models aims to predict QoS measures using resource states and environmental disturbances such as number of service requests. Then a configuration satisfying given QoS is found by a search technique using queues and layered queues.
+ 
+ \item[\textbf{Dynamic models}] Aims to represent QoS as a cost function of the difference between the measured value from sensors and set by effectors. Model aspires to minimize that function. Linearized dynamic control is an example of a dynamic model.
+ 
+ \item[\textbf{Monotonic static models}] Sought resource state is calculated by discretising a performance model or performing heuristic principles in performance engineering
+ 
+ \item[\textbf{Error correction}]
+ 
+ Analysis precision can be improved by applying paddings based on historical data:
+    \begin{itemize}
+      \item \textit{Burst based padding} - employs a signal processing technique based on fast Fourier transform, burst pattern is extracted and used to calculate a padding value. Coefficients that represents the amplitude of each frequency component are used to calculate burst density. Depending of that value (i.e. is higher than 50\%) appropriate percentile of the burst values are used \cite{ShSuGuWi11}  
+      \item \textit{Remedial padding} - padding errors are being recorded and used in successive padding evaluations. In other words, let $e_1, e_2, ... e_k$ denote the recent prediction errors, next the weighted moving average is calculated. Actual applied padding is either padding itself or weighted average, depending which one is greater \cite{ShSuGuWi11}    
+    \end{itemize}
 
-Cloud-SAP requires to at least support policy-based model such as one threshold-model \cite{tong1978threshold}.
+ \item[\textbf{Policy based models}] Policy is expressed as a set of constraints that characterise needed resource state. Policies can be categories into two types:
+    \begin{itemize}
+     \item \emph{Threshold control} - it was already discussed and illustrated in figure \ref{fig:threshold-model}. For example, CPU load can be monitored and when it exceeds a given value, CPU share is increased.
+     \item \emph{Policy function control} - a mutli-dimensional extension of a threshold model. It uses multiple variables and control levels \cite{abdeen2002seeking}. It can be further optimised by using Markovian model for a system behaviour \cite{ye2000markov}.     
+    \end{itemize}
+
+\end{itemize}
+Self-learning container manager should also use a predictive approach \cite{JiPeLiCh11} and track changes made in a container \cite{ZhYaWo05}. Cloud-SAP requires to at least threshold-model \cite{tong1978threshold} to be supported to enable simple auto-scaling.
 
 \subsubsection{Planning}
 During planning phase, procedure to enact desired state of a container is created. Depending on problem it may involve only one step such as increasing CPU or a more complex one like container migration. Before implementing planning module, following issues should be taken into consideration:
