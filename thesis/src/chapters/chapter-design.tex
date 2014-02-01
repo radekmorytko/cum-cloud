@@ -23,13 +23,13 @@ These four system capabilities combined together yield a promising architecture 
   \item autonomic manager posses sufficient knowledge
 \end{itemize}
 
-Cloud Self Adaptive Platform (Cloud-SAP) is a reference architecture aspiring to supply application providers with an autonomic computing environment. Figure \ref{img:architecture-context} shows Cloud-SAP place in an exemplary application provisioning request. 
+Cloud Self Adaptive Platform (Cloud-SAP) is a reference architecture aspiring to supply application providers with an autonomic computing environment. Figure \ref{img:csap-usage-context} shows Cloud-SAP place in an exemplary application provisioning request. 
 \begin{figure}[!ht]
   \begin{center}
-    \includegraphics[width=0.9\textwidth]{chapter-design/architecture-context}
+    \includegraphics[width=0.9\textwidth]{chapter-design/csap-usage-context}
   \end{center}
   \caption{Cloud-SAP place in an exemplary application provisioning request}
-  \label{img:architecture-context}
+  \label{img:csap-usage-context}
 \end{figure}
 
 Application providers can be both end-users or other system interfaces, Cloud-SAP is suitable for both cases. Cloud-SAP is entirely cloud providers and resources agnostic as long as they externalise management interfaces.
@@ -38,7 +38,7 @@ Successive sections define core layers of a Cloud-SAP and give insight into poss
 
 \section{Overview}
 The previous section dealt with all premises that led to a conclusion that the proposed architecture can rely heavily on the concept of an autonomic system. In this section the further elaboration on the solution is presented.
-Figure \ref{img:architecture-context} showed the context which the architecture applies to. As one can see, Cloud-SAP can be seen as a proxy between the user and cloud instances and as a coordinator of the latter. Although cloud instance itself consists of a cloud manager and additional resources, in general, it is perfectly legitimate to consider it a resource as well. 
+Figure \ref{img:csap-usage-context} showed the context which the architecture applies to. As one can see, Cloud-SAP can be seen as a proxy between the user and cloud instances and as a coordinator of the latter. Although cloud instance itself consists of a cloud manager and additional resources, in general, it is perfectly legitimate to consider it a resource as well. 
 
 Before the more detailed diagram of the solution is presented, it is essential to introduce another indispensable function that lies in the heart of any autonomic entity -- its ability to detect an undesirable state and take appropriate actions. This is achieved by the presence of a \emph{control loop} which collects data about the environment, analyzes it and takes all needed steps to recover the system. Not only can the attributes introduced in the previous section be bound to an autonomic system, but they can also be thought of main and broad categories of a control loop \cite{IBM06}.
 
@@ -89,7 +89,15 @@ As it is shown in figure \ref{img:csap-layered-structure}, each \emph{managed re
 \item implements \emph{sensor} and \emph{effector} behaviour.
 \end{inparaenum}
 
-By means of manageability interface, external entities can control managed resources. It can be done by, e.g. leveraging API, configuration files or logs. Additionally, it is possible to obtain information via touchpoint about the state of the resource. \emph{Sensor} and \emph{effector} behaviours refers to mechanisms that allows collecting data and change the behaviour of the resource, respectively.
+By means of manageability interface, external entities can control managed resources. It can be done by, e.g. leveraging API, configuration files or logs. Additionally, it is possible to obtain information via touchpoint about the state of the resource. \emph{Sensor} and \emph{effector} behaviours refers to mechanisms that allows collecting data and change the behaviour of the resource, respectively. Structure of touchpoint is shown in figure \ref{img:csap-touchpoint}.
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=0.7\textwidth]{chapter-design/csap-touchpoint}
+  \end{center}
+  \caption{Touch point component}
+  \label{img:csap-touchpoint}
+\end{figure}
 
 \subsection{Touchpoint Autonomic Manager}
 \emph{Touchpoint Autonomic Manager} is a component that implements the control loop behaviour and, in effect, manages the managed resources through exposed touchpoints. As it was stated in the previous sections, only four types of control loops are of an interest in the proposed architecture, i.e. \emph{self-configuring}, \emph{self-healing}, \emph{self-optimising} and \emph{self-protecting}.
@@ -103,14 +111,14 @@ Each autonomic manager implements the control loop which can be split into four 
   \item \emph{plan} -- this block is responsible for planning the appropriate action based on the output of the previous block and policies,
   \item \emph{execute} -- the goal of this function of autonomic manager is to execute the planned action
 \end{itemize}
-What is more, an autonomic manager exposes \emph{sensor} and \emph{effector} manageability interfaces which enables other entities (including other autonomic managers) to manage it in a similar manner as the component itself manages a resource. The image of an autonomic manager with its control loop and provided interface is shown in figure \ref{img:autonomic-component}.
+What is more, an autonomic manager exposes \emph{sensor} and \emph{effector} manageability interfaces which enables other entities (including other autonomic managers) to manage it in a similar manner as the component itself manages a resource. The image of an autonomic manager with its control loop and provided interface is shown in figure \ref{img:csap-manager}.
 
 \begin{figure}[!ht]
   \begin{center}
-    \includegraphics{chapter-design/autonomic-component}
+    \includegraphics[width=0.7\textwidth]{chapter-design/csap-manager}
   \end{center}
   \caption{Autonomic manager}
-  \label{img:autonomic-component}
+  \label{img:csap-manager}
 \end{figure}
 
 \subsection{Orchestrating autonomic manager}
