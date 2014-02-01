@@ -392,8 +392,22 @@ Using pattern-matching algorithms is one method to tackle the problem and this a
 A performance prediction model and only its statistical evaluation is presented in \cite{islam2012empirical}. In that work, the usage of two machine-learning algorithms, \emph{Error Correction Neural Network} and \emph{Linear Regression}, is proposed. Additionally, the authors analyse the problem from an application's provider point of view contrary to most of the work in the field.
 
 An analysis regarding the effectiveness of usage a proactive approach rather than static allocation methods can be found in \cite{kupferman2009scaling}, where a set of scoring metrics is proposed as an efficiency evaluator.
+
 \subsubsection{Monitor}
+The main goal of this function is to collect all data regarding usage, performance, resource utilization, capacity and availability of every cloud instance that forms a federation. Further elaboration on the function can be done by aligning use cases of this component:
+\begin{asparaenum}
+  \item[\textbf{Deployment of a new service}] When a new service is about to be deployed on a cloud federation, the system has to a priori aggregate information about resource capacity, utilization rates, geographical location and so on from cloud providers to be able to perform the best match of a cloud provider with the given service.
+  \item[\textbf{Scaling of a deployed service}] When a service which had been hosted on a cloud needs to be scaled, the similar knowledge as in the previous case is required to be passed to \emph{analyse} function to perform the perfect match of a cloud instance.
+\end{asparaenum}
+
+The knowledge that the component obtains is about current \emph{topology} (which cloud instances make the cloud federation, what is their geographical location, how are they related, etc.) and \emph{policies} (data required to be compared against policies of deployed serviced). What is more, for the system to be able to perform auto-scaling, the gathered information can be classified as \emph{problem determination knowledge} \cite{IBM06}.
+
+We do not strive to list the data which is required to be collected by this component in a system that tries to conform to the proposed architecture as it completely depends on the system needs. We want to give an overview of possibilities instead and leave the decision to the implementers. The same applies to the components and technology of a persistence layer.
+
 \subsubsection{Analyse}
+This function takes knowledge about the cloud federation and a service as an input and outputs a \emph{prediction plan}, which should be helpful in choosing the cloud instance for an application.
+
+In the introductory section a brief overview of some possible techniques and algorithms that can be used in the analyse component was presented. We do not impose a particular method on this component -- it is up to the system complexity and design, which solution would be more suitable to the given needs.
 
 \section{Summary}
 %podsumowanie, wyzwania stojace przed projektem, problemy ale takze obietnica dobrobytu i spokojnej starosci
