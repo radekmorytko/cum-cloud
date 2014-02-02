@@ -1,8 +1,7 @@
-\chapter{Scaling applications}
+\newpage
+\section{Scaling applications}
 
-\chapterintro{This chapter is devoted to the concept of scaling users' application from the perspective of a cloud platform provider. To achieve that, it presents attainments of research groups working in that area as well as it considers mechanisms used in products currently available on the market.}
-
-\section{Introduction}
+\subsection{Introduction}
 
 The reason why scaling application lies in our area of interest is the fact that it is widely accepted measure for improving application performance, consequently increasing offered Quality-of-Service. Enriching system with capability to scale entails avoiding additional costs that are related to coping with excessive traffic. In some cases, these costs may be caused by not handling extra traffic at all and may involve aspects such as: increased response time, processing overhead, space, memory, or money \cite{Bo00}. 
 
@@ -53,12 +52,12 @@ With all that said, there is no silver bullet - not matter what underlying mecha
 
 The rest of this chapter elaborates in detail about horizontal and vertical scaling taking into account mechanisms used in Platform-as-a-Service solutions that are available on the market.
 
-\section{Horizontal scaling}
+\subsection{Horizontal scaling}
 As outlined in previous section, horizontal scaling is about adding supplementary nodes to a system. As it is common to cloud computing, nodes are represented as virtual machines and this assumption is used in further discussion. Consequently, adding server comes down to cloning a new virtual machine from a template and possibly installing additional software and reconfiguring it later. While mechanism of creating new virtual machine from a template is offered literally in every IaaS platform currently available (OpenStack \cite{OpenStack}, OpenNebula \cite{OpenNebula}, CloudStack \cite{CloudStack} or Eucalyptus \cite{Eucalyptus} to name a few) and is similar in manner, the underlying hardware and virtualization mechanism determines how fast provisioning is done. 
 
 Provisioning new server is only a first step in scaling an application, it is required to configure load balancing mechanism to make use of additional node. The two important aspects that have to be consider are: load-balancing algorithms and scalability.
 
-\subsection{Load-balancing algorithms}
+\subsubsection{Load-balancing algorithms}
 Generally, there are two types of load-balancers: hardware and software based. Due to the dynamic nature of system under consideration, we focus only on the latter as it offers a greater deal of flexibility. Among the most common algorithms we can distinguish \cite{HaProxyDoc}:
 \begin{itemize}
  \item \textit{round-robin scheduling} - request are sent to successive nodes, according to their weights. This algorithm is fairest when the server's processing time remains equally distributed \cite{HaProxyDoc}
@@ -72,10 +71,10 @@ Generally, there are two types of load-balancers: hardware and software based. D
 
 Situation gets further complicated when considering real-world web application that sends user information using cookies, what imposes requirement on load-balancer for session stickiness \cite{StBaMa11}. 
 
-\subsection{Load-balancing scalability}
+\subsubsection{Load-balancing scalability}
 Although, it may seem that balancing workloads eliminates problem of a single point of failure (SPOF) among different servers, it is in fact shifted to load-balancing layer. In other words, load-balancer becomes a new SPOF. Therefore, in cases where high availability is required, multi-tiered load balancing architecture should be considered. This, however, seems not to be a case among IaaS or PaaS providers - none of them unequivocally specifies whether their provide redundancy at load-balancer level.
 
-\subsection{Load-balancer comparision}
+\subsubsection{Load-balancer comparision}
 
 While there are many load-balancers available on the market, following are credited to be most popular:
 \begin{itemize}
@@ -93,7 +92,7 @@ Table \ref{tab:load-balancer-comparison} presents they key performance features 
   & \textbf{Performance features} & \textbf{Scheduling algorithms} \\
 \specialrule{.1em}{.05em}{.05em} 
 
-HAProxy & 
+HAProxy \cite{HAProxy} & 
 -- a single-process, event-driven model reduces the cost of context switch and the memory usage
  
 -- O(1) event checker
@@ -114,7 +113,7 @@ HAProxy &
 -- URI hashing
 \\ \hline
 
-BIG-IP Local Traffic Manager &
+BIG-IP Local Traffic Manager \cite{LTM} &
 -- managing at application services level rather than at individual devices and objects
 
 -- scripting language that allows administrator to intercept, inspect, transform, and direct application traffic
@@ -126,7 +125,7 @@ BIG-IP Local Traffic Manager &
 
 \\ \hline
 
-Apache HTTPD & 
+Apache HTTPD \cite{ApacheHTTPD} & 
 -- support for session stickiness by using cookies and URL encoding. This approach \cite{ApacheModProxyBalancer} avoids unequal load distribution if clients are hidden behind proxies and stickyness errors when a client uses a dynamic IP address that changes during a session
 & 
 -- request counting algorithm
@@ -134,6 +133,35 @@ Apache HTTPD &
 -- weighted traffic counting algorithm
 
 -- pending request counting algorithm
+\\ \hline
+
+Zeus Load Balancer \cite{Zeus} & 
+
+-- Layer-7 traffic management
+
+-- HTTP content compression
+
+-- connection concurrency control
+
+-- server health monitoring
+
+& 
+-- content-aware algorithms
+\\ \hline
+
+Zeus Global Load Balancer \cite{ZeusGlobal} & 
+
+-- service health monitoring
+
+-- active - passive failover
+
+-- balancing is based on observed performance
+
+& 
+-- geographic proximity
+
+-- adaptive load balancing (based on proximity and load)
+
 \\ \hline
 
 \end{tabularx}
@@ -144,10 +172,10 @@ Apache HTTPD &
 \end{table}
 
 \newpage
-\section{Vertical scaling}
+\subsection{Vertical scaling}
 Essentially, vertical scaling is concentrated upon increasing capacity of single node. Again, when considering technical advancements that comes with cloud computing and virtualization, we can differ two categories of scaling: virtual machine resizing and virtual machines replacement. This distinction is dictated by limitation hypervisors - not all of them are able to resize virtual machine without shutting it down.
 
-\subsection{Virtual machine resizing}
+\subsubsection{Virtual machine resizing}
 
 
 \begin{table}[!htbp]
@@ -194,6 +222,6 @@ OpenVZ (kernel: 042) &
 \end{table}
 
 
-\subsection{Virtual machine replacement}
+\subsubsection{Virtual machine replacement}
 As it was highlighted in previous section, reasoning behind virtual machine replacement is that, in case when dynamic resizing is not possible, a new virtual machine with a desired configuration can be provisioned and replace the old one. Since this is a basic operation, all above-mentioned hypervisors supports this scenario as long as required resources are available. 
 

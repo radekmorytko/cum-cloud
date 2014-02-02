@@ -1,8 +1,9 @@
-\chapter{Platform adaptivity}
+\chapter{Problem domain}
+\chapterintro{This chapter details mechanisms and practises that ensures a requested Quality-of-Service level is met by a means of a self-adaptive system that scales across multiple service providers.}
 
-\chapterintro{This chapter introduces concepts and mechanisms that enhance a platform with adaptivity capabilities achieved by a fusion of rules, policies and scaling techniques.}
+\section{Self-adaptive system}
 
-\section{Introduction}
+\subsection{Introduction}
 What makes a concept of an adaptivity enticing is crucial idea behind guaranteeing Quality-of-Serivce: automatization. Generally, ensuring and enforcing given quality can be seen as continuous monitoring and reacting to events when necessary. Such idea can be expressed as IT process shown in figure \ref{fig:it-process}.
 
 \begin{figure}[!ht]
@@ -31,7 +32,7 @@ In a context of delivering a computing platform, adaptivity adds auto-scaling fe
 
 The remaining of this chapter describes crucial elements that compose elasticity controller: policies, data analysis, triggered actions and presents a comparison of cloud providers.
  
-\section{Policies}
+\subsection{Policies}
 While auto-scaling is offered by a vast amount of cloud providers (e.g AWS, OpenShift, OpenNebula) it often lacks a sophisticated mechanisms allowing for specific scaling policies, being limited to only one predefined rule as it is in case of OpenShift for example. 
  
 Policy denotes a condition which, when satisfied, triggers an action that is supposed to harness cloud instance in a way that future evaluations of condition will be unsuccessful. Typically condition itself is accompanied by a minimal and maximal number of node instances, allowing for ensuring minimal QoS and controlling maximal costs. Currently, industry leaders supports two main kind of policies \cite{AmazonAutoScaling}:
@@ -42,7 +43,7 @@ Policy denotes a condition which, when satisfied, triggers an action that is sup
 
 Technically, policies are expressed in some human-readable format such as JSON, XML as it is in case of AWS EC2 or custom expression used for example by Carina. Appendix \ref{app:scaling-policies} presents example configuration used by AWS E2 Auto-Scaling.
 
-\section{Data analysis}
+\subsection{Data analysis}
 Having policies defined, their conditions are evaluated against data acquired from sensors. In a simplest case this evaluation can be based on a Threshold Model \cite{LiWoZh05}, which defines a valid range. In cases when given metric violates that condition (i.e. value is either smaller than minimal or bigger than maximal acceptable) corresponding resource is properly adjusted - figure \ref{fig:threshold-model} illustrates that idea.
 
 \begin{figure}[!ht]
@@ -55,7 +56,7 @@ Having policies defined, their conditions are evaluated against data acquired fr
 
 While trivial in its form, cases of AWS, OpenShift, Carina, OneCloud proves it is useful in a real-world scenarios. 
 
-\section{Triggered actions}
+\subsection{Triggered actions}
 Actions that are being triggered by a elasticity controller are focused on application scaling. Previous chapter described that problem in detail.
 
 
