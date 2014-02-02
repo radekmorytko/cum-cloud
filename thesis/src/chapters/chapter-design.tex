@@ -289,7 +289,52 @@ In case of a self-learning system, change plan and its effects should be recorde
 
 % darek
 \section{Autonomic stack manager}
+Autonomic stack manager is responsible for a management of a homogeneous resource - containers that together form a stack. More specifically, stack is subjected to:
+\begin{inparaenum}[a)]
+ \item monitoring its containers
+ \item horizontal scaling
+ \item changing applied load-balancing algorithms
+ \item component replication
+\end{inparaenum}
+
 \subsection{Managed resource}
+As it was stated in an overview, a stack is a group of containers configured to serve a common purpose (i.e. as a server cluster). In practise, this group consists of a master node and slaves: loadbalancer and java application workers or a master and slave databases, for example. Each stack type may leverage different mechanisms to enable that master-slave relation. Although specific decisions are left to an implementation, chapter X summarises common load-balancing mechanisms.
+
+\subsubsection{Touchpoint}
+Stack's touchpoint aims to provide information about the state and condition of a whole group of nodes: master as well as its slaves. As a consequence, from a structural perspective, it is decentralise and consists of a multiple agents. Key properties that should be manageable by a touch point include:
+\begin{itemize}
+ \item number of service requests passed to a master node
+ \item cluster's response time
+ \item average cpu / memory usage in cluster
+ \item packet loss from all nodes
+\end{itemize}
+
+\subsection{Autonomic controller}
+
+\subsubsection{Monitor}
+During monitoring phase, controller gathers data from a multiple agents located in stacks' nodes: master and slaves. It is important to ensure that received data is synchronised in time, consequently it can be analysed collectively to find a symptoms covering all of the nodes.
+
+\subsubsection{Analysis}
+Analysis phase can be based on one of the models mentioned in an overview. Beside this, following stack and loadbalancing specific models can be taken into consideration:
+\begin{asparaenum}
+ \item[\textbf{Discrete event simulation model}] It evaluates different balancing algorithms (e.g. round robin, least connection, etc ) to predict which produces least Load-Balancing-Metric (LBM) and packet loss \cite{idziorek2010discrete}.
+ \item[\textbf{Optimal static load balancing}] It aims to minimize mean response time of load distributed among servers \cite{tantawi1985optimal}. This model takes into account node's processing time as well as network delays - mean delay time is expressed as weighted sum of them.
+ \item[\textbf{Power usage minimisation}] This model is focused on saving computing power by removing computing node when its resource are not necessary. Key assumption is that there is a very little difference in cost of keeping node alive and keeping it 100\% busy. As a consequence nodes should be shut down whenever it is possible \cite{pinheiro2001load}.
+\end{asparaenum}
+
+
+\subsubsection{Planning}
+Plan module creates a sequence of changes enacting required QoS. Importantly, produced workflow should minimize or eliminate time during which stack becomes an unavailable due to incorporating additonal slaves or changing load-balancing mechanism, for instance. This can be done using redundant stack or its components to serve requests for a given period of time.
+
+\subsubsection{Execution}
+Stack autonomic controller executes actions such as:
+\begin{itemize}
+ \item horizontal scaling: adding slave nodes
+ \item changing load-balancing algorithm
+ \item changing network-topology to optimize time needed to reach a stack
+ \item replicating master node and hence eliminating SPOF
+\end{itemize}
+
 
 
 % radek
