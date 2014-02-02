@@ -294,6 +294,49 @@ In case of a self-learning system, change plan and its effects should be recorde
 
 % radek
 \section{Autonomic cloud instance manager}
+The main responsibility of this manager is the management of a life cycle of resources of a given cloud provider. It could be thought of an autonomic entity which automates the process of managing resources of data centers that forms the services of a cloud instance. The cloud instance manager governs \emph{stacks} of the user-deployed services and its functions include
+\begin{inparaenum}[a)]
+\item monitoring the state of cloud provider's infrastructure,
+\item providing prediction models in terms of resource utilization levels and possible violations of Service Level Agreements,
+\item determining the best place (e.g. a physical host) the stack is to be deployed to,
+\item ordering a deployment of a stack and
+\item migration or eviction of the stacks that do not conform to Quality-of-Service policies provided by the user.
+\end{inparaenum}
+Additionally, it exposes the manageability interface for taking request from the orchestrating manager.
+
+\subsection{Managed resource}
+The resources of a cloud provider can be associated with a data center comprising physical nodes, i.e. clusters, hosts, etc.
+
+\subsubsection*{Touchpoint}
+At this level of abstraction, operating system mechanisms and utilities are used to gather information about the state of a given host, e.g. its memory consumption, network throughput and usage statistics, forming the \emph{sensor} behaviour.  Additionally, they are means of performing any changes in the resource what makes them an \emph{effector}.  We want to stress that these features are entirely os-specific and are out of scope of this thesis. For example, there are completely different ways to measure memory usage in Unix/Linux and Windows\texttrademark  environments.
+
+\subsubsection{Monitor}
+This function collects information about the data center of a cloud provider. The requirements for this component fall into two categories: resource discovery and information collection.
+
+\begin{asparaenum}
+\item[\textbf{Resource discovery}] When a new node is attached to the environment, the function should be able to quickly recognize it and takes it into account in the whole topology of resources comprising the data center.
+\item[\textbf{Information collection}] This function gathers and collects nodes' parameters, such as:
+  \begin{itemize}
+    \item memory (RAM) consumption rate and its attributes (e.g. frequency),
+    \item available disk space and other storage parameters (e.g. SSD/HDD),
+    \item network type, usage statistics and its attributes such as throughput,
+    \item CPU(s) attributes (the number of cores, etc.)
+  \end{itemize}
+  These parameters are passed to the next function for further analysis.
+\end{asparaenum}
+
+\subsubsection{Analyse}
+Predictions mechanisms depicted in the \emph{analyse} function of autonomic cloud federation manager applies here as well, so for the clarity of presentation we do not describe it again.
+
+\subsubsection{Plan}
+This function aims to solve the problem of an efficient mapping services to available resources so it can be thought of a scheduler of virtual machines within a data center. As in case of other elements of the proposed architecture we do not impose an implementation of a particular solution on an implementer, but we provide a quick overview of available mechanisms and let the final decision be driven by current needs.
+
+One of the approach to this problem is by implementing a Decentralized Online Clustering algorithm \cite{quiroz2009towards}. This solution is an aggregation of virtual machines' provisioning with a workload modeling technique called Quadrature Response Surface Model. It is based on an observation that requests made by a client can be inaccurate and may lead to over-provisioning. The model takes into account also application-specific QoS and SLA requirements.
+
+Constraint Programming can be another method that can be implemented \cite{nguyen2009autonomic} to tackle this problem. This is done by trying to optimize the global utility function of resource provisioning costs and application-specific requirements and constraints. In effect, the management of infrastructure is done in an automated fashion with the effort to reach the maximum performance of hosted applications, keeping the provider's cost at the minimum level at the same time.
+
+\subsubsection{Execute}
+The function takes as an input the deployment scheme which has mapped every stack of a service with the given host, irrespective of the use case that triggered the action, i.e. scaling or deployment. The request is delegated to the appropriate stack managers which are responsible for its further processing.
 
 % radek
 \section{Autonomic cloud federation manager}
