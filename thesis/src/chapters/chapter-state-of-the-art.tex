@@ -16,8 +16,10 @@ Next section states the general overview of the proposed solution, while the con
 % radek
 \section{Carina}
 
-\subsection{Overview}
+\subsection{Introduction}
 Carina is an open source project, released under Apache License 2.0, built on top of OpenNebula, which aims to ``(\ldots) standardize the process for automating multi-VM deployments and setting auto-scaling and availability management policies in the cloud.'' \cite{CarinaBlog}. The project is used by the authors at their work at RIM in an OpenNebula-based private cloud.
+
+\subsection{Features}
 As it is stated in the requirements of the solution, \emph{Carina} should support variety of features which can be considered worth scrutinizing carefully as they are closely related to notions of adaptivity and scalability. To name the most relevant: \cite{CarinaBlog}
 \begin{itemize}
   \item Collect and aggregate OS or app-specific metrics across a cluster
@@ -32,17 +34,20 @@ Before delving into more detailed description it is vital to introduce most impo
   \item Pools -- various clusters or virtual data centers in OpenNebula that can be targets for creating an environment
 \end{itemize}
 
-\subsection{Scaling}
-Chapter 3 introduced and discussed various types of application scaling. \emph{Carina} offers only one type of scaling and this is \emph{horizontal} scaling -- user's capabilities are limited only to add/remove a virtual machine to/from a given environment. Unfortunately there are no means to modify the parameters of a given or a set of virtual machines.
+\subsection{Key technical concepts}
 
-In this paper we strongly advocate spanning cloud resources across multiple vendors/providers. Despite having in its requirements such a position, \emph{Carina} \textbf{does not} support deployment or scaling of services across different providers. In the environment configuration we define only \textbf{one} endpoint -- this is can be thought of a reference to a cloud provider. As it can be only one per environment, it is not possible to deploy or scale some artifacts across many providers.
-
-\subsection{Adaptivity}
+\subsubsection{Adaptivity}
 In \emph{Carina} there are mechanisms which can perform application scaling, both in manual and automatic fashion. It is possible for a system administrator to directly modify the existing application and its environment by changing its parameters manually. Automatic management of an environment is done by defining \emph{scaling policies} which can be in two flavours: \emph{time-based} and \emph{load-based}. Those are called by the authors \emph{elasticy policies}.
 
 \emph{Time-based} policies defines how the system should react in the given window frame(s). In each frame we can specify the minimum number of virtual machines that comprises an environment. On the other hand, \emph{load-based} policies define the way the system reacts to \textbf{average cpu usage} by the environment. This is the simplest \emph{threshold-model} as introduced in chapter 2. The user enters predicates which are evaluated against data gathered by OpenNebula and execute scaling actions  (\emph{scaleup} and \emph{scaledown}) if they are true. What is more, the minimal and maximal number of virtual machines must be specified. At present the only parameter that is taken into account while performing actions triggered by \emph{load-based} policies is cpu usage.
 
 To increase the application availability, \emph{Carina} introduces the notion of \emph{availability policies}. Their main function is to take a recovery action in response to a deletion or errors during deployment of a virtual machine. Recreation of a virtual machine is the most fundamental and atomic operation under this model.
+
+\subsubsection{Scaling}
+Chapter 3 introduced and discussed various types of application scaling. \emph{Carina} offers only one type of scaling and this is \emph{horizontal} scaling -- user's capabilities are limited only to add/remove a virtual machine to/from a given environment. Unfortunately there are no means to modify the parameters of a given or a set of virtual machines.
+
+\subsubsection{Cloud federation awareness}
+In this paper we strongly advocate spanning cloud resources across multiple vendors/providers. Despite having in its requirements such a position, \emph{Carina} \textbf{does not} support deployment or scaling of services across different providers. In the environment configuration we define only \textbf{one} endpoint -- this is can be thought of a reference to a cloud provider. As it can be only one per environment, it is not possible to deploy or scale some artifacts across many providers.
 
 \subsection{Design}
 To complete the discussion about \emph{Carina} it is essential to include its architecture overview. This is shown in figure \ref{sota:carina-design}.
