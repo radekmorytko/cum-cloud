@@ -64,7 +64,7 @@ As resources were identified on various levels of abstraction, starting from the
 \subsection{Managed resources}
 \emph{Managed resources} form the lowest layer of a stack. When it comes to application provisioning in a cloud environment we can think of the following resources:
 \begin{itemize}
-  \item \emph{Application} -- application itself can be considered resources which can be managed by an external entity, e.g. by restarting/killing it,
+  \item \emph{Application} - application itself can be considered resources which can be managed by an external entity, e.g. by restarting/killing it. Interestingly, an application itself can be an autonomic component with an embedded control loop. However, such setting is completely transparent to Cloud-SAP and therefore cannot be managed by it.
   \item \emph{Execution environment of an application} forms an inherent part of an application lifecycle and its proper tuning can greatly influence its performance,
   \item \emph{Container} -- an isolated and controlled environment in which applications are deployed,
   \item \emph{Stack} -- every application has a technology stack associated with it; what is more, if we confine ourselves to map one instance of a container with only one application, we can think of stack as a composition of application (and its execution environment) and a container,
@@ -104,13 +104,58 @@ By means of manageability interface, external entities can control managed resou
 
 The actions executed by each control loop on the assigned managed resource are defined in a \emph{policy} that is associated with the given autonomic manager. Thus, there is a one-to-one mapping between managed resource and touchpoint, and touchpoint and autonomic manager.
 
-Each autonomic manager implements the control loop which can be split into four consecutive blocks, which share knowledge among one another. The output from one block forms an input to another. However, it is perfectly possible for a block to perform an action for its side effects, e.g. an action can result in producing relevant information contained in log files, which, in turn, comprises a piece of shared knowledge. Each block implements different behaviour based on the abstraction level and resource they operate on (see figure \ref{img:csap-layered-structure}). Nevertheless it is possible to define their generic behaviour, which embraces the following phases that correspond to a given block:
-\begin{itemize}
-  \item \emph{monitor} -- this function of autonomic manager is responsible for collecting and aggregating data about the resource it manages,
-  \item \emph{analyse} -- this part takes the data from \emph{monitor} phase and perform in-depth analysis of it, which can result in, e.g. prediction plans. It is possible to incorporate more complex mechanisms, such as machine-learning, to fully use the obtained information for better prediction models,
-  \item \emph{plan} -- this block is responsible for planning the appropriate action based on the output of the previous block and policies,
-  \item \emph{execute} -- the goal of this function of autonomic manager is to execute the planned action
-\end{itemize}
+Each autonomic manager implements the control loop which can be split into four consecutive blocks, which share knowledge among one another. The output from one block forms an input to another. However, it is perfectly possible for a block to perform an action for its side effects, e.g. an action can result in producing relevant information contained in log files, which, in turn, comprises a piece of shared knowledge. Each block implements different behaviour based on the abstraction level and resource they operate on (see figure \ref{img:csap-layered-structure}). Nevertheless it is possible to define their generic behaviour, which embraces the four phases: monitoring, analysis, planning, execution.
+
+\subsubsection{Monitoring}
+This function of autonomic manager is responsible for collecting and aggregating data about the resource it manages.  While Cloud-SAP does not have any specific requirements regarding underlying monitoring mechanism, there are a few aspects that should be taken into consideration:
+\begin{asparaenum}
+  \item[\textbf{Metrics}] Whilst there is a variety of metrics describing resource state, there is no point in monitoring data that client is not interested in. For example, in case when client-defined policies rely entirely on CPU measurements, memory or bandwidth is irrelevant.
+
+  \item[\textbf{Data filters}] Provided that data is gathered from a resource, not all of it should be analysed as some portion of it may be distorted. More specifically, there may be some random spikes in measurements, caused by a temporary process such as garbage collecting. Therefore, Cloud-SAP recommends to transform data using aggregation functions like average, median or filter it by apply low or high-pass filters.
+
+  \item[\textbf{Persistence}] Should collected data be used as a reference point during future control loop iterations, it is persisted, especially along with measures applied by an executor. As a consequence, successive assessments can be more effective by taking into account past symptoms and configuration adjustments. Decision whether to store data in databases, files, external location is entirely left to an implementation.
+
+  \item[\textbf{Standard compatibility}] Whilst there is no single, industry accepted standard of monitoring above-mentioned resources ranging from a single application to whole cloud instance, there were initiatives such as OCCI \cite{OCCI} that aims to close that gap and provide unified view of common appliances. Having scaling across multiple cloud instances in mind, it is vital to provide compatibility at a monitoring level. However, in some cases, standard-defined API may no be sufficient for a specific needs. 
+\end{asparaenum}
+
+\subsubsection{Analysis}
+This part takes the data from \emph{monitor} phase and performs in-depth analysis of it, which can result in, e.g. prediction plans. It is possible to incorporate more complex mechanisms, such as machine-learning, to fully use the obtained information for better prediction models. For example one or more of the following models can be leveraged \cite{LiWoZh05}:
+\begin{asparaenum}
+ \item[\textbf{Queue-based performance models}] This models aims to predict QoS measures using resource states and environmental disturbances such as number of service requests. Then a configuration satisfying given QoS is found by a search technique using queues and layered queues. 
+ \item[\textbf{Dynamic models}] Aims to represent QoS as a cost function of the difference between the measured value from sensors and set by effectors. Model aspires to minimize that function. Linearized dynamic control is an example of a dynamic model. 
+ \item[\textbf{Monotonic static models}] Sought resource state is calculated by discretising a performance model or performing heuristic principles in performance engineering. 
+ \item[\textbf{Error correction}] Analysis precision can be improved by applying paddings based on historical data:
+    \begin{itemize}
+      \item \textit{Burst based padding} - employs a signal processing technique based on fast Fourier transform, burst pattern is extracted and used to calculate a padding value. Coefficients that represents the amplitude of each frequency component are used to calculate burst density. Depending of that value (i.e. is higher than 50\%) appropriate percentile of the burst values are used \cite{ShSuGuWi11}  
+      \item \textit{Remedial padding} - padding errors are being recorded and used in successive padding evaluations. In other words, let $e_1, e_2, ... e_k$ denote the recent prediction errors, next the weighted moving average is calculated. Actual applied padding is either padding itself or weighted average, depending which one is greater \cite{ShSuGuWi11}    
+    \end{itemize}
+ \item[\textbf{Policy based models}] Policy is expressed as a set of constraints that characterise needed resource state. Policies can be categories into two types:
+    \begin{itemize}
+     \item \emph{Threshold control} - it was already discussed and illustrated in figure \ref{fig:threshold-model}. For example, CPU load can be monitored and when it exceeds a given value, CPU share is increased.
+     \item \emph{Policy function control} - a mutli-dimensional extension of a threshold model. It uses multiple variables and control levels \cite{abdeen2002seeking}. It can be further optimised by using Markovian model for a system behaviour \cite{ye2000markov}.     
+    \end{itemize}
+\end{asparaenum}
+Self-learning manager should also use a predictive approach \cite{JiPeLiCh11} and track changes made in a container \cite{ZhYaWo05}. Cloud-SAP requires to at least threshold-model \cite{tong1978threshold} to be supported to enable simple auto-scaling scenario.
+
+\subsubsection{Planning}
+During planning phase, procedure to enact desired state of a resource is created. Depending on problem, it may involve only one step such as adjusting one parameter or a more complex like migrating a resource. Before implementing planning module, following issues should be taken into consideration:
+\begin{asparaenum}
+ \item[\textbf{Priorities}] Multi-tenancy is indispensably correlated with cloud services. As a consequence, resource contends again each other to access to lower-level resources. This can be mitigated by one of the following: \begin{inparaenum}[1)]
+    \item avoiding over-provisioning, each tenant has guaranteed resource pool
+    \item prioritise tenants, each tenant has assigned priority that indicates its business value; that priority is used to favour one tenant at the expense of the others.
+ \end{inparaenum}
+ 
+ \item[\textbf{Reservations}] As previous point indicates, different resources may have different priorities. Therefore, it is suggested to guarantee that most valuable have their QoS requirements satisfied by resource reservation. Inspired by a computer networks, there are at least to ways to retain a certain resource level: 
+\begin{inparaenum}[1)]
+    \item use parameters such as priority to favour given resource when it is not possible to content every single tenant \cite{nichols1998definition}
+    \item secure in advance to retain resource throughout container lifecycle, possibly by using common history patterns \cite{braden1997resource}
+ \end{inparaenum}
+\end{asparaenum}
+
+\subsubsection{Execution}
+The goal of this function of autonomic manager is to execute the planned action
+
+  
 What is more, an autonomic manager exposes \emph{sensor} and \emph{effector} manageability interfaces which enables other entities (including other autonomic managers) to manage it in a similar manner as the component itself manages a resource. The image of an autonomic manager with its control loop and provided interface is shown in figure \ref{img:csap-manager}.
 
 \begin{figure}[!ht]
@@ -148,9 +193,47 @@ An autonomic manager can obtain knowledge in one of three ways:
 \end{itemize}
 
 
-\section{Autonomic application manager}
-
 \section{Autonomic execution environment manager}
+Autonomic execution environment manager supervises lifecycle of a deployed application's environment by tuning it appropriately to a given usage. More specifically it :
+\begin{inparaenum}[1)]
+ \item monitors application execution environment i.e. application server
+ \item optimises resources used by an application such as thread pool, cache size, databases connections number
+ \item restarts application when necessary
+\end{inparaenum}
+
+\subsection{Managed resource}
+Application execution environment is a set of tools, APIs and frameworks that provides a generalized approach to creating and running an application. It is strictly application specific. In case of java, for example, it can be represented by an application server such as Oracle Weblogic or IBM WebSphere. 
+
+\subsubsection{Touchpoint}
+Due to the fact that execution environment is so closely related to a given application type, it is not possible to enlist properties that may be exposed by a touchpoint becouse they vary from application to application. In case of Java EE application touchpoint would externalise management of thread pools, cache and JVM settings such as heap size.
+
+\subsection{Autonomic controller}
+Although autonomic controller manages a single resource - an execution environment - it in fact conducts a variety of homogeneous resources - each application type has different properties and consequently vary in actions that can be taken to optimise them. Nevertheless, following subsections presents some common issues and concerns.
+
+\subsubsection{Monitoring}
+During monitoring phase, controller collects data from execution environment's touchpoint. Depending on application type it can involve different protocols and APIs. Should one monitor application execution environment, issues and concerns specified in overview are taken into consideration.
+
+\subsubsection{Analysis}
+Applying mathematical models to optimise application environment is an exceptionally difficult challenge due to non-linearity of a function denoting dependencies between various parameters. To make matter worse, space of possible solution is unknown and optimal solution heavily depends on a workflow that is tested against. With all that said, models and theories enumerated in an overview can be employed during analysis process. Below is presented a group of such attempts:
+\begin{asparaenum}
+  \item[\textbf{Smart hill-climbing}] As proposed in \cite{xi2004smart}, application server tuning can be seen as a black-box optimisation problem that can be solved using smart-hill climbing algorithm based on ideas of importance sampling and gradient-based optimisation.
+
+  \item[\textbf{Active Harmony}] This research project uses a simplex method to find the optimal application server parameter settings. Algorithm was validated against a TPC-W benchmark and was proven to optimise application response time by 16\% \cite{chung2004automated}.
+\end{asparaenum}
+
+
+\subsubsection{Planning}
+Planning module creates a workflow enacting application environment. It should take into account that different environment requires different procedures and some actions may involve additional tasks such as server restart to be introduced. Besides, some actions interfere with each other and their execution should be planned cautiously. For example changing cache size and cache invalidation interfere with each other and consequently applying this change at same time may not be a good idea.
+
+\subsubsection{Execution}
+Finally, controller applies a change plan that tunes the execution environment involving operations such as:
+\begin{itemize}
+ \item adjusting thread pool
+ \item adjusting buffer size
+ \item adjusting cache size and its parameters
+ \item specifying maximal simultaneous connections
+ \item restarting application server
+\end{itemize}
 
 % darek
 \section{Autonomic container manager}
@@ -221,59 +304,13 @@ Container's touchpoint externalises hypervisor and operating system APIs. Simila
 \emph{Autonomic container controller} aims to automate container's management function and externalise its configuration through its interfaces. In order to do achieve that, it implements a control loop that fully covers container life cycle. It is suggested for a controller to fully support self-management by implementing \emph{self-configuring, self-healing, self-optimising, self-healing} control loops, however, \emph{self-configuring} is the only one required. Modular structure of a controller is designated by its main four functions: data monitoring, data analysis, action planning and execution along with a knowledge necessary to perform these operations as shown in figure \ref{img:autonomic-component}. 
 
 \subsubsection{Monitoring}
-As it was already mentioned, monitoring module aims to gather data from container's sensors. While Cloud-SAP does not have any specific requirements regarding underlying monitoring mechanism, there are a few aspects that should be taken into consideration:
-\begin{asparaenum}
-  \item[\textbf{Metrics}] There is a variety of metrics describing container state: CPU, memory, disk usage, swap, network bandwidth, to name a few. Significantly, there is no point in monitoring data that client is not interested in. In case when his policies relies entirely on CPU measurements, memory or bandwidth is irrelevant.
-
-  \item[\textbf{Data filters}] Provided that data is gathered from a container, not all of it needs to be analysed. Specifically, there may be some random peaks in a measurements, caused by a temporary distortions such as garbage collecting. Therefore, Cloud-SAP recommends to transform data using aggregation functions like average, median or apply low or high-pass filters.
-
-  \item[\textbf{Persistence}] Should data be used in knowledge creation and proactive approach, it is persisted, especially along with processes applied by an executor. As a consequence, future control loop iterations can be more effective by taking into account past symptoms and configuration adjustments. Decision whether to store data in databases, files, external location is entirely left to an implementation.
-
-  \item[\textbf{Standard compatibility}] Whilst there is no single, industry accepted standard of virtual machine monitoring, there were initiatives such as OCCI \cite{OCCI} that aims to close that gap. Having scaling across multiple cloud instances in mind, it is vital to provide compatibility at a container monitoring level. However, in some cases, standard-defined API may no be sufficient for a specific needs  
-\end{asparaenum}
-
+During monitoring phase, controller collects data from container's touchpoint. Issues such as data filtering, aggregation should be taken into consideration as it was stated in overview. 
 
 \subsubsection{Analysis}
-The analysis module processes data received from monitoring component. It aims to evaluate it against various models and possibly determine if container require further intervention. The analyse function can employ variety of models, performing complex simulations or predictions. Analysis can be based on one or more of the followings models \cite{LiWoZh05}:
-\begin{itemize}
- \item[\textbf{Queue-based performance models}] This models aims to predict QoS measures using resource states and environmental disturbances such as number of service requests. Then a configuration satisfying given QoS is found by a search technique using queues and layered queues.
- 
- \item[\textbf{Dynamic models}] Aims to represent QoS as a cost function of the difference between the measured value from sensors and set by effectors. Model aspires to minimize that function. Linearized dynamic control is an example of a dynamic model.
- 
- \item[\textbf{Monotonic static models}] Sought resource state is calculated by discretising a performance model or performing heuristic principles in performance engineering
- 
- \item[\textbf{Error correction}]
- 
- Analysis precision can be improved by applying paddings based on historical data:
-    \begin{itemize}
-      \item \textit{Burst based padding} - employs a signal processing technique based on fast Fourier transform, burst pattern is extracted and used to calculate a padding value. Coefficients that represents the amplitude of each frequency component are used to calculate burst density. Depending of that value (i.e. is higher than 50\%) appropriate percentile of the burst values are used \cite{ShSuGuWi11}  
-      \item \textit{Remedial padding} - padding errors are being recorded and used in successive padding evaluations. In other words, let $e_1, e_2, ... e_k$ denote the recent prediction errors, next the weighted moving average is calculated. Actual applied padding is either padding itself or weighted average, depending which one is greater \cite{ShSuGuWi11}    
-    \end{itemize}
-
- \item[\textbf{Policy based models}] Policy is expressed as a set of constraints that characterise needed resource state. Policies can be categories into two types:
-    \begin{itemize}
-     \item \emph{Threshold control} - it was already discussed and illustrated in figure \ref{fig:threshold-model}. For example, CPU load can be monitored and when it exceeds a given value, CPU share is increased.
-     \item \emph{Policy function control} - a mutli-dimensional extension of a threshold model. It uses multiple variables and control levels \cite{abdeen2002seeking}. It can be further optimised by using Markovian model for a system behaviour \cite{ye2000markov}.     
-    \end{itemize}
-
-\end{itemize}
-Self-learning container manager should also use a predictive approach \cite{JiPeLiCh11} and track changes made in a container \cite{ZhYaWo05}. Cloud-SAP requires to at least threshold-model \cite{tong1978threshold} to be supported to enable simple auto-scaling.
+Analysis should incorporate prediction techniques and mathematical models specified in overview, producing change requests optimising container behaviour.
 
 \subsubsection{Planning}
-During planning phase, procedure to enact desired state of a container is created. Depending on problem it may involve only one step such as increasing CPU or a more complex one like container migration. Before implementing planning module, following issues should be taken into consideration:
-\begin{asparaenum}
- \item[\textbf{Priorities}] One of key benefits of a containerisation is multi-tenancy. However, as a consequence, containers contends again each other to get access to resources. This issue can be mitigated by one of the following: \begin{inparaenum}[1)]
-    \item avoid overprovisioning, each tenant has guaranteed resource pool
-    \item prioritise tenant, each tenant has assigned priority that indicates its business value; that priority is used to favour one tenant at the expense of the others.
- \end{inparaenum}
- 
- \item[\textbf{Reservations}] As previous point indicates, different containers may have different priorities. Therefore, it is suggested to guarantee that most valuable containers have their QoS requirements satisfied by resource reservation. Inspired by a computer networks, there are at least to ways to retain a certain resource level: 
-\begin{inparaenum}[1)]
-    \item use parameters such as priority to favour given containers when it is not possible to content every single tenant \cite{nichols1998definition}
-    \item secure in advance to retain resource throughout container lifecycle, possibly by using common history patterns \cite{braden1997resource}
- \end{inparaenum}
-\end{asparaenum}
-
+This part schedules change requests submitted by an analysis model producing change procedures. Depending on implementation, it may use reservation and priorities mechanisms to enforce given Quality-of-Service level. It vital for a planning phase to be well suited for an underlying hypervisor since not all its types supports dynamic vertical scaling some requires container to be restarted. In that case, container should be cloned and then resized, restarted and finally substitute old, non-scaled instance.
 
 \subsubsection{Execution}
 Execution module role is simple yet it plays a role that cannot be underestimated: carrying procedure scheduled beforehand during planning. To do so, it leverages effectors and API exposed by a container. Collectively, these actions scales container vertically, for example:
@@ -498,4 +535,7 @@ This function takes knowledge about the cloud federation and a service as an inp
 In the introductory section a brief overview of some possible techniques and algorithms that can be used in the analyse component was presented. We do not impose a particular method on this component -- it is up to the system complexity and design, which solution would be more suitable to the given needs.
 
 \section{Summary}
-%podsumowanie, wyzwania stojace przed projektem, problemy ale takze obietnica dobrobytu i spokojnej starosci
+Cloud-SAP fills the gap in existing platforms, providing a standardised approach to scaling applications that uses a fine-grained actions, operating on different platform levels: starting from execution environment to end on a cloud federation. It is based on a concept of an autonomic system, providing methodical yet flexible foundation for designed system. Cloud-SAP leverages core benefits of such system: promise of a self-configuring, self-optimising, self-healing, self-protecting system driven by a customer-defined policies.
+
+% TODO Further work?, wady
+
