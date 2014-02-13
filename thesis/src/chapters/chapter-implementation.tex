@@ -13,25 +13,62 @@ Previous chapters detailed requirements that a self-manageable platform oriented
   \item Autonomic cloud federation manager
 \end{itemize}
 
-Apart from that, we based analysis solely on threshold model, discarding more advanced techniques using prediction mechanisms.
+Apart from that, we implemented minimal viable modules that is monitoring, analysis, planning and execution. For example, we based analysis solely on threshold model, discarding more advanced techniques that uses prediction mechanisms.
 
 \section{Overview}
-As previous section indicates, key elements of discussed implementation are as follows: autonomic container manager, autonomic stack manager, autonomic cloud instance manager, autonomic cloud federation manager. Taking their role in service deployment into account, we grouped them into auto-scaling and cloud brokerage subsystems. Figure XXX illustrates relation between Cloud-SAP managers and above-mentioned subsystems and figure YYY depicts high level overview of a system.
+As previous section indicates, key elements of discussed implementation are as follows: autonomic container manager, autonomic stack manager, autonomic cloud instance manager, autonomic cloud federation manager. Taking their role in service deployment into account, we grouped them into auto-scaling and cloud brokerage subsystems. High level overview of system, including its internal and external elements is depicted in figure \ref{fig:hlo-implementation}. Diagram \ref{fig:csap-layers-subsystem} illustrates thee relationship between Cloud-SAP managers and above-mentioned subsystems. 
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=\textwidth]{chapter-implementation/hlo-implementation}
+  \end{center}
+  \caption{High level system overview}
+  \label{fig:hlo-implementation}
+\end{figure}
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-implementation/csap-layers-subsystem}
+  \end{center}
+  \caption{System parts and their relation with autonomic managers}
+  \label{fig:csap-layers-subsystem}
+\end{figure}
 
 As one can see, our implementation is composed by following parts:
 \begin{asparaenum}
- \item[\textbf{Auto-scaling subsystem}]
+ \item[\textbf{Auto-scaling subsystem}] Auto-scaling subsystem supervises service's life cycle, monitoring it and enacting scaling actions when necessary. It is concentrated on all service's aspects: containers, stacks and application instances thus it is in fact a group of autonomic managers composed by container, stack and cloud instance managers.
 
- \item[\textbf{Cloud brokerage subsystem}] 
+ \item[\textbf{Cloud brokerage subsystem}] Brokerage subsystem groups components that together mediates between cloud providers. In particular, it consists of:
+  \begin{itemize}
+   \item Cloud broker - probes cloud providers and selects best offer according to a given policy. In Cloud-SAP model, it plays a role of orchestrating autonomic manager, that is, autonomic cloud federation manager.
+   \item Cloud client - delegates service provisioning request to a cloud broker.
+  \end{itemize}
  
- \item[\textbf{Cloud provider}] 
+ \item[\textbf{Cloud provider}] External system that manages a group of resource such as computing nodes, storage and networking typologies. Particularly, it is able to deploy, shutdown, migrate and monitor containers. Although Cloud-SAP is utterly cloud provider independent, our implementation is solely focused on OpenNebula that uses OpenVZ as a hypervisor. We selected OpenNebula due to its simplicity, flexibility and our expertise in managing it. Choosing hypervisor, we were compelled to select one that is based on lightweight containers due to theirs flexibility in scaling as previously advocated. OpenVZ was a natural choice due to its maturity and our familiarity within it.
  
- \item[\textbf{Customer}] 
+ \item[\textbf{Application provider}] An entity that is interested in application scaling and deployment. It can be represented by a human being as well as by an external system.
 \end{asparaenum}
 
-With those information in mind, we can illustrate overall architecture, components and communication protocols on deployment diagram ZZZ. Successive sections portrays in detail specified elements.
+With those information in mind, we can illustrate overall architecture, components and communication protocols on deployment diagram \ref{fig:hlo-deployment}. Successive sections portrays in detail specified elements.
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-implementation/hlo-deployment}
+  \end{center}
+  \caption{Deployment diagram of a Cloud-SAP implementation}
+  \label{fig:hlo-deployment}
+\end{figure}
+
 
 \section{Auto-scaling subsystem}
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=\textwidth]{chapter-implementation/auto-scaling-subsystem-deployment}
+  \end{center}
+  \caption{Deployment diagram of a auto-scaling subsystem}
+  \label{fig:auto-scaling-subsystem-deployment}
+\end{figure}
 
 \section{Cloud brokerage subsystem}
 
