@@ -3,7 +3,7 @@
 \chapterintro{This chapter presents recent achievements in a field of platform-as-a-service model by examining: Carina, OneFlow, CloudFoundry and OpenShift. Especially, it focuses on aspects of adaptivity, scalability and cloud federation awareness.}
 
 \section{Requirements}
-One can notice that elements that yields a solution to a problem stated in the first chapter, which is ensuring that users' application provide appropriate Quality-of-Service for its customers in a most-cost effective manner, were gradually introduced in previous chapters:
+One can notice that elements that yields a solution to a problem stated in the first chapter, which is ensuring that users' application provide appropriate Quality-of-Service for its customers in a most-cost effective manner, were gradually introduced in previous chapter:
 
 \begin{itemize}
 	\item \emph{adaptivity} - ability to adapt (i.e. scale) appropriately to a current usage pattern
@@ -11,7 +11,47 @@ One can notice that elements that yields a solution to a problem stated in the f
 	\item \emph{cloud-federation awareness} - ability to compose an application deployment using different cloud providers; cooperation with different cloud provider to supply application with extra resources while performing application scaling
 \end{itemize}
 
-Next section states the general overview of the proposed solution, while the consecutive sections details its elements and finally the last section summarises the design choices in a context of system requirements.
+In the next sections we examine latest advancements used by a platform-as-a-service providers that is: Carina, OneFlow, CloudFoundry and OpenShift. Apart from getting into detail regarding above-mentioned factors, we scrutinise whether given product satisfies following functional and non-functional requirements. 
+
+\subsection{Functional requirements}
+\begin{enumerate}
+  \item The user of the platform is able to:
+    \begin{enumerate}
+      \item deploy a service,
+      \item cancel the service,
+      \item check the status of the previously ordered-to-deploy service at any time. \emph{Status} means 
+        \begin{inparaenum}[a)]
+        \item whether or not the deployment succeeded,
+        \item current uptime of the service,
+        \item current cost
+        \end{inparaenum}
+    \end{enumerate}
+  \item One of the elements of the platform is a client application that is used by the user of the platform to communicate with it,
+  \item During the deployment process, the platform takes as an input a description of the service (application) that consists of:
+    \begin{itemize}
+    \item service name,
+    \item software stacks (e.g. \emph{java}, \emph{ruby}),
+    \item scaling policies (per each stack) which define
+      \begin{inparaenum}[i)]
+      \item minimal and maximal number of VMs that are needed for the stack,
+      \item name of the policy (algorithm) which is used for scaling,
+      \item parameters of the policy
+      \end{inparaenum}
+    \end{itemize}
+  \item Deployment of a service is done in a way which minimizes the cost from the client's perspective with ensuring Quality-of-Service requirements at the same time,
+  \item The platform monitors the state of the deployed services and based on the results of this process takes appropriate steps in order to meet the auto-scaling requirements. These include
+    \begin{inparaenum}[a)]
+    \item altering VM's parameters and configuration,
+    \item vertical scaling,
+    \item horizontal scaling,
+    \item scaling stacks among different cloud providers
+    \end{inparaenum}
+\end{enumerate}
+
+\subsection{Non-functional}
+\begin{itemize}
+  \item The platform does not confine itself to one provider, but to a \emph{ecosystem of various cloud providers} that offers deployment capabilities which vary in terms of quality of service, cost, etc.
+\end{itemize}
 	
 % radek
 \section{Carina}

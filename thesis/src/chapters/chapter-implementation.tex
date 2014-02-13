@@ -1,65 +1,49 @@
 \chapter{Implementation}
 
 \chapterintro{
-  In this chapter we outline implementation details about each component of the
-  proposed solution.
+  This chapter details a proof-of-concept implementation of Cloud-SAP architecture.
 }
 
-\section{Requirements}
-\subsection{Functional}
-One can notice that elements that yields a solution for
-a problem stated in the first chapter, which is ensuring that users'
-application provide appropriate Quality-of-Service for its customers, were
-introduced in previous chapters:
-
+\section{Introduction}
+Previous chapters detailed requirements that a self-manageable platform oriented toward Quality-of-Service assurance should comply with. Beside this, reference architecture known as Cloud-SAP was introduced. This chapter in turn highlights key elements of a proof-of-concept implementation of Cloud-SAP. Noticeably, our implementation is by all means not exhaustive and merely intends to prove that presented architecture successfully tackles raised challenges. Hence, we implemented only following subset of managers specified by Cloud-SAP:
 \begin{itemize}
-	\item scalability           -- ability to improve application performance by enriching
-	\item adaptivity            -- ability to adapt (i.e. scale) appropriately to current usage pattern
-	\item inter-cloud awareness -- ability to cooperate with different cloud provider to supply application with extra resources
+  \item Autonomic container manager
+  \item Autonomic stack manager
+  \item Autonomic cloud instance manager
+  \item Autonomic cloud federation manager
 \end{itemize}
-Having those in mind, we can make the list of functional requirements more formal:
-\begin{enumerate}
-  \item The user of the platform is able to:
-    \begin{enumerate}
-      \item deploy a service,
-      \item cancel the service,
-      \item check the status of the previously ordered-to-deploy service at any time. \emph{Status} means 
-        \begin{inparaenum}[a)]
-        \item whether or not the deployment succeeded,
-        \item current uptime of the service,
-        \item current cost
-        \end{inparaenum}
-    \end{enumerate}
-  \item One of the elements of the platform is a client application that is used by the user of the platform to communicate with it,
-  \item During the deployment process, the platform takes as an input a description of the service (application) that consists of:
-    \begin{itemize}
-    \item service name,
-    \item software stacks (e.g. \emph{java}, \emph{ruby}),
-    \item auto-scaling policies (per each stack) which define
-      \begin{inparaenum}[i)]
-      \item minimal and maximal number of VMs that are needed for the stack,
-      \item name of the policy (algorithm) which is used for scaling,
-      \item parameters of the policy
-      \end{inparaenum}
-    \end{itemize}
-  \item Deployment of a service is done in a way which minimizes the cost from the client's perspective with ensuring Quality-of-Service requirements at the same time,
-  \item It is assumed that the application which is going to be deployed is properly and fully tuned so that it is not possible to improve its performance by changing its or any of its components configuration(s),
-  \item The platform monitors the state of the deployed services and based on the results of this process takes appropriate steps in order to meet the auto-scaling requirements. These include
-    \begin{inparaenum}[a)]
-    \item altering VM's parameters and configuration,
-    \item vertical scaling,
-    \item horizontal scaling,
-    \item scaling stacks among different cloud providers
-    \end{inparaenum}
-\end{enumerate}
 
-TODO Alternative scenario -- the client has a predefined budget that they cannot exceed -- it can be mentioned in the overall discussion of the solution
+Apart from that, we based analysis solely on threshold model, discarding more advanced techniques using prediction mechanisms.
 
-\subsection{Non-functional}
-\begin{itemize}
-  \item The platform uses \emph{OpenVZ} as a hypervisor
-  \item The platform uses \emph{OpenNebula} and \emph{AppFlow} as data-center management tools
-  \item The platform does not confine itself to one provider, but to a \emph{ecosystem of various cloud providers} that offers deployment capabilities which vary in terms of quality of service, cost, etc.
-  \item All communication between the user and the platform and among platform components should be encrypted
-\end{itemize}
+\section{Overview}
+As previous section indicates, key elements of discussed implementation are as follows: autonomic container manager, autonomic stack manager, autonomic cloud instance manager, autonomic cloud federation manager. Taking their role in service deployment into account, we grouped them into auto-scaling and cloud brokerage subsystems. Figure XXX illustrates relation between Cloud-SAP managers and above-mentioned subsystems and figure YYY depicts high level overview of a system.
+
+As one can see, our implementation is composed by following parts:
+\begin{asparaenum}
+ \item[\textbf{Auto-scaling subsystem}]
+
+ \item[\textbf{Cloud brokerage subsystem}] 
+ 
+ \item[\textbf{Cloud provider}] 
+ 
+ \item[\textbf{Customer}] 
+\end{asparaenum}
+
+With those information in mind, we can illustrate overall architecture, components and communication protocols on deployment diagram ZZZ. Successive sections portrays in detail specified elements.
+
+\section{Auto-scaling subsystem}
+
+\section{Cloud brokerage subsystem}
+
+\section{Cloud provider}
+
+\section{Exemplary scenarios}
+
+\subsection{Service deployment}
+
+\subsection{Scaling application}
+
+\subsection{Scaling application across multiple cloud providers}
+
+\section{Summary}
 
