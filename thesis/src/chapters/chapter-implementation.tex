@@ -51,6 +51,37 @@ As one can see, our implementation is composed by following parts:
 
 With those information in mind, we can illustrate overall architecture, components and communication protocols on deployment diagram \ref{fig:hlo-deployment}. Successive sections portrays in detail specified elements.
 
+\section{Technology stack overview}
+This section aims to give a brief outline of technologies that were used in this implementation with an endeavour to justify our choice. The chosen solutions are grouped according to their presence in appropriate subsystems.
+
+\begin{itemize}
+  \item Cloud brokerage subsystem
+    \begin{asparaenum}
+    \item[\textbf{Web Services/HTTP}] Communication between a client and a cloud broker is done by the usage of \emph{web services} over \emph{http} protocol. The cloud broker for a given client exposes a \emph{RESTful} API for the deployment of a service. The web service accepts \emph{JSON}-encoded messages, which comprises the name of a service and specification of each stack comprising it. The example of such a message can be found in listing \ref{lst:service-spec-test-deployment-time}.
+
+      The reason we chose this technology is because of its simplicity, maturity and great support from Ruby platform. The other solutions that could be used in place of this one include some message-oriented middleware standards such as AMQP or JMS, other standards that facilitate communications among systems/components such as CORBA, and other such as RMI or RPC. Some of the aforementioned technologies had been eliminated once we chose Ruby as the language the platform would be implemented in. This is because of their platform-specific nature, e.g. JMS requires the system to be written in Java.
+
+    \item[\textbf{AMQP}] Being able to communicate in an asynchronous, more scalable and loosely coupled way between a cloud broker and different cloud instance managers representing cloud providers requires the usage of message-oriented middleware. In our case we decided to use \emph{Advanced Message Queuing Protocol}as this standard is mature and its support in Ruby is solid.
+
+      This communication channel is used in the implementation to 
+      \begin{inparaenum}[a)]
+      \item get offers from cloud providers for a given service and
+      \item commission the cloud provider to deploy a service.
+      \end{inparaenum}
+
+    \item[\textbf{SQLite}] For the persistence layer there was a need for a lightweight database engine that would have good support in Ruby platform. Possible choices included some nonrelational solutions, such as Redis, and more traditional, relational ones, such as SQLite. We chose the latter as the drivers for \emph{DataMapper}, an ORM library, have better support in Ruby.
+    \end{asparaenum}
+
+  \item Auto-scaling subsystem
+    \begin{asparaenum}
+    \item[\textbf{OpenNebula}]
+    \item[\textbf{OpenNebula AppFlow/AppStage ?}]
+    \item[\textbf{Chef}]
+    \item[\textbf{OpenVZ (drivers)}]
+    \end{asparaenum}
+\end{itemize}
+
+
 \begin{figure}[!ht]
   \begin{center}
     \includegraphics{chapter-implementation/hlo-deployment}
