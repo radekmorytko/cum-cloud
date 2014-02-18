@@ -78,7 +78,10 @@ While there are many load-balancers available on the market, following are credi
 \begin{itemize}
  \item \textbf{HAProxy} \cite{HAProxy} - load-balancer initially written by Willy Tarreau. Noticeably, it's used by OpenShift \cite{OpenShift} to distribute load among gears \cite{OpenShiftScaling}
  \item \textbf{BIG-IP Local Traffic Manager (LTM)} - solution offered by F5 \cite{F5}. Although LTM is a hardware solution, omitted in this section, it also has also its virtualized counterpart.
- \item \textbf{Apache HTTPD} \cite{ApacheHTTPD} - popular HTTP server. When enhanced with additional modules, it can behave like a proxy or load-balancer. Over the time, there were several attempts to develop such modules: mod\_jk \cite{ApacheModJk}, mod\_proxy\_balancer \cite{ApacheModProxyBalancer}, to name a few. While the former is purely AJP13 oriented, the latter supports different protocols: HTTP, FTP and AJP13. As a consequence, only mod\_proxy\_balancer was taken into account during comparision.
+ \item \textbf{Apache HTTPD} \cite{ApacheHTTPD} - popular HTTP server. When enhanced with additional modules, it can behave like a proxy or load-balancer. Over the time, there were several attempts to develop such modules: mod\_jk \cite{ApacheModJk}, mod\_proxy\_balancer \cite{ApacheModProxyBalancer}, to name a few. While the former is purely AJP13 oriented, the latter supports different protocols: HTTP, FTP and AJP13. As a consequence, only mod\_proxy\_balancer was taken into account during comparision. 
+ \item \textbf{Zeus Load Balancer} \cite{Zeus} - load balancer offered by layer47 \cite{Layer47}, it incorporates techniques such as Layer-7 traffic management and content aware algorithms
+ \item \textbf{Zeus Global Load Balancer} \cite{ZeusGlobal} - load balancer offered by layer47 \cite{Layer47}, it is specialised in balancing load among globally distributed data centres
+ 
 \end{itemize}
 
 Table \ref{tab:load-balancer-comparison} presents they key performance features and algorithm used to schedule requests.
