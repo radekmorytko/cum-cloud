@@ -1,7 +1,7 @@
 \chapter{Problem domain}
 \chapterintro{This chapter details mechanisms and practises that ensures a requested Quality-of-Service level is met by a means of a self-adaptive system that scales across multiple service providers.}
 
-\section{Self-manageable system}
+\section{Self-adaptive system}
 
 \subsection{Introduction}
 Guaranteeing Quality-of-Service, a critical concept in this paper, can be seen as continuous monitoring and reacting to undesirable conditions when necessary. In fact, this process is as an IT procedure and traditionally belongs to the duties of a system administrator. Figure \ref{fig:it-process} illustrates exemplary IT procedure.
@@ -18,15 +18,6 @@ While system administrator can be directly responsible for manually performing s
 \begin{itemize}
   \item \emph{rapid process initiation} - components auto-initiates actions based on information derived from a system
   \item \emph{reduced time and skill requirements} - automatization of IT processes makes them easier and less troublesome what is especially important for skill-intensive, error-prone and long lasting tasks
-\end{itemize}
-
-As  \cite{murch2004autonomic} explains, there are four levels of a system manageability maturity. The higher the level, the better it manages itself leading to a adaptive or autonomic system at best:
-\begin{itemize}
- \item \emph{Basic} - IT professionals manage each system element. Activities related to configuration, optimisation, healing, and protection of IT infrastructure components are performed manually.
- \item \emph{Managed} - System management technologies can be used to collect information from different systems and analyze this information. In this scenario, IT professionals do most of the analysis, but it is a starting point for the automation of IT tasks.
- \item \emph{Predictive} - Individual components monitor themselves, analyze changes and offer advice. Therefore, dependency on people is reduced and decision-making is improved.
- \item \emph{Adaptive} - IT components can, individually or group-wise, monitor, analyze operations and offer advice with minimal human intervention.
- \item \emph{Autonomic} - System operations are managed by business policies established by the administrator. In fact, business policy drives overall IT management, while at the adaptive level; there is an interaction between humans and the system.
 \end{itemize}
 
 In heart of the every self-adaptive systems, according to \cite{brun2009engineering}, lies a feedback loop, concept that originates from a control engineering. As paper's authors advocate:
