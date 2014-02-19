@@ -74,10 +74,9 @@ This section aims to give a brief outline of technologies that were used in this
 
   \item Auto-scaling subsystem
     \begin{asparaenum}
-    \item[\textbf{OpenNebula}]
-    \item[\textbf{OpenNebula AppFlow/AppStage ?}]
-    \item[\textbf{Chef}]
-    \item[\textbf{OpenVZ (drivers)}]
+    \item[\textbf{OpenNebula}] There was a need for a tool that would be used for efficient management of the resources of a data center. OpenNebula is an open source respond to this need -- first released in 2008, with good support from the community, seemed a good candidate for a tool. Our familiarity with it was an additional factor which influenced our final choice of OpenNebula as the tool for the job.
+    \item[\textbf{Chef}] As manual virtual machines provisioning is a tedious and error-prone task, this is a perfect match for a tool that would automate the process. We chose \emph{Chef} as it is written in the language of the whole platform (i.e. Ruby), mature (initially released in 2009) and widely used tool. \footnote{According to the website of the product (\url{http://www.getchef.com/customers/}), it is used by such companies as Facebook, BlueKai or BookRenter. More can be found at the provided URL.}
+    \item[\textbf{OpenVZ (drivers)}] The significance of choosing linux containers as a virtualisation technology was fully described in the preceding chapters. However, the drivers for the OpenVZ are not supported by the OpenNebula maintainers, so we had to use our own-developed tool while taking a course at the university. This tools forms an official add-on for OpenNebula 3.8.
     \end{asparaenum}
 \end{itemize}
 
