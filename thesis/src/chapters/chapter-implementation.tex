@@ -81,7 +81,7 @@ This section aims to give a brief outline of technologies that were used in this
     \end{asparaenum}
 \end{itemize}
 
-
+\newpage
 \begin{figure}[!ht]
   \begin{center}
     \includegraphics{chapter-implementation/hlo-deployment}
@@ -90,18 +90,58 @@ This section aims to give a brief outline of technologies that were used in this
   \label{fig:hlo-deployment}
 \end{figure}
 
+\section{Cloud brokerage subsystem}
+
 
 \section{Auto-scaling subsystem}
+
+\subsection{Objectives and structure}
+The onus is on auto-scaling subsystem to:
+\begin{itemize}
+ \item scale applications in the most cost effective way
+ \item handle application deployment requests and pass them to a cloud provider 
+\end{itemize}
+
+As overview states, this subsystem is in fact a loosely coupled group of three autonomic managers, cooperating together to achieve aforementioned subsystem's goals. System is structured (figure \ref{fig:auto-scaling-subsystem-deployment}) on top of that observation:
+
+\begin{asparaenum}
+ \item[\textbf{Container manager}]
+ \item[\textbf{Stack manager}]
+ \item[\textbf{Cloud instance manager}]
+ \item[\textbf{Cloud provider client}]
+ \item[\textbf{Cloud broker}]
+ \item[\textbf{Cloud provider (OpenNebula and OpenVZ nodes)}]
+\end{asparaenum}
+
 
 \begin{figure}[!ht]
   \begin{center}
     \includegraphics[width=\textwidth]{chapter-implementation/auto-scaling-subsystem-deployment}
   \end{center}
-  \caption{Deployment diagram of a auto-scaling subsystem}
+  \caption{Deployment diagram of auto-scaling subsystem}
   \label{fig:auto-scaling-subsystem-deployment}
 \end{figure}
 
-\section{Cloud brokerage subsystem}
+
+
+\subsection{Container manager}
+
+\subsubsection{Objectives}
+\subsubsection{Implementation details}
+\subsubsection{Control loop iteration}
+
+
+\subsection{Stack manager}
+
+\subsubsection{Objectives}
+\subsubsection{Implementation details}
+
+
+\subsection{Cloud instance manager}
+
+\subsubsection{Objectives}
+\subsubsection{Implementation details}
+
 
 \section{Cloud provider}
 
