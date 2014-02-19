@@ -95,24 +95,14 @@ This section aims to give a brief outline of technologies that were used in this
 
 \section{Auto-scaling subsystem}
 
-\subsection{Objectives and structure}
+\subsection{Introduction}
 The onus is on auto-scaling subsystem to:
 \begin{itemize}
  \item scale applications in the most cost effective way
  \item handle application deployment requests and pass them to a cloud provider 
 \end{itemize}
 
-As overview states, this subsystem is in fact a loosely coupled group of three autonomic managers, cooperating together to achieve aforementioned subsystem's goals. System is structured (figure \ref{fig:auto-scaling-subsystem-deployment}) on top of that observation:
-
-\begin{asparaenum}
- \item[\textbf{Container manager}]
- \item[\textbf{Stack manager}]
- \item[\textbf{Cloud instance manager}]
- \item[\textbf{Cloud provider client}]
- \item[\textbf{Cloud broker}]
- \item[\textbf{Cloud provider (OpenNebula and OpenVZ nodes)}]
-\end{asparaenum}
-
+As overview states, this subsystem is in fact a loosely coupled group of three autonomic managers, cooperating together to achieve aforementioned subsystem's goals. System is structured (figure \ref{fig:auto-scaling-subsystem-deployment}) on top of that observation.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -121,6 +111,21 @@ As overview states, this subsystem is in fact a loosely coupled group of three a
   \caption{Deployment diagram of auto-scaling subsystem}
   \label{fig:auto-scaling-subsystem-deployment}
 \end{figure}
+
+\begin{asparaenum}
+ \item[\textbf{Container manager}] Manager responsible for supervising container lifecycle and taking apropriate actions when necessary. It is a most fine-grained controller in our implementation. It delegates a problem resolution to a stack manager when necessary.
+ 
+ \item[\textbf{Stack manager}] It supervises a group of homogeneous resources, that is containers, known as a stack. Similarly to a container manager, execution may be passed to cloud instance manager when there is no choice left.
+ 
+ \item[\textbf{Cloud instance manager}] Supervisor of a whole cloud instance correlated to a given cloud provider. It participates in dialogue with cloud broker by advertising cloud provider capabilities and handling provisioning requests. Besides, it is eligible of most coarse-grained scaling action: horizontal scaling across multiple providers.
+ 
+ \item[\textbf{Cloud broker}] Is a part of cloud brokerage subsystem responsible for mediating between different auto-scaling subsystems and cloud client. Previous section covers it in more details.
+ 
+ \item[\textbf{Cloud provider}] External system that provisions and manages container and underlying resources. In case of this implementation it is an OpenNebula frontend and AppFlow server, accessible through a Cloud provider client. Apart from that, OpenVZ exposes its manageability capabilities by OpenVZ agent and its REST interfaces. Next section details cloud provider.
+ 
+ \item[\textbf{Cloud provider client}] Generic component that brings cloud provider features to a auto-scaling subsystem. Noticeably, it may be a facade to different systems, freeing subsystem from accessing cloud provider's internal structure as it is in case of our implementation. For example, it delegates service provisioning requests to an Applfow server while monitoring and scaling are passed to an OpenNebula frontend.
+\end{asparaenum}
+
 
 
 
