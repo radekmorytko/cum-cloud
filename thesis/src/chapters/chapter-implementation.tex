@@ -131,7 +131,47 @@ As overview states, this subsystem is in fact a loosely coupled group of three a
 \subsection{Container manager}
 
 \subsubsection{Objectives}
+Container manager key responsibilities are as follows:
+\begin{itemize}
+ \item supervising container and adjusting its settings to a current usage demand, i.e. scaling it vertically
+ \item delegating scaling operations to a stack manager when vertical scaling is not possible
+\end{itemize}
+
+
 \subsubsection{Implementation details}
+Container manager is strictly related to an autonomic container manager, component specified by Cloud-SAP. Consequently, its structure reflects a control loop, cyclically invoked by a scheduler and involves:
+\begin{itemize}
+ \item monitoring - manager collects data from OpenNebula frontend using a cloud provider client. Currently, implementation supports following metrics:
+    \begin{itemize}
+     \item used cpu
+     \item used memory
+    \end{itemize}
+    Beside this, manager aggregates collected data - it calculates its average, in case when there is more than one measurement in a cycle.
+    
+ \item analysis - Aggregated data is analysed against client defined policy. Policies (e.g. listing Y) are based on a threshold model, denoting a valid range for a resource measurement. Hence, its evaluation results in \texttt{FITS, LESSER, GREATER}.
+ 
+ \item planning - During this phase, analysis conclusion is mapped to an action. Table \ref{tab:container-manager-planning} presents such mapping. As one can see, only the CPU is supported for the time being. In case of increasing CPU, resource manager is first probed to determine whether there are enough resources to perform requested action. Unless cloud provider is capable of handling request, execution is delegated to an upper layer - stack manager.
+ 
+ \item execution - Manager adjusts container settings using an OpenVZ agent, located on computing node where container is deployed. As for OpenVZ hypervisor, container's properties are in fact User Bean Counter (UBC), exposed through a REST interface.
+\end{itemize}
+
+\begin{table}[!htbp]
+\begin{tabularx}{\textwidth}{ l  X  X }
+\specialrule{.1em}{.05em}{.05em} 
+\textbf{Description} & \textbf{Symptom} & \textbf{Action} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+CPU exceeds upper usage limit & \texttt{GREATER\_CPU} & Increase CPU \\ \hline
+CPU is in legal range & \texttt{LESSER\_CPU} & Decrease CPU \\ \hline
+CPU is lesser than allowed limit & \texttt{FITS\_CPU} & None \\ \hline
+
+\end{tabularx}
+\caption{Container manager's analysis conclusion mappings}
+\label{tab:container-manager-planning}
+\end{table}
+
+
+
 \subsubsection{Control loop iteration}
 
 
@@ -145,6 +185,10 @@ As overview states, this subsystem is in fact a loosely coupled group of three a
 
 \subsubsection{Objectives}
 \subsubsection{Implementation details}
+
+
+\subsection{Cloud provider client}
+
 
 
 \section{Cloud provider}
