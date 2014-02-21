@@ -80,6 +80,7 @@ This section aims to give a brief outline of technologies that were used in this
     \end{asparaenum}
 \end{itemize}
 
+
 \newpage
 \begin{figure}[!ht]
   \begin{center}
@@ -88,10 +89,12 @@ This section aims to give a brief outline of technologies that were used in this
   \caption{System's deployment diagram}
   \label{fig:hlo-deployment}
 \end{figure}
+\newpage
 
+% radek
 \section{Cloud brokerage subsystem}
 
-
+% darek
 \section{Auto-scaling subsystem}
 
 \subsection{Introduction}
@@ -125,9 +128,7 @@ As overview states, this subsystem is in fact a loosely coupled group of three a
  \item[\textbf{Cloud provider client}] Generic component that brings cloud provider features to a auto-scaling subsystem. Noticeably, it may be a facade to different systems, freeing subsystem from accessing cloud provider's internal structure as it is in case of our implementation. For example, it delegates service provisioning requests to an Applfow server while monitoring and scaling are passed to an OpenNebula frontend.
 \end{asparaenum}
 
-
-
-
+% darek
 \subsection{Container manager}
 
 \subsubsection{Objectives}
@@ -136,7 +137,6 @@ Container manager key responsibilities are as follows:
  \item supervising container and adjusting its settings to a current usage demand, i.e. scaling it vertically
  \item delegating scaling operations to a stack manager when vertical scaling is not possible
 \end{itemize}
-
 
 \subsubsection{Implementation details}
 Container manager is strictly related to an autonomic container manager, component specified by Cloud-SAP. Consequently, its structure reflects a control loop, cyclically invoked by a scheduler and involves:
@@ -152,7 +152,7 @@ Container manager is strictly related to an autonomic container manager, compone
  
  \item planning - During this phase, analysis conclusion is mapped to an action. Table \ref{tab:container-manager-planning} presents such mapping. As one can see, only the CPU is supported for the time being. In case of increasing CPU, resource manager is first probed to determine whether there are enough resources to perform requested action. Unless cloud provider is capable of handling request, execution is delegated to an upper layer - stack manager.
  
- \item execution - Manager adjusts container settings using an OpenVZ agent, located on computing node where container is deployed. As for OpenVZ hypervisor, container's properties are in fact User Bean Counter (UBC), exposed through a REST interface.
+ \item execution - Manager adjusts container settings using an OpenVZ agent, located on computing node where container is deployed. As for OpenVZ hypervisor, container's properties are User Bean Counter (UBC), exposed through a REST interface.
 \end{itemize}
 
 \begin{table}[!htbp]
@@ -162,37 +162,50 @@ Container manager is strictly related to an autonomic container manager, compone
 \specialrule{.1em}{.05em}{.05em} 
 
 CPU exceeds upper usage limit & \texttt{GREATER\_CPU} & Increase CPU \\ \hline
-CPU is in legal range & \texttt{LESSER\_CPU} & Decrease CPU \\ \hline
-CPU is lesser than allowed limit & \texttt{FITS\_CPU} & None \\ \hline
+CPU is in legal range & \texttt{FITS\_CPU} & None \\ \hline
+CPU is lesser than allowed & \texttt{LESSER\_CPU} & Decrease CPU \\ \hline
 
 \end{tabularx}
 \caption{Container manager's analysis conclusion mappings}
 \label{tab:container-manager-planning}
 \end{table}
 
+Manager constantly loops through all aforementioned phases as depicted in figure \ref{fig:contanier-lifecycle-seq}. 
 
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=\textwidth]{chapter-implementation/contanier-lifecycle-seq}
+  \end{center}
+  \caption{Sequence diagram illustrating container manager control loop}
+  \label{fig:contanier-lifecycle-seq}
+\end{figure}
 
-\subsubsection{Control loop iteration}
-
-
+% darek
 \subsection{Stack manager}
 
 \subsubsection{Objectives}
+What lies in duties of a stack manager is:
+\begin{itemize}
+ \item supervising and scaling out stack
+ \item delegating problem to a cloud instance manager, when not capable of resolving it
+\end{itemize}
+
 \subsubsection{Implementation details}
 
-
+% radek
 \subsection{Cloud instance manager}
 
 \subsubsection{Objectives}
 \subsubsection{Implementation details}
 
-
+% darek
 \subsection{Cloud provider client}
 
 
-
+% darek
 \section{Cloud provider}
 
+% ?
 \section{Exemplary scenarios}
 
 \subsection{Service deployment}
