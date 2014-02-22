@@ -80,8 +80,6 @@ This section aims to give a brief outline of technologies that were used in this
     \end{asparaenum}
 \end{itemize}
 
-
-\newpage
 \begin{figure}[!ht]
   \begin{center}
     \includegraphics{chapter-implementation/hlo-deployment}
@@ -89,7 +87,6 @@ This section aims to give a brief outline of technologies that were used in this
   \caption{System's deployment diagram}
   \label{fig:hlo-deployment}
 \end{figure}
-\newpage
 
 % radek
 \section{Cloud brokerage subsystem}
@@ -177,7 +174,7 @@ Container manager is strictly related to an autonomic container manager, compone
     \end{itemize}
     Beside this, manager aggregates collected data - it calculates its average, in case when there is more than one measurement in a cycle.
     
- \item analysis - Aggregated data is analysed against client defined policy. Policies (e.g. listing Y) are based on a threshold model, denoting a valid range for a resource measurement. Hence, its evaluation results in \texttt{FITS, LESSER, GREATER}.
+ \item analysis - Aggregated data is analysed against client defined policy. Policies (e.g. listing ref{lst:service-spec-test-deployment-time}) are based on a threshold model, denoting a valid range for a resource measurement. Hence, its evaluation results in \texttt{FITS, LESSER, GREATER}.
  
  \item planning - During this phase, analysis conclusion is mapped to an action. Table \ref{tab:container-manager-planning} presents such mapping. As one can see, only the CPU is supported for the time being. In case of increasing CPU, resource manager is first probed to determine whether there are enough resources to perform requested action. Unless cloud provider is capable of handling request, execution is delegated to an upper layer - stack manager.
  
@@ -237,8 +234,9 @@ What lies in duties of a stack manager is:
 \specialrule{.1em}{.05em}{.05em} 
 
 Not enough slaves to handle load & \texttt{GREATER\_CPU} (slave) & \texttt{INSUFFICIENT\_SLAVES} &  Add slave \\ \hline
-Slaves are not fully occupied & \texttt{LESSER\_CPU} (slave) & \texttt{REDUNDANT} &  Remove slave \\ \hline
-Master is overly engaged & \texttt{GREATER\_CPU} (master) & \texttt{OVERLOADED\_MASTER} &  None \\ \hline
+Slaves are not fully occupied & \texttt{LESSER\_CPU} (slave) & \texttt{REDUNDANT\_SLAVE} &  Remove slave \\ \hline
+Master is overly occupied & \texttt{GREATER\_CPU} (master) & \texttt{OVERLOADED\_MASTER} &  None \\ \hline
+Master is not occupied & \texttt{LESSER\_CPU} (master) & \texttt{UNOCCUPIED\_MASTER} &  None \\ \hline
 Stack is healthy & \texttt{FITS\_CPU} & \texttt{HEALTHY} & None \\ \hline
 
 \end{tabularx}
@@ -246,7 +244,16 @@ Stack is healthy & \texttt{FITS\_CPU} & \texttt{HEALTHY} & None \\ \hline
 \label{tab:stack-manager-planning}
 \end{table}
 
-Figure X portrays above-mentioned sequence of steps.
+Figure \ref{fig:stack-lifecycle-seq} portrays above-mentioned sequence of steps.
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-implementation/stack-lifecycle-seq}
+  \end{center}
+  \caption{Sequence diagram illustrating stack manager control loop}
+  \label{fig:stack-lifecycle-seq}
+\end{figure}
+
 
  \item[\textbf{Stack deployment}] Stack deployment is done in two phases:
  \begin{inparaenum}
@@ -303,7 +310,6 @@ As for OpenNebula, there are two APIs that have to be supported:
 
 % darek
 \section{Cloud provider}
-\subsection{Introduction}
 What cloud provider is responsible for is:
 \begin{itemize}
  \item deploying, destroying, monitoring virtual machine
@@ -312,17 +318,52 @@ What cloud provider is responsible for is:
 
 As it was previously mentioned, we selected OpenNebula with AppFlow addition as a cloud provider. Besides, we used OpenVZ as a hypervisor. What is more, we had to supply OpenNebula's computing nodes with an OpenVZ agent - this is to enable vertical scaling, not available by default.
 
-Figure XXX shows exemplary deployment of OpenNebula along with involved components.
+Figure \ref{fig:cloud-provider-deployment} shows exemplary deployment of OpenNebula along with involved components.
 
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-implementation/cloud-provider-deployment}
+  \end{center}
+  \caption{Cloud provider's deployment diagram}
+  \label{fig:cloud-provider-deployment}
+\end{figure}
 
-% ?
+\newpage
 \section{Exemplary scenarios}
 
 \subsection{Service deployment}
+Diagram \ref{fig:case-deployment-seq} depicts sequence of steps involved in service deployment. Such request is triggered by a cloud client and involves multiple cloud provider. Consequently, cloud broker selects best offer for its client.
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=\textwidth]{chapter-implementation/case-deployment-seq}
+  \end{center}
+  \caption{Deployment service - sequence diagram}
+  \label{fig:case-deployment-seq}
+\end{figure}
 
 \subsection{Scaling application}
+Figure \ref{fig:scaling-1cp-seq} illustrates control loop that engages container and stack manager and results in horizontal scaling. This is due to the fact that computing node, where container is deployed, does not have enough resources to perform vertical scaling.
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=\textwidth]{chapter-implementation/scaling-1cp-seq}
+  \end{center}
+  \caption{Scaling within a single cloud provider - sequence diagram}
+  \label{fig:scaling-1cp-seq}
+\end{figure}
 
 \subsection{Scaling application across multiple cloud providers}
+That scenario employs all layers of implemented system: container, stack, cloud instance managers and cloud broker. Similarly to a previous case, policy is violated what results in attempt to scale vertically. This is, however, not possible and hence stack container checks if there are enough resources for a horizontal scaling. As this is not the case, request is passed to cloud instance manager and then cloud broker to deploy container on another cloud. This scenario is also known as a cloud bursting.
 
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=\textwidth]{chapter-implementation/scaling-2cp-seq}
+  \end{center}
+  \caption{Scaling across two cloud provider - sequence diagram}
+  \label{fig:scaling-2cp-seq}
+\end{figure}
+
+\newpage
 \section{Summary}
 
