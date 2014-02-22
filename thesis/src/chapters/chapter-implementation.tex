@@ -94,6 +94,11 @@ This section aims to give a brief outline of technologies that were used in this
 % radek
 \section{Cloud brokerage subsystem}
 
+% napisac o zyskach ze stosowania amqp:
+% asynchronicznosc, idealne do topologii (fan-out), publish/subscribe
+
+% format wiadomosci JSON - zarowno client-broker jak i broker-coordinator
+
 % darek
 \section{Auto-scaling subsystem}
 
@@ -196,7 +201,30 @@ What lies in duties of a stack manager is:
 \subsection{Cloud instance manager}
 
 \subsubsection{Objectives}
+\begin{itemize}
+  \item Processing of the deployment requests of stacks from cloud brokers
+  \item Delegating the horizontal-scaling requests to the cloud broker responsible for carrying out the whole process
+  \item Advertising the existence of a given cloud provider to the cloud broker
+\end{itemize}
+
 \subsubsection{Implementation details}
+As all of the aforementioned objectives require a communication medium between the cloud broker and cloud instance manager, we decided to employ a message-oriented middleware solution, Advanced Message Queuing Protocol (AMQP), for this purpose. The detailed justification of this choice can be found in the section devoted to \emph{Cloud brokerage subsystem}.  
+
+The types and formats of messages this component can process and send clearly reflects its objectives and are as follows:
+\begin{asparaenum}
+\item[\textbf{Deployment request message}] The message sent by a cloud broker that orders the given cloud provider to deploy a service. Data contained in the message includes the name of a service and attributes of each stack comprising it. The attributes of a stack are as follows:
+  \begin{compactitem}
+  \item type (e.g. java, ruby)
+  \item instances (the number of virtual machines that makes the given stack)
+  \item policies (scaling policies)
+  \end{compactitem}
+\item[\textbf{Offer request message}] The message sent by a cloud broker when it wants to retrieve the deployment capabilities of a cloud provider. It contains the attributes of the service to be deployed. They match those described in the \emph{deployment request message}.
+
+  This manager creates an offer for a service that consists of the cost of each stack. This cost is not dynamically computed, but fetched from the configuration file that contains mapping between the stack and its cost. The offer is sent back to the cloud broker for further processing.
+\item[\textbf{Horizontal-scaling message}] This message is send when it is not possible to continue having deployed a stack on the given cloud instance by the lack of sufficient resources or violation of a policy. It contains the stack specification as the platform needs this information to redeploy the stack to another cloud instance.
+\end{asparaenum}
+
+The behaviour required from the Cloud-SAP architecture regarding the control loop within the scope of \emph{monitoring} resources of a cloud provider is delegated to underlying components, stack and container managers. As this manager merely mediates between the cloud provider and broker, it does not employ any \emph{analysis} and \emph{plan} mechanisms. Conveying information forms the \emph{execute} attribute.
 
 % darek
 \subsection{Cloud provider client}
