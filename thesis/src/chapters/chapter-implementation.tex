@@ -93,11 +93,35 @@ This section aims to give a brief outline of technologies that were used in this
 
 % radek
 \section{Cloud brokerage subsystem}
+\subsection{Introduction}
+This subsystem consists of components which are directly used by a client or acts on their behalf. These are \emph{cloud client} and \emph{cloud broker} respectively. The placement of each component with annotated communication protocols can be seen in figure \ref{fig:csap-cloud-brokerage-deployment-diagram}. To annotate the cooperating components, the diagram embeds an auto-scaling subsystem node, which is not a part of this component.
 
-% napisac o zyskach ze stosowania amqp:
-% asynchronicznosc, idealne do topologii (fan-out), publish/subscribe
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics{chapter-implementation/csap-cloud-brokerage-deployment-diagram}
+  \end{center}
+  \caption{Deployment diagram of a Cloud brokerage subsystem}
+  \label{fig:csap-cloud-brokerage-deployment-diagram}
+\end{figure}
 
-% format wiadomosci JSON - zarowno client-broker jak i broker-coordinator
+\subsection{Cloud client}
+The client is a command line application that allows a user to communicate with a cloud broker which will further process the message and act on behalf the user. By means of this application, the user is able to deploy a service by preparing its specification in a JSON format and request its deployment to the cloud broker. Listing \ref{lst:service-spec-test-deployment-time} is an example of a service description.
+
+The application is written purely in Ruby and uses http protocol for communication. 
+
+\subsection{Cloud broker}
+The cloud broker mediates between a client and cloud providers. Its main responsibility is to, during the deployment or scaling of a service, gather information and offers from cloud providers forming a cloud federation and choose the best, in terms of cost, providers and orders them the deployment of specific stacks comprising the service.
+
+The broker uses Advanced Message Queuing Protocol (AMQP) for communication between itself and cloud providers. It was considered the best choice for this purpose as it ensure asynchronous message processing and sending messages according to fan-out paradigm which is ideal for this use case.
+
+The message format is the same as in the case of a client application.
+
+\subsubsection{Cloud providers selection}
+One of the main responsibilities of the Cloud broker is to map the stacks of a given service to cloud providers. This happens when a service is to be deployed or horizontally scaled. As this implementation merely wants to be a minimal viable product, we took only the cost attribute into consideration when performing this function.
+
+To formalize the previous statements, the problem is as follows: given a set whose elements (representing stacks) can take an non-negative values (they come from offers from cloud providers), find the mapping so as the overall sum (total cost) be minimal.
+
+The solution is to take the minimal available price for a given stack. The simplest proof is by contradiction -- we can assume that we computed our sum using a non-minimal value for some elements. But in this case, taking the minimal value for any element causes the sum to be less than previously computed -- contradiction.
 
 % darek
 \section{Auto-scaling subsystem}
