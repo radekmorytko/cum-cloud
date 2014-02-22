@@ -215,11 +215,46 @@ Manager constantly loops through all aforementioned phases as depicted in figure
 \subsubsection{Objectives}
 What lies in duties of a stack manager is:
 \begin{itemize}
+\item deploying stack
  \item supervising and scaling out stack
  \item delegating problem to a cloud instance manager, when not capable of resolving it
 \end{itemize}
 
 \subsubsection{Implementation details}
+
+\begin{asparaenum}
+ \item[\textbf{Stack supervision}] Stack manager's does not implement full control loop, as specified by Cloud-SAP. Instead it is solely focused on planning and execution:
+\begin{itemize}
+ \item planning - Stack manager retrieves problem resolution requests from container manager. It internally maps diagnosed problems to actions as stated in table \ref{tab:stack-manager-planning}. Similarly to a container manager, it attempts to reserve resources needed to implement desired change. In case when it is not possible, it problem is further delegated - to a cloud instance manager.
+ 
+ \item execution - Manager horizontally scales container invoking OpenNebula frontend API through cloud provider client. Noticeably, currently only adding and removing slave instances is possible. Hence, attempts to re-scale master instance (i.e. load balancer) are not supported.
+\end{itemize}
+
+\begin{table}[!htbp]
+\begin{tabularx}{\textwidth}{ l  l l l }
+\specialrule{.1em}{.05em}{.05em} 
+\textbf{Description} & \textbf{Container's symptom} & \textbf{Stack's symptom} & \textbf{Action} \\
+\specialrule{.1em}{.05em}{.05em} 
+
+Not enough slaves to handle load & \texttt{GREATER\_CPU} (slave) & \texttt{INSUFFICIENT\_SLAVES} &  Add slave \\ \hline
+Slaves are not fully occupied & \texttt{LESSER\_CPU} (slave) & \texttt{REDUNDANT} &  Remove slave \\ \hline
+Master is overly engaged & \texttt{GREATER\_CPU} (master) & \texttt{OVERLOADED\_MASTER} &  None \\ \hline
+Stack is healthy & \texttt{FITS\_CPU} & \texttt{HEALTHY} & None \\ \hline
+
+\end{tabularx}
+\caption{Stack manager's symptoms mappings}
+\label{tab:stack-manager-planning}
+\end{table}
+
+Figure X portrays above-mentioned sequence of steps.
+
+ \item[\textbf{Stack deployment}] Stack deployment is done in two phases:
+ \begin{inparaenum}
+  \item stacks's resource are reserved apriori
+  \item cloud provider client is leveraged to create service's AppFlow template and then instantiating it.
+ \end{inparaenum}
+
+\end{asparaenum}
 
 % radek
 \subsection{Cloud instance manager}
@@ -252,10 +287,33 @@ The behaviour required from the Cloud-SAP architecture regarding the control loo
 
 % darek
 \subsection{Cloud provider client}
+\subsubsection{Objectives}
+Cloud provider client is obliged to:
 
+\begin{itemize}
+ \item provide a unified access to a subset of cloud provider's features, required from an auto-scaling subsystem perspective
+\end{itemize}
+
+\subsubsection{Implementation details}
+As for OpenNebula, there are two APIs that have to be supported:
+\begin{itemize}
+ \item OpenNebula frontend - client is based on OpenNebula's ruby bindings providing access to operations such as virtual machine provisioning, container monitoring. XMLRPC is used as an underlying protocol.
+ \item AppFlow - client exposes AppFlow capabilities: creating service template and instantiating it. AppFlow is a REST web service.
+\end{itemize}
 
 % darek
 \section{Cloud provider}
+\subsection{Introduction}
+What cloud provider is responsible for is:
+\begin{itemize}
+ \item deploying, destroying, monitoring virtual machine
+ \item deploying, destroying a stack (group of correlated virtual machines)
+\end{itemize}
+
+As it was previously mentioned, we selected OpenNebula with AppFlow addition as a cloud provider. Besides, we used OpenVZ as a hypervisor. What is more, we had to supply OpenNebula's computing nodes with an OpenVZ agent - this is to enable vertical scaling, not available by default.
+
+Figure XXX shows exemplary deployment of OpenNebula along with involved components.
+
 
 % ?
 \section{Exemplary scenarios}
