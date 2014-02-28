@@ -1,3 +1,6 @@
 # ignore the output file
 #thesis.pdf
 file-watcher.rb
+src/thesis.glg
+src/thesis.glo
+src/thesis.gls

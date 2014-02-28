@@ -27,6 +27,7 @@
 \RequirePackage{titlesec}
 \RequirePackage{tocloft}
 \RequirePackage[utf8]{inputenc}
+\RequirePackage[colorlinks,plainpages=false]{hyperref}
 
 % Customised
 \RequirePackage{enumerate}
@@ -38,6 +39,9 @@
 \RequirePackage{courier}
 \RequirePackage{caption}
 \RequirePackage{paralist}
+
+% available styles: http://mirror.ox.ac.uk/sites/ctan.org/macros/latex/contrib/glossaries/glossaries-user.html#sec:styles
+\usepackage[style=altlist,toc,nonumberlist]{glossaries}
 
 \lstset{
          basicstyle=\footnotesize\ttfamily, % Standardschrift

@@ -1,6 +1,5 @@
 \documentclass[en]{aghdpl}  % praca w języku angielskim
 \usepackage[utf8]{inputenc}
-\usepackage{courier}
 
 \lstloadlanguages{TeX}
 
@@ -33,9 +32,14 @@
 
 \setlength{\cftsecnumwidth}{10mm}
 
+\makeglossaries
+\loadglsentries{appendices/glossary}
+\glsaddall
+
 %---------------------------------------------------------------------------
 
 \begin{document}
+
 
 % front pages, statements and abstract
 \titlepages
@@ -55,8 +59,12 @@
 \include{chapters/chapter-summary}
 
 
+\printglossaries
+
 \appendix
+
 \include{appendices/listings}
+
 
 \listoftables
 \clearpage
