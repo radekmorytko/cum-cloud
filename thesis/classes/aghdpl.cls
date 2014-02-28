@@ -43,6 +43,14 @@
 % available styles: http://mirror.ox.ac.uk/sites/ctan.org/macros/latex/contrib/glossaries/glossaries-user.html#sec:styles
 \usepackage[style=altlist,toc,nonumberlist]{glossaries}
 
+\hypersetup{
+    colorlinks,
+    citecolor=red,
+    filecolor=red,
+    linkcolor=red,
+    urlcolor=red
+}
+
 \lstset{
          basicstyle=\footnotesize\ttfamily, % Standardschrift
          %numbers=left,               % Ort der Zeilennummern

@@ -11,7 +11,7 @@ Having customer requirements in mind, it is crucial that a service provider is a
 	\item application platform
 	\item infrastructure
 \end{itemize}
-What is more, the fact that single service provider is constrained by his finite amount of resources poses a risk that it may not be able to serve customer all the time. Consequently, it is expected that adaptation at a service provider level is also possible, i.e. provider can offload some traffic to a different provider, as long as it satisfies a customer.
+What is more, the fact that a single service provider is constrained by his finite amount of resources poses a risk that it may not be able to serve customer all the time. Consequently, it is expected that adaptation at a service provider level is also possible, i.e. provider can offload some traffic to a different provider, as long as it satisfies a customer.
 
 While self-adaptive systems have a long history \cite{Mu04}, it have not been directly applied to a multi-layered problem that exists in a cloud computing environment. Especially, the research area at the last layer, which sizes across different service providers, is new. Although, architecture known as InterCloud \cite{BuRaCa10} investigates problem of cooperation and negotiation at a cloud level, it neither has been implemented nor presented in a context of self-adaptive system.
 
@@ -31,17 +31,16 @@ The proposed solution in this dissertation tries to deal with the aforementioned
 \section{Contributions}
 The main contributions of this dissertation are as follows:
 \begin{itemize}
-  \item A proposal of an architecture of federated cloud computing environment, which is based on and can be viewed as a simplified version of \emph{InterCloud}
-  \item The notion of considering each service model as an autonomic system
+  \item A proposal of an architecture of a cloud computing federation, which is based on and can be viewed as a simplified version of \emph{InterCloud}
   \item The implementation of the proposed architecture using OpenNebula technology stack
   \item The evaluation of implemented proof-of-concept
 \end{itemize}
 
 \section{Impact}
-We hope that the concept of representing each level of an autoscaling subsystem as an autonomic one can be thought-provoking for cloud computing scientists.  What is more, we believe that our successful attempt to implement a simplified variant of an InterCloud architecture will cause its gain in interest and popularity. 
-Finally, we consider the ideas contained in this work be beneficial to the OpenNebula ecosystem as they provide insights into the ways Quality of Service can be ensured:
+We hope that the concept of self-adaptation at each level of cloud can be thought-provoking for computing scientists.  What is more, we believe that our successful attempt to implement a simplified variant of an InterCloud architecture will cause its gain in interest and popularity. 
+Finally, we consider the ideas contained in this work be beneficial to the OpenNebula ecosystem as they provide insights into the ways Quality of Service can be assured:
 \begin{itemize}
-  \item implementing autoscaling capabilities
+  \item implementing auto-scaling capabilities
   \item designing \emph{cloud infrastructure} in accordance with InterCloud architecture
 \end{itemize}
 
