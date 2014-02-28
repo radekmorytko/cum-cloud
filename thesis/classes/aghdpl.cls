@@ -45,10 +45,10 @@
 
 \hypersetup{
     colorlinks,
-    citecolor=red,
-    filecolor=red,
-    linkcolor=red,
-    urlcolor=red
+    citecolor=black,
+    filecolor=black,
+    linkcolor=black,
+    urlcolor=black
 }
 
 \lstset{
