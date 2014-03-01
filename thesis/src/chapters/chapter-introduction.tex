@@ -31,18 +31,29 @@ The proposed solution in this dissertation tries to deal with the aforementioned
 \section{Contributions}
 The main contributions of this dissertation are as follows:
 \begin{itemize}
-  \item A proposal of an architecture of a cloud computing federation, which is based on and can be viewed as a simplified version of \emph{InterCloud}
+  \item A proposal of an architecture of a self-adaptive platform that ensures satisfying Quality of Service requirements of deployed users' applications in a cloud computing environment by leveraging horizontal, vertical and cloud-federation-aware scaling
   \item The implementation of the proposed architecture using OpenNebula technology stack
-  \item The evaluation of implemented proof-of-concept
+  \item The evaluation of the implemented proof-of-concept solution
 \end{itemize}
 
 \section{Impact}
-We hope that the concept of self-adaptation at each level of cloud can be thought-provoking for computing scientists.  What is more, we believe that our successful attempt to implement a simplified variant of an InterCloud architecture will cause its gain in interest and popularity. 
+We hope that the concept of self-adaptation at each level of cloud can be thought-provoking for computing scientists.  What is more, we believe that our successful attempt to implement the proposed architecture will cause a greater gain in interest in models that enable scaling applications across different cloud providers, e.g. \emph{InterCloud}.
 Finally, we consider the ideas contained in this work be beneficial to the OpenNebula ecosystem as they provide insights into the ways Quality of Service can be assured:
 \begin{itemize}
   \item implementing auto-scaling capabilities
-  \item designing \emph{cloud infrastructure} in accordance with InterCloud architecture
+  \item designing cloud-federation-aware cloud infrastructures
 \end{itemize}
 
 \section{Thesis structure}
+This dissertation is organised as follows:
+
+\begin{enumerate}[\bfseries {Chapter} I]
+    \setcounter{enumi}{1}
+  \item presents an introduction to the problem domain giving an outline and definition of concepts of \emph{self-adaptive systems}, \emph{application scaling} and \emph{interoperability of clouds}
+  \item describes and compares similar solutions in the field with the emphasis on their auto-scaling capabilities
+  \item presents our proposal of an architecture, giving an in depth description of each component which constitutes it
+  \item is devoted to our proof-of-concept implementation of the architecture
+  \item provides information regarding tests of the implementation and their results
+  \item presents conclusions and points further research directions
+\end{enumerate}
 
