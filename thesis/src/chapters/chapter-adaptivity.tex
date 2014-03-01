@@ -4,7 +4,7 @@
 \section{Self-adaptive system}
 
 \subsection{Introduction}
-Guaranteeing Quality-of-Service can be seen as continuous monitoring and reacting to undesirable conditions when necessary. In fact, this process is an IT procedure performed by system administrator. Figure \ref{fig:it-process} illustrates an example of such procedure. While system administrator can be directly responsible for manually performing steps depicted in figure \ref{fig:it-process}, it is much more favourable to automatize this process leading to a self-manageable system. Not only does it lead to efficiency of an IT process but also to its effectiveness \cite{IBM06}. It is achieved through:
+Guaranteeing Quality-of-Service can be seen as continuous monitoring and reacting to undesirable conditions when necessary. In fact, this process is an IT procedure performed by a system administrator. Figure \ref{fig:it-process} illustrates an example of such procedure. While system administrator can be directly responsible for manually performing steps depicted in figure \ref{fig:it-process}, it is much more favourable to automatize this process leading to a self-manageable system. Not only does it lead to efficiency of an IT process but also to its effectiveness \cite{IBM06}. It is achieved through:
 \begin{itemize}
   \item \emph{rapid process initiation} - components auto-initiate actions based on information derived from a system
   \item \emph{reduced time and skill requirements} - automatization of IT processes makes them easier and less troublesome what is especially important for skill-intensive, error-prone and long lasting tasks
@@ -28,10 +28,9 @@ What control loop is made of is:
 \begin{inparaenum}[1)]
  \item collection of data
  \item data analysis
- \item making a decisions
- \item enforcing actions
-\end{inparaenum}
-Figure \ref{fig:feedback-loop} depicts a generic feedback loop, giving context associated with each phase. Successive sections details aforementioned phases.
+ \item planning decisions
+ \item enforcing actions.
+\end{inparaenum} Figure \ref{fig:feedback-loop} depicts such a generic feedback loop. Successive sections detail aforementioned phases.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -42,23 +41,21 @@ Figure \ref{fig:feedback-loop} depicts a generic feedback loop, giving context a
 \end{figure}
 
 \subsection{Collecting data}
-During this phase, relevant data is collected from sensors. After that, data can be aggregated, filtered or stored to provide a reference point during future feedback loop evaluation. During this phase, there are a few concerns that should be investigated \cite{brun2009engineering}:
+During this phase, relevant data is collected from sensors. After that, data can be aggregated, filtered or stored to provide a reference point for future feedback loop evaluations. During this phase, there are a few matters that should be examined \cite{brun2009engineering}:
 \begin{itemize}
  \item sample rate
  \item probe reliability
  \item data format
 \end{itemize}
 
-Almost any cloud platform providers incorporates into its solution monitoring component, responsible for data collection. Mechanisms used vary from providers to provider and may involve mixture of protocols and standards. For example, Carina \cite{Carina} uses OpenNebula IM and VMM drivers relaying on a plaintext data, transferred through a SSH connection.
+Mechanisms used by a monitoring component vary from provider to provider and may involve a mixture of protocols and standards. For example, Carina \cite{Carina} uses OpenNebula IM and VMM drivers that relays on a plaintext data transferred through a SSH connection.
 
 \subsection{Analysis}
-Analysis part applies mathematical models to reason about data gathered during previous phase. It can leverage variety of approaches and be driven by a customer-defined policies.
-
-As \cite{brun2009engineering} specifies, it is important to take into account following concerns during analysis phase:
+Analysis part applies mathematical models to reason about data gathered during previous phase. It can leverage a variety of approaches and be driven by a customer-defined policies. As \cite{brun2009engineering} specifies, it is vital to take into account following concerns during analysis phase:
 \begin{itemize}
- \item applying historical data and existing patterns to current situation
+ \item applying historical data and existing patterns to a current situation
  \item archiving data
- \item applying adequate model to current situation
+ \item applying adequate model to a current situation
  \item model's stability
 \end{itemize}
 
@@ -74,10 +71,10 @@ Currently, service providers employs only simplified models such as threshold mo
 
 Threshold model, while trivial in its form, has been proved useful in a real-world scenarios as it is in case of AWS, OpenShift, Carina or OneCloud.
 
-As it was already mentioned, models are often controlled by a policies that denotes a condition which, when satisfied, triggers an action, harnessing environment's disturbance. Currently, industry leaders supports \cite{AmazonAutoScaling} two kind of policies:
+As it was already mentioned, models are often controlled by policies that denote a condition which, when satisfied, triggers an action harnessing environment's disturbance. Currently, industry leaders supports \cite{AmazonAutoScaling} two kind of policies:
 \begin{itemize}
- \item \textit{expression based} - allows to define how to scale application in response to changing conditions, which include factors such as memory, CPU usage, cost or some indirect, calculated metrics
- \item \textit{scheduled} - allows to scale an application in response to predictable load changes. For example, traffic increases during the weekends and decreases on working days. Hence, that predictable traffic patterns is used to scale application based on current time.
+ \item \textit{expression based policy} - it allows to define how to scale application in response to changing conditions, which include factors such as memory, CPU usage, cost or some indirect, calculated metrics
+ \item \textit{scheduled policy} - it allows to scale an application in response to predictable load changes. For example, traffic increases during the weekends and decreases on working days. Hence, that predictable traffic patterns is used to scale application based on current time.
 \end{itemize}
 
 Technically, policies are expressed in a human-readable format such as JSON, XML as it is in case of AWS EC2 or custom expression used for example by Carina. Appendix \ref{app:scaling-policies} presents XML format adopted by AWS E2 Auto-Scaling.
@@ -85,11 +82,9 @@ Technically, policies are expressed in a human-readable format such as JSON, XML
 \subsection{Decision arrangement}
 Before implementing changes in an environment, decision what resources have to be tuned in order to reach a desirable state is made. Decision should be made on the basis of:
 \begin{itemize}
- \item risk analysis - analysing how change effects whole environment
+ \item risk analysis - analysing how a change affects environment
  \item prioritising identified problems and resources
 \end{itemize}
 
-In a case of platform-as-a-service providers, none of them explicitly specifies how a change plan is composed.
-
 \subsection{Actions}
-Finally, a change plan is implemented in a system. Actions can cover a variety of scaling and resource tuning operations. Next chapter investigates problem of scaling applications in detail.
+Finally, a change plan is implemented in a system. Actions can cover a variety of scaling and resource tuning operations. Next chapter investigates problem of scaling an application in detail.
