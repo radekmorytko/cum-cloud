@@ -173,6 +173,9 @@ Because \emph{Carina} is capable of only horizontal scaling and \emph{Cloud-SAP}
 \subsubsection*{Hardware/VM configuration}
 All virtual machines were deployed onto \emph{Node1}, which uses \emph{OpenVZ} as a virtualization technology and whose hardware configuration can be found in table \ref{tab:test-deployment-time-common-hardware-configuration}. \emph{OpenNebula} was installed on a \emph{Frontend1} virtual machine and its configuration is in the same table. \emph{Carina} required the usage of 2 virtual machines which were deployed on \emph{Desktop} with KVM as a hypervisor and whose configuration is in table \ref{tab:test-auto-scaling-1cp-hardware-configuration}. Diagram \ref{fig:auto-scaling-1cp-physical-nodes} illustrates the physical setup of the test-case. 
 
+\subsubsection*{Test case duration}
+The test case lasts 25 minutes as the cpu usage is constant and equals 25\% after 21 minutes and 44 seconds.
+
 \begin{table}
   \centering
   \begin{tabular}{ | l | l | l | l | }
