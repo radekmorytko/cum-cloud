@@ -1,10 +1,14 @@
 \chapter{Problem domain}
-\chapterintro{This chapter details mechanisms and practises that ensures a requested Quality-of-Service level is met by a means of a self-adaptive system that scales across multiple service providers.}
+\chapterintro{This chapter details mechanisms and practises that ensures a Quality-of-Service level is met by means of a self-adaptive system that scales across multiple service providers.}
 
 \section{Self-adaptive system}
 
 \subsection{Introduction}
-Guaranteeing Quality-of-Service, a critical concept in this paper, can be seen as continuous monitoring and reacting to undesirable conditions when necessary. In fact, this process is as an IT procedure and traditionally belongs to the duties of a system administrator. Figure \ref{fig:it-process} illustrates exemplary IT procedure.
+Guaranteeing Quality-of-Service can be seen as continuous monitoring and reacting to undesirable conditions when necessary. In fact, this process is an IT procedure performed by system administrator. Figure \ref{fig:it-process} illustrates an example of such procedure. While system administrator can be directly responsible for manually performing steps depicted in figure \ref{fig:it-process}, it is much more favourable to automatize this process leading to a self-manageable system. Not only does it lead to efficiency of an IT process but also to its effectiveness \cite{IBM06}. It is achieved through:
+\begin{itemize}
+  \item \emph{rapid process initiation} - components auto-initiate actions based on information derived from a system
+  \item \emph{reduced time and skill requirements} - automatization of IT processes makes them easier and less troublesome what is especially important for skill-intensive, error-prone and long lasting tasks
+\end{itemize}
 
 \begin{figure}[!ht]
   \begin{center}
@@ -14,18 +18,20 @@ Guaranteeing Quality-of-Service, a critical concept in this paper, can be seen a
   \label{fig:it-process}
 \end{figure}
 
-While system administrator can be directly responsible for manually performing steps depicted in figure \ref{fig:it-process}, it is much more favourable to automatize this process leading to a self-manageable system. Not only does it lead to efficiency of an IT process but also to its effectiveness \cite{IBM06} achieved through:
-\begin{itemize}
-  \item \emph{rapid process initiation} - components auto-initiates actions based on information derived from a system
-  \item \emph{reduced time and skill requirements} - automatization of IT processes makes them easier and less troublesome what is especially important for skill-intensive, error-prone and long lasting tasks
-\end{itemize}
 
 In the heart of the every self-adaptive systems, according to \cite{brun2009engineering}, lies a feedback loop, concept that originates from a control engineering. As paper's authors advocate:
 \begin{quote}
 Feedback loops provide the generic mechanism for self-adaptation. Positive feedback occurs when an initial change in a system is reinforced, which leads toward an amplification of the change. In contrast, negative feedback triggers a response that counteracts a perturbation. 
 \end{quote}
 
-What control loop is made of is collection of data, its analysis, making a decisions and enforcing them in the environment. Figure \ref{fig:feedback-loop} depicts a generic feedback loop, giving context associated with each phase.
+What control loop is made of is:
+\begin{inparaenum}[1)]
+ \item collection of data
+ \item data analysis
+ \item making a decisions
+ \item enforcing actions
+\end{inparaenum}
+Figure \ref{fig:feedback-loop} depicts a generic feedback loop, giving context associated with each phase. Successive sections details aforementioned phases.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -34,8 +40,6 @@ What control loop is made of is collection of data, its analysis, making a decis
   \caption{Feedback loop \cite{brun2009engineering}}
   \label{fig:feedback-loop}
 \end{figure}
-
-Successive sections details aforementioned phases and gives an examples of systems leveraging feedback loops.
 
 \subsection{Collecting data}
 During this phase, relevant data is collected from sensors. After that, data can be aggregated, filtered or stored to provide a reference point during future feedback loop evaluation. During this phase, there are a few concerns that should be investigated \cite{brun2009engineering}:
