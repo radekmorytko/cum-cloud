@@ -59,9 +59,9 @@ This section aims to give a brief outline of technologies that were used in this
     \begin{asparaenum}
     \item[\textbf{Web Services/HTTP}] Communication between a client and a cloud broker is done by the usage of \emph{web services} over \emph{http} protocol. The cloud broker for a given client exposes a \emph{RESTful} API for the deployment of a service. The web service accepts \emph{JSON}-encoded messages, which comprises the name of a service and specification of each stack comprising it. The example of such a message can be found in listing \ref{lst:service-spec-test-deployment-time}.
 
-      The reason we chose this technology is because of its simplicity, maturity and great support from Ruby platform. The other solutions that could be used in place of this one include some message-oriented middleware standards such as AMQP or JMS, other standards that facilitate communications among systems/components such as CORBA, and other such as RMI or RPC. Some of the aforementioned technologies had been eliminated once we chose Ruby as the language the platform would be implemented in. This is because of their platform-specific nature, e.g. JMS requires the system to be written in Java.
+      The reason we chose this technology is because of its simplicity, maturity and great support from Ruby platform. The other solutions that could be used in place of this one include some message-oriented middleware standards such as AMQP or JMS, other standards that facilitate communications among systems/components such as CORBA, and other such as RMI or RPC. Some of the aforementioned technologies had been eliminated once we chose Ruby as the language which the platform would be implemented in. This is because of their platform-specific nature, e.g. JMS requires the system to be written in Java.
 
-    \item[\textbf{AMQP}] Being able to communicate in an asynchronous, more scalable and loosely coupled way between a cloud broker and different cloud instance managers representing cloud providers requires the usage of message-oriented middleware. In our case we decided to use \emph{Advanced Message Queuing Protocol}as this standard is mature and its support in Ruby is solid.
+    \item[\textbf{AMQP}] Being able to communicate in an asynchronous, more scalable and loosely coupled way between a cloud broker and different cloud instance managers representing cloud providers requires the usage of message-oriented middleware. In our case we decided to use \emph{Advanced Message Queuing Protocol} as this standard is mature and its support in Ruby is solid.
 
       This communication channel is used in the implementation to 
       \begin{inparaenum}[a)]
@@ -116,9 +116,9 @@ The message format is the same as in the case of a client application.
 \subsubsection{Cloud providers selection}
 One of the main responsibilities of the Cloud broker is to map the stacks of a given service to cloud providers. This happens when a service is to be deployed or horizontally scaled. As this implementation merely wants to be a minimal viable product, we took only the cost attribute into consideration when performing this function.
 
-To formalize the previous statements, the problem is as follows: given a set whose elements (representing stacks) can take an non-negative values (they come from offers from cloud providers), find the mapping so as the overall sum (total cost) be minimal.
+To formalize the previous statements, the problem is as follows: given a set whose elements (representing stacks) can take an non-negative values (they come from offers from cloud providers), find the mapping so as the overall sum of its elements (total cost) be minimal.
 
-The solution is to take the minimal available price for a given stack. The simplest proof is by contradiction -- we can assume that we computed our sum using a non-minimal value for some elements. But in this case, taking the minimal value for any element causes the sum to be less than previously computed -- contradiction.
+The solution is to take the minimal available price for every stack. The simplest proof is by contradiction -- we can assume that we computed our sum using a non-minimal value for some elements. But in this case, taking the minimal value for any element causes the sum to be less than previously computed -- contradiction.
 
 % darek
 \section{Auto-scaling subsystem}
