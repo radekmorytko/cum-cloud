@@ -5,7 +5,7 @@
 }
 
 \section{Introduction}
-We carried out a number of tests which aim to prove the solution be better than currently available, especially in terms of:
+We carried out a number of tests which aim to prove the solution to be better than currently available, especially in terms of:
 \begin{enumerate}
   \item deployment cost
   \item cost of providing given Quality-of-Service
@@ -13,7 +13,7 @@ We carried out a number of tests which aim to prove the solution be better than 
 \end{enumerate}
 
 \subsection*{Hardware and virtual machines configuration}
-Many of the carried out tests were run on the same hardware and/or used the same virtual machines so for clarity of presentation their parameters are presented not in a description of every test, but here in table \ref{tab:test-deployment-time-common-hardware-configuration}.
+All tests that were carried out were run on the same hardware and/or used the same virtual machines so for clarity of presentation their parameters are presented not in a description of every test, but here in table \ref{tab:test-deployment-time-common-hardware-configuration}.
 
 \begin{table}
   \centering
@@ -178,11 +178,13 @@ The test case lasts 25 minutes as the cpu usage is constant and equals 25\% afte
 
 \begin{table}
   \centering
-  \begin{tabular}{ | l | l | l | l | }
-    \hline                        
-    Name & CPU & RAM & HD \\
-    \hline
-    (virtual machine) carina-frontend  & 1 CPU & 1GB & 6GB \\
+  \begin{tabular}{  l  l  l  l  }
+    \specialrule{.1em}{.05em}{.05em} 
+     
+    \textbf{Name} & \textbf{CPU} & \textbf{RAM} & \textbf{HD} \\
+    \specialrule{.1em}{.05em}{.05em} 
+
+    (virtual machine) carina-frontend  & 1 CPU & 1GB & 6GB \\ \hline
     (virtual machine) carina-management-vm  & 1 CPU & 1GB & 9GB \\
     \hline  
   \end{tabular}
@@ -244,18 +246,18 @@ Judging by the plot of cost (figure \ref{fig:auto-scaling-1cp-cost-comparison}),
 \section{Auto-scaling -- multiple-provider based}
 \subsection*{Description}
 
-\subsubsection{Motivation} This test case aims to prove that scaling across multiple cloud providers is vitally important while ensuring appropriate Quality-of-Service, especially in cases of increased number of service requests. Such scaling scenario, known also as cloud-bursting, leverage benefits arising from offloading application load to an external provider. In order to verify our concept we compare number of transactions per second guaranteed by \emph{Cloud-SAP} and \emph{Carina}. While our proof of concept solution features multi-layer scaling and is cloud federation aware, \emph{Carina} adopts only horizontal scaling. It is expected that test case prove benefits emerging from enriching application platform provider with an cloud federation awareness.
+\subsubsection{Motivation} This test case aims to prove that scaling across multiple cloud providers is vitally important when ensuring appropriate Quality-of-Service, especially in cases of increased number of service requests. Such scaling scenario, known also as cloud-bursting, leverage benefits arising from offloading application load to an external provider. In order to verify our concept we compare number of transactions per second guaranteed by \emph{Cloud-SAP} and \emph{Carina}. While our proof of concept solution features multi-layer scaling and is cloud federation aware, \emph{Carina} adopts only horizontal scaling. It is expected that test case prove benefits emerging from enriching application platform provider with a cloud federation awareness.
  
 \subsubsection{Scenario}
 Testing requires following steps to be done:
 \begin{enumerate}
-\item deploy exemplary service
+\item deploy an exemplary service
 \item observe system behaviour under load, simulated by a resource usage mock. It is vital for a resource usage to exceed a single provider capabilities
 \item assess system characteristics, including number of handled transactions per second
 \end{enumerate}
 
 \subsubsection*{Load simulation}
-Similarly to a previous test case, we leveraged a resource mock that allows us to precisely control monitoring information returned to an system. Besides, in order to simplify test case, we were solely focused on a CPU usage. CPU usage function has to exceed upper threshold limit at some point and stay at that level, triggering successive auto-scaling events. However, at some point single cloud provider resources will be surpassed. Equation \eqref{eq:cpu-mock-usage-2cp} denotes a resource usage function that is expected to fulfil above-mentioned scenario and is illustrated in figure \ref{fig:auto-scaling-2cp-cpu-usage-function}.
+Similarly to a previous test case, we leveraged a resource mock that allows us to precisely control monitoring information returned to an system. Besides, in order to simplify test case, we were solely focused on a CPU usage. CPU usage function has to exceed upper threshold limit at some point and stay at that level, triggering successive auto-scaling events. However, at some point single cloud provider resources will be surpassed. Equation \eqref{eq:cpu-mock-usage-2cp} denotes a resource usage function that is expected to fulfil above-mentioned conditions and is illustrated in figure \ref{fig:auto-scaling-2cp-cpu-usage-function}.
 \begin{equation}
  f(x) = \frac{29}{1500}x^3-\frac{21}{20}x^2+\frac{533}{30}x
  \label{eq:cpu-mock-usage-2cp}
@@ -288,7 +290,7 @@ Similarly to a previous test case, we leveraged a resource mock that allows us t
   
   \lstinputlisting[caption=OpenNebula configuration excerpt -- virtual machine and information manager, label=lst:auto-scaling-2cp-one-config]{auto-scaling-2cp-one-config}
   
-  \item[\textbf{Deployment diagrams}] Components that took part during testing are show in figures \ref{fig:autoscale-2cp-cloud-sap-deployment-diagram} and \ref{fig:auto-scaling-2cp-carina-deployment-diagram}.
+  \item[\textbf{Deployment diagrams}] Components that took part during test are show in figures \ref{fig:autoscale-2cp-cloud-sap-deployment-diagram} and \ref{fig:auto-scaling-2cp-carina-deployment-diagram}.
 
   \begin{figure}[!ht]
     \begin{center}
@@ -320,7 +322,7 @@ Figure \ref{fig:auto-scaling-2cp-physical-nodes} depicts physical configuration 
 \end{figure}
 
 \subsubsection*{Test case duration}
-The test case lasts 25 minutes as the cpu usage is constant and equals 25\% after 21 minutes and 44 seconds.
+The test case lasts 25 minutes.
 
 
 \newpage
@@ -335,10 +337,10 @@ Carina, on the other hand, supports solely horizontal scaling using single cloud
 
 \begin{asparaenum}
   \item[\textbf{Cloud-SAP}] 
-   In total, there were 13 vertical (increasing CPU limit) 2 horizontal (adding a container) scaling events. First action took place minute after first violation of scaling policy rule. Since then, slaves' CPU were successively increasing to the point were further scaling wasn't possible - 13th minute of the test. Therefore, \emph{Cloud-SAP} deployed two new slaves on \emph{CP-2}. Listing \ref{lst:auto-scaling-2cp-results-csap-logs} presents logs covering service lifecycle. \lstinputlisting[caption=Cloud-SAP logs excerpt regarding auto-scaling actions on multiple providers, label=lst:auto-scaling-2cp-results-csap-logs]{auto-scaling-2cp-results-csap-logs}
+   In total, there were 13 vertical and 2 horizontal scaling events. First action took place minute after first violation of scaling policy rule. Since then, slaves' CPU were successively increasing to the point were further scaling wasn't possible - 13th minute of the test. Therefore, \emph{Cloud-SAP} deployed two new slaves on \emph{CP-2}. Listing \ref{lst:auto-scaling-2cp-results-csap-logs} presents logs covering service lifecycle. \lstinputlisting[caption=Cloud-SAP logs excerpt regarding auto-scaling actions on multiple providers, label=lst:auto-scaling-2cp-results-csap-logs]{auto-scaling-2cp-results-csap-logs}
   
   \item[\textbf{Carina}] 
-  Similarly to a \emph{Cloud-SAP}, first scaling event (slave addition) was noticed in 6th minute of test. Scaling jobs were continuously invoked every 2 minutes until capacity of a \emph{CP\-1} hasn been fully exploited. Listing \ref{lst:auto-scaling-2cp-results-carina-jobs} summarises jobs performed by \emph{Carina}. \lstinputlisting[caption=Carina environment manager logs with taken actions (\emph{jobs}), label=lst:auto-scaling-2cp-results-carina-jobs]{auto-scaling-2cp-results-carina-jobs}
+  Similarly to a \emph{Cloud-SAP}, first scaling event (slave addition) was noticed in 6th minute of test. Scaling jobs were continuously invoked every 2 minutes until capacity of a \emph{CP\-1} has not been fully exploited. Listing \ref{lst:auto-scaling-2cp-results-carina-jobs} summarises jobs performed by \emph{Carina}. \lstinputlisting[caption=Carina environment manager logs with taken actions (\emph{jobs}), label=lst:auto-scaling-2cp-results-carina-jobs]{auto-scaling-2cp-results-carina-jobs}
 \end{asparaenum}
   
 
