@@ -149,7 +149,7 @@
   \sffamily{
     \bfseries{
       \Large{
-        University of Science and Technology in Krakow
+        University of Science and Technology in Kraków
       } \\ 
     \vspace{5mm}
     \large \@facultyEN \\
@@ -179,7 +179,7 @@
   \large Assistant Professor of Computer Science
 \end{flushright}
 
-\vfill{\Large Krakow \@date}
+\vfill{\Large Kraków \@date}
 
 \end{center}
 
@@ -243,7 +243,7 @@
   \large  Promotor:{ \@supervisorPL} 
 \end{flushright}
 
-\vfill{\Large Krakow \@date}
+\vfill{\Large Kraków \@date}
 
 \end{center}
 
