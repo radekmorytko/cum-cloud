@@ -16,7 +16,7 @@ Previous chapters detailed requirements that a self-manageable platform oriented
 Apart from that, we implemented minimal viable modules that is monitoring, analysis, planning and execution. For example, we based analysis solely on threshold model, discarding more advanced techniques that uses prediction mechanisms.
 
 \section{Overview}
-As previous section indicates, key elements of discussed implementation are as follows: autonomic container manager, autonomic stack manager, autonomic cloud instance manager, autonomic cloud federation manager. Taking their role in service deployment into account, we grouped them into auto-scaling and cloud brokerage subsystems. High level overview of system, including its internal and external elements is depicted in figure \ref{fig:hlo-implementation}. Diagram \ref{fig:csap-layers-subsystem} illustrates thee relationship between Cloud-SAP managers and above-mentioned subsystems. 
+As previous section indicates, key elements of discussed implementation are as follows: autonomic container manager, autonomic stack manager, autonomic cloud instance manager, autonomic cloud federation manager. Taking their role in service deployment into account, we grouped them into auto-scaling and cloud brokerage subsystems. High level overview of system, including its internal and external elements is depicted in figure \ref{fig:hlo-implementation}. Diagram \ref{fig:csap-layers-subsystem} illustrates the relationship between Cloud-SAP managers and above-mentioned subsystems. 
 
 \begin{figure}[!ht]
   \begin{center}
@@ -30,21 +30,21 @@ As previous section indicates, key elements of discussed implementation are as f
   \begin{center}
     \includegraphics{chapter-implementation/csap-layers-subsystem}
   \end{center}
-  \caption{System parts and their relation with autonomic managers}
+  \caption{System parts and their relation with Cloud-SAP's autonomic managers}
   \label{fig:csap-layers-subsystem}
 \end{figure}
 
 As one can see, our implementation is composed by following parts:
 \begin{asparaenum}
- \item[\textbf{Auto-scaling subsystem}] Auto-scaling subsystem supervises service's life cycle, monitoring it and enacting scaling actions when necessary. It is concentrated on all service's aspects: containers, stacks and application instances thus it is in fact a group of autonomic managers composed by container, stack and cloud instance managers.
+ \item[\textbf{Auto-scaling subsystem}] Auto-scaling subsystem supervises service's life cycle, monitors it and enacts scaling actions when necessary. It is concentrated on all service's aspects: containers, stacks and application instances thus it is in fact a group of managers composed by container, stack and cloud instance managers.
 
  \item[\textbf{Cloud brokerage subsystem}] Brokerage subsystem groups components that together mediates between cloud providers. In particular, it consists of:
   \begin{itemize}
-   \item Cloud broker - probes cloud providers and selects best offer according to a given policy. In Cloud-SAP model, it plays a role of orchestrating autonomic manager, that is, autonomic cloud federation manager.
+   \item Cloud broker - probes cloud providers and selects best offer according to a given policy. In Cloud-SAP model, it plays a role of orchestrating autonomic manager, that is, a cloud federation manager.
    \item Cloud client - delegates service provisioning request to a cloud broker.
   \end{itemize}
  
- \item[\textbf{Cloud provider}] External system that manages a group of resource such as computing nodes, storage and networking typologies. Particularly, it is able to deploy, shutdown, migrate and monitor containers. Although Cloud-SAP is utterly cloud provider independent, our implementation is solely focused on OpenNebula that uses OpenVZ as a hypervisor. We selected OpenNebula due to its simplicity, flexibility and our expertise in managing it. Choosing hypervisor, we were compelled to select one that is based on lightweight containers due to theirs flexibility in scaling as previously advocated. OpenVZ was a natural choice due to its maturity and our familiarity within it.
+ \item[\textbf{Cloud provider}] External system that manages a group of resources such as computing nodes, storage and network topologies. Particularly, it is able to deploy, shutdown, migrate and monitor containers. Although Cloud-SAP is utterly cloud provider independent, our implementation is solely focused on OpenNebula that uses OpenVZ as a hypervisor. We selected OpenNebula due to its simplicity, flexibility and our expertise in managing it. Choosing hypervisor, we were compelled to select one that is based on lightweight containers due to theirs flexibility in scaling as previously advocated. OpenVZ was a natural choice due to its maturity and our familiarity within it.
  
  \item[\textbf{Application provider}] An entity that is interested in application scaling and deployment. It can be represented by a human being as well as by an external system.
 \end{asparaenum}
@@ -130,7 +130,7 @@ The onus is on auto-scaling subsystem to:
  \item handle application deployment requests and pass them to a cloud provider 
 \end{itemize}
 
-As overview states, this subsystem is in fact a loosely coupled group of three autonomic managers, cooperating together to achieve aforementioned subsystem's goals. System is structured (figure \ref{fig:auto-scaling-subsystem-deployment}) on top of that observation.
+As overview states, this subsystem is in fact a loosely coupled group of three managers, cooperating together to achieve aforementioned subsystem's goals. System is structured (figure \ref{fig:auto-scaling-subsystem-deployment}) on top of that observation.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -147,11 +147,11 @@ As overview states, this subsystem is in fact a loosely coupled group of three a
  
  \item[\textbf{Cloud instance manager}] Supervisor of a whole cloud instance correlated to a given cloud provider. It participates in dialogue with cloud broker by advertising cloud provider capabilities and handling provisioning requests. Besides, it is eligible of most coarse-grained scaling action: horizontal scaling across multiple providers.
  
- \item[\textbf{Cloud broker}] Is a part of cloud brokerage subsystem responsible for mediating between different auto-scaling subsystems and cloud client. Previous section covers it in more details.
+ \item[\textbf{Cloud broker}] It is a part of cloud brokerage subsystem responsible for mediating between different auto-scaling subsystems and cloud client. Previous section covers it in more details.
  
- \item[\textbf{Cloud provider}] External system that provisions and manages container and underlying resources. In case of this implementation it is an OpenNebula frontend and AppFlow server, accessible through a Cloud provider client. Apart from that, OpenVZ exposes its manageability capabilities by OpenVZ agent and its REST interfaces. Next section details cloud provider.
+ \item[\textbf{Cloud provider}] External system that provisions and manages container and underlying resources. In case of this implementation it is an OpenNebula frontend and AppFlow server, accessible through a Cloud provider client. Apart from that, OpenVZ exposes its manageability capabilities by an OpenVZ agent and its REST interfaces. Next section details cloud provider.
  
- \item[\textbf{Cloud provider client}] Generic component that brings cloud provider features to a auto-scaling subsystem. Noticeably, it may be a facade to different systems, freeing subsystem from accessing cloud provider's internal structure as it is in case of our implementation. For example, it delegates service provisioning requests to an Applfow server while monitoring and scaling are passed to an OpenNebula frontend.
+ \item[\textbf{Cloud provider client}] Generic component that brings cloud provider features to a auto-scaling subsystem. Noticeably, it may be a facade to different systems, freeing subsystem from accessing cloud provider's internal structure as it is in case of our implementation. For example, it delegates service provisioning requests to an Appflow server, while monitoring and scaling are passed to an OpenNebula frontend.
 \end{asparaenum}
 
 % darek
@@ -174,7 +174,7 @@ Container manager is strictly related to an autonomic container manager, compone
     \end{itemize}
     Beside this, manager aggregates collected data - it calculates its average, in case when there is more than one measurement in a cycle.
     
- \item analysis - Aggregated data is analysed against client defined policy. Policies (e.g. listing ref{lst:service-spec-test-deployment-time}) are based on a threshold model, denoting a valid range for a resource measurement. Hence, its evaluation results in \texttt{FITS, LESSER, GREATER}.
+ \item analysis - Aggregated data is analysed against client defined policy. Policies (e.g. listing \ref{lst:service-spec-test-deployment-time}) are based on a threshold model, denoting a valid range for a resource measurement. Hence, depending whether value is in range, is lesser than minimal or greater than maximal it evaluates to: \texttt{FITS, LESSER, GREATER} respectively.
  
  \item planning - During this phase, analysis conclusion is mapped to an action. Table \ref{tab:container-manager-planning} presents such mapping. As one can see, only the CPU is supported for the time being. In case of increasing CPU, resource manager is first probed to determine whether there are enough resources to perform requested action. Unless cloud provider is capable of handling request, execution is delegated to an upper layer - stack manager.
  
@@ -222,9 +222,9 @@ What lies in duties of a stack manager is:
 \begin{asparaenum}
  \item[\textbf{Stack supervision}] Stack manager's does not implement full control loop, as specified by Cloud-SAP. Instead it is solely focused on planning and execution:
 \begin{itemize}
- \item planning - Stack manager retrieves problem resolution requests from container manager. It internally maps diagnosed problems to actions as stated in table \ref{tab:stack-manager-planning}. Similarly to a container manager, it attempts to reserve resources needed to implement desired change. In case when it is not possible, it problem is further delegated - to a cloud instance manager.
+ \item planning - Stack manager retrieves problem resolution requests from container manager. It internally maps diagnosed problems to actions as stated in table \ref{tab:stack-manager-planning}. Similarly to a container manager, it attempts to reserve resources needed to implement desired change. In case when it is not possible, problem is further delegated to a cloud instance manager.
  
- \item execution - Manager horizontally scales container invoking OpenNebula frontend API through cloud provider client. Noticeably, currently only adding and removing slave instances is possible. Hence, attempts to re-scale master instance (i.e. load balancer) are not supported.
+ \item execution - Manager horizontally scales container by invoking OpenNebula frontend API through cloud provider client. Noticeably, currently only adding and removing slave instances is possible. Hence, attempt to re-scale master instance (i.e. load balancer) is not supported.
 \end{itemize}
 
 \begin{table}[!htbp]
@@ -258,7 +258,7 @@ Figure \ref{fig:stack-lifecycle-seq} portrays above-mentioned sequence of steps.
  \item[\textbf{Stack deployment}] Stack deployment is done in two phases:
  \begin{inparaenum}
   \item stacks's resource are reserved apriori
-  \item cloud provider client is leveraged to create service's AppFlow template and then instantiating it.
+  \item cloud provider client is leveraged to create service's AppFlow template and then instantiate it.
  \end{inparaenum}
 
 \end{asparaenum}
@@ -332,7 +332,7 @@ Figure \ref{fig:cloud-provider-deployment} shows exemplary deployment of OpenNeb
 \section{Exemplary scenarios}
 
 \subsection{Service deployment}
-Diagram \ref{fig:case-deployment-seq} depicts sequence of steps involved in service deployment. Such request is triggered by a cloud client and involves multiple cloud provider. Consequently, cloud broker selects best offer for its client.
+Diagram \ref{fig:case-deployment-seq} depicts sequence of steps involved in service deployment. Such request is triggered by a cloud client and involves multiple cloud providers. Cloud broker selects best offer for its client.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -354,7 +354,7 @@ Figure \ref{fig:scaling-1cp-seq} illustrates control loop that engages container
 \end{figure}
 
 \subsection{Scaling application across multiple cloud providers}
-That scenario employs all layers of implemented system: container, stack, cloud instance managers and cloud broker. Similarly to a previous case, policy is violated what results in attempt to scale vertically. This is, however, not possible and hence stack container checks if there are enough resources for a horizontal scaling. As this is not the case, request is passed to cloud instance manager and then cloud broker to deploy container on another cloud. This scenario is also known as a cloud bursting.
+That scenario employs all layers of implemented system: container, stack, cloud instance managers and cloud broker. Similarly to a previous case, policy is violated what results in attempt to scale vertically. This is, however, not possible and hence stack container checks if there are enough resources for a horizontal scaling. As this is not the case, request is passed to a cloud instance manager and then cloud broker deploys container on another cloud. This scenario is known as a cloud bursting.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -366,7 +366,7 @@ That scenario employs all layers of implemented system: container, stack, cloud 
 
 \newpage
 \section{Summary}
-Summing up, design of a proof-of-concept implementation of Cloud-SAP was presented. Despite the fact that it is not exhaustive, more specifically, it does not harness any prediction or advanced analysis mechanisms, it comprehensive enough to validate key points of Cloud-SAP and provide an entry point for discussions and future implementations. Although, it supports solely OpenNebula, it remains open for any cloud provider. Similarly, platform currently supports vertical scaling of CPU, horizontal scaling and scaling across multiple cloud provider, however, it is expected that next versions support wider range of actions (i.e. vertical scaling of memory, application platform tuning).
+Summing up, design of a proof-of-concept implementation of Cloud-SAP was presented. Despite the fact that it is not exhaustive, more specifically, it does not harness any prediction or advanced analysis mechanisms, it comprehensive enough to validate key points of Cloud-SAP and provide an entry point for discussions and future implementations. Although, it supports solely OpenNebula, it remains open for any cloud provider. Similarly, platform currently supports vertical scaling of CPU, horizontal scaling and scaling across multiple cloud provider, however, it is expected that successive versions will support wider range of actions (i.e. vertical scaling of memory, application platform tuning).
 
 
 
