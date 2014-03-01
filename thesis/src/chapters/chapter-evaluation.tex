@@ -121,7 +121,7 @@ We wanted to ensure that both solutions, \emph{Carina} and \emph{Cloud-SAP}, col
   \item (boundary conditions) CPU usage should be between 0 and 100 and, additionally, should exceed the previously set scaling threshold value of each solutions so that it would trigger the scaling policies evaluation
   \item once the scaling operations have completed, CPU usage should be constant at a rate which would not introduce any changes in the environment settings (such as the number of virtual machines and parameters of any virtual machine)
 \end{itemize}
-To find the equation of a function that would satisfy the previously-mentioned requirements we used \emph{polynomial interpolation}. As we chose 3 points which were the input to the algorithm, we got a cubic polynomial as an output. Adding further constraints to mimic two spikes in CPU usage resulted in the function whose formula is in \eqref{eq:cpu-mock-usage} and plot in figure \ref{fig:auto-scaling-1cp-cpu-usage-function}.
+To find the equation of a function that would satisfy the previously-mentioned requirements we used \emph{polynomial interpolation}. As we chose 4 points which were the input to the algorithm, we got a cubic polynomial as an output. Adding further constraints to mimic two spikes in CPU usage resulted in the function whose formula is in \eqref{eq:cpu-mock-usage} and plot in figure \ref{fig:auto-scaling-1cp-cpu-usage-function}.
 \begin{eqnarray}
   %f(x) = (1751 *x)/132+(3 *x**2)/8-(31* x**3)/264
   %x <= 11.583 ? f(x) : ( x <= 21.441 ?  f(x - 10) : 25 )
@@ -318,6 +318,10 @@ Figure \ref{fig:auto-scaling-2cp-physical-nodes} depicts physical configuration 
   \caption{Auto-scaling - multiple-provider based: environment configuration}
   \label{fig:auto-scaling-2cp-physical-nodes}
 \end{figure}
+
+\subsubsection*{Test case duration}
+The test case lasts 25 minutes as the cpu usage is constant and equals 25\% after 21 minutes and 44 seconds.
+
 
 \newpage
 \subsection*{Expectations}

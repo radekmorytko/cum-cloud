@@ -135,14 +135,14 @@ Adaptivity is achieved by specifying policies, that violated, trigger events imp
  \item \emph{Auto-scaling based on schedule} - policy specifies a time or a time recurrence and correlates that information to appropriate service adjustments
 \end{itemize}
 
-Apart from scaling policies, scaling is controlled by a minimal and maximal number of virtual machines that can compose a service.
+Apart from scaling policies, scaling is controlled by a minimal and maximal number of virtual machines that compose a service.
 
 \subsubsection{Scaling}
-\emph{OneFlow} is capable of \textbf{only} horizontal scaling: it adds or removes virtual machine using \emph{OpenNebula API}, when appropriate event is triggered. Violating given policy results in virtual machine's state transition into \texttt{SCALING}. After proper action is finished, virtual machines converges to a \texttt{COOLDOWN} state. What this simple state transition does is allows an environment to accommodate changes and adjust to a recent changes, disabling scaling for a given period of time.
+\emph{OneFlow} is capable of \textbf{only} horizontal scaling: it adds or removes virtual machine using \emph{OpenNebula API}. Violating given policy results in virtual machine's state transition into \texttt{SCALING}. After proper action is finished, virtual machines converges to a \texttt{COOLDOWN} state. What this state transition does is to allow an environment to accommodate changes and adjust to a recent changes, disabling scaling for a given period of time.
 
 
 \subsubsection{Cloud federation awareness}
-\emph{OneFlow} itself \textbf{does not} cooperate with different cloud instance. Hence, one is limited to \emph{OpenNebula} hybrid or public cloud capabilities that employs oZones and \emph{AWS}, respectively. Although, they expand single \emph{OpenNebula} instance capacity it is limited in a way that discriminates it as possible solution. Firstly, the problem with oZones is that they require centralised management, while cloud federation is by definition distributed and independent. Secondly, cloud bursting into \emph{AWS} limits instance monitoring capabilities. Consequently, it is not possible to supervise provisioned instances.
+\emph{OneFlow} itself \textbf{does not} cooperate with different cloud instance. Hence, one is limited to \emph{OpenNebula} hybrid or public cloud capabilities that employs oZones and \emph{AWS}, respectively. Although it expands single \emph{OpenNebula} instance capacity, it is limited in a way that discriminates it as possible solution. Firstly, the problem with oZones is that they require centralised management, while cloud federation is by definition distributed and independent. Secondly, cloud bursting into \emph{AWS} limits instance monitoring capabilities. Consequently, it is not possible to supervise provisioned instances.
 
 \subsection{Summary}
 Taking everything into consideration, OneFlow is a valuable addition to OpenNebula ecosystem. Undoubtedly, its auto-scaling feature with elastic policy mechanism cannot be underestimated. However, actions taken by scaling mechanism are coarse-grained by being limited to a horizontal scaling. What makes things worse, OneFlow can not leverage resources of multiple providers associated within a cloud federation.
@@ -150,7 +150,7 @@ Taking everything into consideration, OneFlow is a valuable addition to OpenNebu
 \section{OpenShift}
 
 \subsection{Introduction}
-\emph{OpenShift} is developed by \emph{RedHat} Platform-as-a-Service solution. It is available in two different flavours:
+\emph{OpenShift} is a developed by \emph{RedHat} Platform-as-a-Service solution. It is available in two different flavours:
 \begin{itemize}
  \item \emph{OpenShift Enterprise} (private cloud)
  \item \emph{OpenShift Online / FreeShift} hosted by RedHat (public cloud)
@@ -183,7 +183,7 @@ The algorithm for scaling up and scaling down is based on the number of concurre
 \end{quote}}
 
 \subsubsection{Scalability}
-As previous point implies, OpenShift \textbf{solely} uses horizontal scaling: it adds additional gears if number of requests increases beyond certain level.
+As previous point implies, OpenShift \textbf{solely} uses horizontal scaling: it adds additional gears if number of requests increases beyond a certain level.
 
 \subsubsection{Cloud federation awareness}
 OpenShift does not use any notion of a cloud provider or datacenter. However, since cartridges are in fact Linux processes running on OpenShift Nodes, it is possible to deploy  OpenShift Enterprise on any infrastructure running RHEL. It can consist of physical nodes as well as virtual machines, managed, for example, by OpenStack. With all that said, is still requires a centralised, OpenShift controlled environment. Hence, OpenShift \textbf{is not} capable to work in a cloud federation.
