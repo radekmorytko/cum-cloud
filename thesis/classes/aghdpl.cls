@@ -251,14 +251,14 @@
 
 %% End of Polish frontpage
 
-\vspace*{15cm} \vfill
-\begin{flushright} 
-\begin{minipage}[!h]{8cm}
-{\Large \@acknowledgements}
-\end{minipage}
-\end{flushright}
+%\vspace*{15cm} \vfill
+%\begin{flushright} 
+%\begin{minipage}[!h]{8cm}
+%{\Large \@acknowledgements}
+%\end{minipage}
+%\end{flushright}
 
-\clearpage \titlepage
+%\clearpage \titlepage
 
 \include{abstract}
 
