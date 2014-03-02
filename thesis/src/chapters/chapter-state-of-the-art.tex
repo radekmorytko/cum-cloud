@@ -250,40 +250,45 @@ Additionally, it is highly probable that acquiring the hosted solution by \emph{
 
 % radek
 \section{Providers comparison}
-In this section we would like to compare all depicted providers as well as other solution in terms of \emph{adaptivity} and \emph{scalability} as none of the examined providers support \emph{cloud federated} deployments. Table \ref{tab:cloud-providers-scaling} presents a summary of cloud providers auto-scaling capabilities. Interestingly, all of them are focused solely on horizontal scaling, ignoring advantages offered by a fine-grained approach to scaling that leverage scaling up and application tuning. Table \ref{tab:cloud-providers-adaptivity} summarises platforms approach to adaptivity: their data analysis mechanisms and policies support.
+In this section we would like to compare all depicted providers in terms of fulfilling functional requirements specified in the overview. Table \ref{tab:cloud-providers-adaptivity} takes more detailed approach and summarises how platform tackles adaptivity: their data analysis mechanisms and policies support.
 
 \begin{table}[!htbp]
-\begin{tabularx}{\textwidth}[]{ X  X  X  X}
+\begin{tabularx}{\textwidth}[]{ l  X  X  X  X }
+\specialrule{.1em}{.05em}{.05em} 
+& \textbf{Carina} & \textbf{OneFlow} & \textbf{CloudFoundry} & \textbf{OpenShift} \\
 \specialrule{.1em}{.05em}{.05em} 
 
-  & \textbf{Horizontal scaling} & \textbf{Vertical scaling} & \textbf{Application tuning} \\
-\specialrule{.1em}{.05em}{.05em} 
+\textbf{Service operations} &  &  &  \\ \specialrule{.1em}{.05em}{.05em} 
+Deploy a service & \checkmark  & \checkmark & \checkmark & \checkmark\\ \hline
+Cancel the service & \checkmark & \checkmark & \checkmark & \checkmark \\ \specialrule{.1em}{.05em}{.05em} 
 
-\multicolumn{4}{ l }{\textbf{Infrastructure provider}} \\
-\specialrule{.1em}{.05em}{.05em} 
+\textbf{Status check} &  &  &  \\ \specialrule{.1em}{.05em}{.05em} 
+Deployment success & \checkmark & \checkmark &  \checkmark & \checkmark \\ \hline
+Uptime & \checkmark & \checkmark & \checkmark & \checkmark \\ \hline
+Current cost & $\times$ & $\times$ & $\times$ & $\times$ \\ \specialrule{.1em}{.05em}{.05em} 
 
-Carina & \checkmark & $\times$ & $\times$ \\ \hline
+\textbf{Client application} &  &  &  \\ \specialrule{.1em}{.05em}{.05em} 
+CLI & \checkmark & \checkmark & \checkmark & \checkmark \\ \hline
+Web service & $\times$ & $\times$ & \checkmark & \checkmark \\ \specialrule{.1em}{.05em}{.05em} 
 
-OneFlow & \checkmark & $\times$ & $\times$ \\ \hline
+\textbf{Deployment descriptor} &  &  &  \\ \specialrule{.1em}{.05em}{.05em} 
+Service name & \checkmark & \checkmark & \checkmark & \checkmark \\ \hline
+Technology stack & \checkmark & \checkmark & \checkmark & \checkmark \\ \hline
+Scaling policies & \checkmark & \checkmark & $\times$ & $\times$ \\ \specialrule{.1em}{.05em}{.05em} 
 
-AWS EC2 & \checkmark & $\times$ & $\times$ \\ \hline
+\textbf{Deployment cost minimisation} & $\times$ & $\times$ & $\times$ & $\times$ \\ \specialrule{.1em}{.05em}{.05em} 
 
-\multicolumn{4}{ l }{\textbf{Platform provider}} \\
-\specialrule{.1em}{.05em}{.05em} 
+\textbf{Self-adaptation and scaling} &  &  &  \\ \specialrule{.1em}{.05em}{.05em} 
+Application platform tuning & $\times$ & $\times$ & $\times$ & $\times$ \\ \hline
+Vertical scaling & $\times$ & $\times$ & $\times$ & $\times$ \\ \hline
+Horizontal scaling & \checkmark & \checkmark & \checkmark & \checkmark \\ \hline
+Multiple provider based scaling & $\times$ & $\times$ & $\times$ & $\times$ \\ \specialrule{.1em}{.05em}{.05em} 
 
-CloudFoundry & $\times$ & $\times$ & $\times$ \\ \hline
 
-OpenShift & \checkmark & $\times$ & $\times$ \\ \hline
-
-AppEngine & \checkmark & $\times$ & $\times$ \\ \hline
-
-Azure & \checkmark & $\times$ & $\times$ \\ \hline
-
-Heroku & $\times$ & $\times$ & $\times$ \\ \hline
 \end{tabularx}
 
-\caption{Comparison of cloud providers scaling capabilities}
-\label{tab:cloud-providers-scaling}
+\caption{Comparison of cloud providers features}
+\label{tab:cloud-providers-comparision-features}
 
 \end{table}
 
@@ -318,18 +323,6 @@ OneFlow 4.2 &
 
 \\ \hline
 
-AWS EC2 & 
--- time frame based
-
--- expression based, where expressions corresponds to a AutoScalingGroup
-
--- actions are triggered by a CloudWatch alarms
-
--- customizable adjustments paddings, types, cooldown time
-&
--- threshold model, takes into account minimal and maximal permitted instances of an application as well as application priority
-\\ \hline
-
 \multicolumn{3}{ l }{\textbf{Platform provider}} \\
 \specialrule{.1em}{.05em}{.05em} 
 
@@ -342,33 +335,13 @@ OpenShift &
 -- single built-in threshold model that scales an application when CPU load is greater than 50\% for a given period
 \\ \hline
 
-AppEngine & 
-
--- built-in policy based on request queue length
-
--- adjustable minimal, maximal number of application instances, pending latency
-
- &
--- queue-based, new instance is provisioned if queue length got too long 
-  \\ \hline
-
-Azure & 
--- time frame based
-
--- expression based, where expression can involve either CPU usage or Queue length
-
--- customizable adjustments paddings, types, cooldown time
-&
--- threshold model, that takes into account minimal and maximal allowed instances
- \\ \hline
-
-Heroku & $\times$ & $\times$ \\ \hline
 \end{tabularx}
 
 \caption{Comparison of cloud providers approach to adaptivity}
 \label{tab:cloud-providers-adaptivity}
 
 \end{table}
+
 
 
 
