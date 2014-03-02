@@ -19,7 +19,7 @@ Guaranteeing Quality-of-Service can be seen as continuous monitoring and reactin
 \end{figure}
 
 
-In the heart of the every self-adaptive systems, according to \cite{brun2009engineering}, lies a feedback loop, concept that originates from a control engineering. As paper's authors advocate:
+In the heart of the every self-adaptive system, according to \cite{brun2009engineering}, lies a feedback loop, concept that originates from a control engineering. As paper's authors advocate:
 \begin{quote}
 Feedback loops provide the generic mechanism for self-adaptation. Positive feedback occurs when an initial change in a system is reinforced, which leads toward an amplification of the change. In contrast, negative feedback triggers a response that counteracts a perturbation. 
 \end{quote}
@@ -59,7 +59,7 @@ Analysis part applies mathematical models to reason about data gathered during p
  \item model's stability
 \end{itemize}
 
-Currently, service providers employs only simplified models such as threshold model \cite{LiWoZh05}, that defines a valid range for a given metric. In cases when it is violated (i.e. value is either smaller than minimal or bigger than maximal acceptable) corresponding resource is properly adjusted - figure \ref{fig:threshold-model} illustrates that idea.
+Currently, service providers employ only simplified models such as threshold model \cite{LiWoZh05}, that defines a valid range for a given metric. In cases when it is violated (i.e. the value is either smaller than minimal or bigger than maximal acceptable) the corresponding resource is properly adjusted - figure \ref{fig:threshold-model} illustrates that idea.
 
 \begin{figure}[!ht]
   \begin{center}
@@ -69,9 +69,10 @@ Currently, service providers employs only simplified models such as threshold mo
   \label{fig:threshold-model}
 \end{figure}
 
-Threshold model, while trivial in its form, has been proved useful in a real-world scenarios as it is in case of AWS, OpenShift, Carina or OneCloud.
+Threshold model, while trivial in its form, has been proved useful in real-world scenarios as it is in case of AWS, OpenShift, Carina or OneCloud.
 
-As it was already mentioned, models are often controlled by policies that denote a condition which, when satisfied, triggers an action harnessing environment's disturbance. Currently, industry leaders supports \cite{AmazonAutoScaling} two kind of policies:
+As it was already mentioned, models are often controlled by policies that denote a condition which, when satisfied, triggers an action harnessing environment's disturbance. Currently, industry leaders support \cite{AmazonAutoScaling} two kind of policies:
+
 \begin{itemize}
  \item \textit{expression based policy} - it allows to define how to scale application in response to changing conditions, which include factors such as memory, CPU usage, cost or some indirect, calculated metrics
  \item \textit{scheduled policy} - it allows to scale an application in response to predictable load changes. For example, traffic increases during the weekends and decreases on working days. Hence, that predictable traffic patterns is used to scale application based on current time.

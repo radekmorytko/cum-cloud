@@ -12,7 +12,11 @@ While scalability is a widely used term, it still lacks a clear and concise defi
 	\item \textit{space-time scalability} - system continues to function gracefully as the number of objects it encompasses increases by orders of magnitude
 	\item \textit{structural scalability} - implementation or standards do not impede the growth of the number of objects system encompasses
 \end{itemize}
+<<<<<<< Updated upstream
 Although, all of the aforementioned aspects are vital for any application, our work focuses solely on the first type of scalability. The reasoning behind this is that while all of these scalability types lies in direct responsibility of an application developer, the load scalability can be additionally improved by adding additional resources to a system. This brings us to a question what kind of resources are used by an application or more appropriately in context of this dissertation: \textit{what kind of resources can we add to improve application performance?} Required resources vary from application to application. However, among the most common one we can distinguish:
+=======
+Although, all of the aforementioned aspects are vital for any application, our work focuses solely on the first type of scalability. The reasoning behind this statement is that, while all of these scalability types lie in direct responsibility of an application developer, the load scalability can be additionally improved by adding additional resources to a system. This brings us to a question what kind of resources are used by an application or more appropriately in context of this dissertation: \textit{what kind of resources can we add to improve application performance?} Required resources varies from an application to an application. However, among the most common ones we can distinguish:
+>>>>>>> Stashed changes
 \begin{itemize}
 	\item CPU
 	\item memory
@@ -53,7 +57,7 @@ The rest of this chapter elaborates in detail about horizontal and vertical scal
 \subsection{Horizontal scaling}
 As outlined in previous section, horizontal scaling is about adding supplementary nodes to a system. In cloud computing, it is common to represent nodes as virtual machines and this assumption is used in further discussion. Consequently, adding server comes down to cloning a new virtual machine from a template and possibly installing additional software and reconfiguring it later. While mechanism of creating new virtual machine from a template is offered literally in every IaaS platform currently available (OpenStack \cite{OpenStack}, OpenNebula \cite{OpenNebula}, CloudStack \cite{CloudStack} or Eucalyptus \cite{Eucalyptus} to name a few) and is similar in manner, the underlying hardware and virtualization mechanism determines how fast provisioning is done. 
 
-Provisioning new server is only a first step in scaling an application, it is required to configure load balancing mechanism to make use of additional node. The two important aspects that have to be consider are: load-balancing algorithms and load-balancing scalability.
+Provisioning a new server is only the first step in scaling an application, it is required to configure load balancing mechanism to make use of additional node. Two important aspects that have to be consider are: load-balancing algorithms and load-balancing scalability.
 
 \subsubsection{Load-balancing algorithms}
 Generally, there are two types of load-balancers: hardware and software based. Due to the dynamic nature of application requirements, we focus only on the latter as it offers a greater deal of flexibility. Among the most common algorithms we can distinguish \cite{HaProxyDoc}:
