@@ -1,14 +1,14 @@
 \chapter{Related work} 
 
-\chapterintro{This chapter presents recent achievements in a field of platform-as-a-service model by examining: Carina, OneFlow, CloudFoundry and OpenShift. It is especially focused on aspects of adaptivity, scalability and cloud federation awareness.}
+\chapterintro{This chapter presents recent achievements in a field of platform-as-a-service model by examining Carina, OneFlow, CloudFoundry and OpenShift. It is especially focused on aspects of adaptivity, scalability and cloud federation awareness.}
 
 \section{Requirements}
 One can notice that elements that yield a solution to a problem stated in the first chapter, which is ensuring that users' application provide appropriate Quality-of-Service for its customers in a most-cost effective manner, were gradually introduced in the previous chapter:
 
 \begin{itemize}
 	\item \emph{adaptivity} - ability to adapt (i.e. scale) appropriately to a current usage pattern
-	\item \emph{scalability} - ability to improve application performance by enriching resources
-	\item \emph{cloud-federation awareness} - ability to compose an application deployment using different cloud providers; cooperation with different cloud provider to supply application with extra resources while performing application scaling
+	\item \emph{scalability} - ability to improve application performance by resources enhancement
+	\item \emph{cloud-federation awareness} - ability to compose an application deployment using different cloud providers; cooperation with different cloud providers to supply application with extra resources when performing application scaling
 \end{itemize}
 
 Consequently, it is expected that mature and industry-leading solution has all above-mentioned features. In the next sections we examine latest advancements used by a platform-as-a-service providers: Carina, OneFlow, CloudFoundry and OpenShift. Apart from getting into detail regarding above-mentioned factors, we scrutinise whether given product satisfies following functional and non-functional requirements. 
@@ -26,19 +26,19 @@ Consequently, it is expected that mature and industry-leading solution has all a
         \item current cost
         \end{inparaenum}
     \end{enumerate}
-  \item One of the elements of the platform is a client application that is used by the user of the platform to communicate with it,
-  \item During the deployment process, the platform takes as an input a description of the service (application) that consists of:
+  \item One of the elements of the platform is a client application that is used by the user of the platform to communicate with it
+  \item During the deployment, the platform takes as an input a description of the service (application) that consists of:
     \begin{itemize}
     \item service name,
     \item software stacks (e.g. \emph{java}, \emph{ruby}),
     \item scaling policies (per each stack) which define
       \begin{inparaenum}[i)]
       \item minimal and maximal number of VMs that are needed for the stack,
-      \item name of the policy (algorithm) which is used for scaling,
+      \item name of the policy (algorithm) used for scaling,
       \item parameters of the policy
       \end{inparaenum}
     \end{itemize}
-  \item Deployment of a service is done in a way which minimizes the cost from the client's perspective with ensuring Quality-of-Service requirements at the same time,
+  \item Deployment of a service is done in a way which minimises the cost from the client's perspective with ensuring Quality-of-Service requirements at the same time,
   \item The platform monitors the state of the deployed services and based on the results of this process takes appropriate steps in order to meet the auto-scaling requirements. These include
     \begin{inparaenum}[a)]
     \item altering VM's parameters and configuration,
@@ -57,7 +57,7 @@ Consequently, it is expected that mature and industry-leading solution has all a
 \section{Carina}
 
 \subsection{Introduction}
-Carina is an open source project, released under Apache License 2.0, built on top of OpenNebula, which aims to ``(\ldots) standardize the process for automating multi-VM deployments and setting auto-scaling and availability management policies in the cloud.'' \cite{CarinaBlog}. The project is used by the authors at their work at RIM in an OpenNebula-based private cloud.
+Carina is an open source project, released under Apache License 2.0 and built on top of OpenNebula. It aims to ``(\ldots) standardize the process for automating multi-VM deployments and setting auto-scaling and availability management policies in the cloud.'' \cite{CarinaBlog}. The project is used by the authors at their work at RIM in an OpenNebula-based private cloud.
 
 \subsection{Features}
 As it is stated in the requirements of the solution, \emph{Carina} should support variety of features which can be considered worth scrutinizing carefully as they are closely related to notions of adaptivity and scalability. To name the most relevant: \cite{CarinaBlog}
@@ -79,7 +79,7 @@ Before delving into a more detailed description it is vital to introduce most im
 \subsubsection{Adaptivity}
 In \emph{Carina} there are mechanisms which can perform application scaling, both in manual and automatic fashion. It is possible for a system administrator to directly modify the existing application and its environment by changing its parameters manually. Automatic management of an environment is done by defining \emph{scaling policies} which can be in two flavours: \emph{time-based} and \emph{load-based}. Those are called by the authors \emph{elasticy policies}.
 
-\emph{Time-based} policies defines how the system should react in the given window frame(s). In each frame we can specify the minimum number of virtual machines that comprises an environment. On the other hand, \emph{load-based} policies define the way the system reacts to \textbf{average cpu usage} by the environment. This is the simplest \emph{threshold-model} as introduced in section 2.1.3. The user enters predicates which are evaluated against data gathered by OpenNebula and execute scaling actions  (\emph{scaleup} and \emph{scaledown}) if they are true. What is more, the minimal and maximal number of virtual machines must be specified. At present the only parameter that is taken into account while performing actions triggered by \emph{load-based} policies is cpu usage.
+\emph{Time-based} policies defines how the system should react in the given window frame(s). In each frame we can specify the minimal number of virtual machines that comprises an environment. On the other hand, \emph{load-based} policies define the way the system reacts to \textbf{average cpu usage} by the environment. This is the simplest \emph{threshold-model} as introduced in section 2.1.3. The user enters predicates which are evaluated against data gathered by OpenNebula and then scaling actions  (\emph{scaleup} and \emph{scaledown}) are executed if predicates are true. What is more, the minimal and maximal number of virtual machines must be specified. At present the only parameter that is taken into account while performing actions triggered by \emph{load-based} policies is cpu usage.
 
 To increase the application availability, \emph{Carina} introduces the notion of \emph{availability policies}. Their main function is to take a recovery action in response to a deletion or errors during deployment of a virtual machine. Recreation of a virtual machine is the most fundamental and atomic operation under this model.
 
@@ -87,7 +87,7 @@ To increase the application availability, \emph{Carina} introduces the notion of
 Section 2.2 introduced and discussed various types of application scaling. \emph{Carina} offers only one type of scaling and this is \emph{horizontal} scaling -- user's capabilities are limited only to add/remove a virtual machine to/from a given environment. Unfortunately there are no means to modify the parameters of a given or a set of virtual machines.
 
 \subsubsection{Cloud federation awareness}
-In this paper we strongly advocate spanning cloud resources across multiple vendors/providers. Despite having in its requirements such a position, \emph{Carina} \textbf{does not} support deployment or scaling of services across different providers. In the environment configuration we define only \textbf{one} endpoint -- this is can be thought of a reference to a cloud provider. As it can be only one per environment, it is not possible to deploy or scale some artifacts across many providers.
+In this paper we strongly advocate spanning cloud resources across multiple vendors/providers. Despite having in its requirements such a position, \emph{Carina} \textbf{does not} support deployment or scaling of services across different providers. In the environment configuration we define only \textbf{one} endpoint -- it can be thought as a reference to a cloud provider. As it can be only one per environment, it is not possible to deploy or scale artifacts across many providers.
 
 \subsection{Design}
 To complete the discussion about \emph{Carina} it is essential to include its architecture overview. This is shown in figure \ref{sota:carina-design}.
@@ -210,7 +210,7 @@ Summing up, key advantage of the OpenShift seems to be it simplicity: creating a
 In this section we want to elaborate only on an open-source project.
 
 \subsection{History}
-The project was initially developed by VMWare and its first release was in 2011, It was then that VMware decided to make it available to the general public and released it under Apache License 2.0. For the next consecutive two years, there were maintained two versions of \emph{Cloud Foundry} -- as a hosted solution owned by VMWare and an open-source project. However, in December 2012 VMware and EMC shared information on the \emph{Pivotal Initiative} \cite{PivotalInitiative} -- a virtual organization of people from both companies with background in \emph{big data} and \emph{cloud application platforms}. With the advent of the this new entity, \emph{Pivotal} \cite{GoPivotal}, it was announced the launch of the new product -- Pivotal One, which is powered by \emph{Pivotal CF}, the enterprise version of \emph{Cloud Foundry}. Now users can choose between the open-source and commercial solutions.
+The project was initially developed by VMWare and its first release was in 2011, It was then that VMware decided to make it available to the general public and released it under Apache License 2.0. For the next consecutive two years, there two versions of \emph{Cloud Foundry} -- as a hosted solution owned by VMWare and an open-source project -- were maintained . However, in December 2012 VMware and EMC shared information on the \emph{Pivotal Initiative} \cite{PivotalInitiative} -- a virtual organization of people from both companies with background in \emph{big data} and \emph{cloud application platforms}. With the advent of the this new entity, \emph{Pivotal} \cite{GoPivotal}, it was announced the launch of the new product -- Pivotal One, powered by \emph{Pivotal CF}, the enterprise version of \emph{Cloud Foundry}. Now users can choose between the open-source and commercial solutions.
 
 \subsection{Features}
 Below there are listed some of the main functionalities offered by \emph{Cloud Foundry}:
@@ -220,7 +220,7 @@ Below there are listed some of the main functionalities offered by \emph{Cloud F
   \item Dynamic routing which enables and enhances horizontal scaling and updating applications,
   \item Usage of own-developed lightweight containers (\emph{Warden}), which ensures the proper isolation level and improves the speed of movement of application instances between virtual machines (utilizing \emph{aufs} -- advanced multi layered unification filesystem)
   \item Health management -- continually monitoring application instances and taking according recovery actions if needed
-  \item Standards-based authorization and authentication system which supports various standards such as LDAP, SAML or OAuth 2.0
+  \item Standards-based authorization and authentication system which supports various protocols such as LDAP, SAML or OAuth 2.0
 \end{itemize}
 
 \subsection{Key technical concepts}
@@ -235,7 +235,7 @@ Below there are listed some of the main functionalities offered by \emph{Cloud F
 \subsubsection{Adaptivity}
 \emph{Cloud foundry} does not support auto-scaling -- it is only possible for the cloud consumer to scale the application manually. However, there can be additional tools which can add this functionality, such as \emph{RightScale}.
 
-In terms of monitoring the state of applications, the platform uses \emph{Health Manager} to collect relevant data and then it notifies \emph{Cloud Controller}, which in turn takes appropriate actions. This enables, for example, to spawn a new node if an existing one needs a replacement.
+In terms of monitoring the state of applications, the platform uses \emph{Health Manager} to collect relevant data and then it notifies \emph{Cloud Controller}, which in turn takes appropriate actions. This enables, for example, spawning a new node if an existing one needs a replacement.
 
 \subsubsection{Scalability}
 \emph{Cloud foundry} supports horizontal scaling not only within one provider, but also across many. This feature is called \emph{Multi-Cloud} in Cloud Foundry nomenclature.
@@ -250,7 +250,7 @@ Additionally, it is highly probable that acquiring the hosted solution by \emph{
 
 % radek
 \section{Providers comparison}
-In this section we would like to compare all depicted providers in terms of fulfilling functional requirements specified in the overview. Table \ref{tab:cloud-providers-adaptivity} takes more detailed approach and summarises how platform tackles adaptivity: their data analysis mechanisms and policies support.
+In this section we would like to compare all depicted providers in terms of fulfilling functional requirements specified in the overview. Table \ref{tab:cloud-providers-comparision-features} presents such comparison. Table \ref{tab:cloud-providers-adaptivity} takes more detailed approach and summarises how platform tackles adaptation: their data analysis mechanisms and policies support.
 
 \begin{table}[!htbp]
 \begin{tabularx}{\textwidth}[]{ l  X  X  X  X }
@@ -282,7 +282,7 @@ Scaling policies & \checkmark & \checkmark & $\times$ & $\times$ \\ \specialrule
 Application platform tuning & $\times$ & $\times$ & $\times$ & $\times$ \\ \hline
 Vertical scaling & $\times$ & $\times$ & $\times$ & $\times$ \\ \hline
 Horizontal scaling & \checkmark & \checkmark & \checkmark & \checkmark \\ \hline
-Multiple provider based scaling & $\times$ & $\times$ & $\times$ & $\times$ \\ \specialrule{.1em}{.05em}{.05em} 
+Multiple provider based scaling & $\times$ & $\times$ & \checkmark & $\times$ \\ \specialrule{.1em}{.05em}{.05em} 
 
 
 \end{tabularx}
