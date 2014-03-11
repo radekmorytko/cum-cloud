@@ -59,7 +59,7 @@ This section aims to give a brief outline of technologies that were used in this
     \begin{asparaenum}
     \item[\textbf{Web Services/HTTP}] Communication between a client and a cloud broker is done by the usage of \emph{web services} over \emph{http} protocol. The cloud broker for a given client exposes a \emph{RESTful} API for the deployment of a service. The web service accepts \emph{JSON}-encoded messages, which comprises the name of a service and specification of each stack comprising it. The example of such a message can be found in listing \ref{lst:service-spec-test-deployment-time}.
 
-      The reason we chose this technology is because of its simplicity, maturity and great support from Ruby platform. The other solutions that could be used in place of this one include some message-oriented middleware standards such as AMQP or JMS, other standards that facilitate communications among systems/components such as CORBA, and other such as RMI or RPC. Some of the aforementioned technologies had been eliminated once we chose Ruby as the language which the platform would be implemented in. This is because of their platform-specific nature, e.g. JMS requires the system to be written in Java.
+      The reason why we chose this technology is because of its simplicity, maturity and great support from Ruby platform. The other solutions that could be used in place of this one include some message-oriented middleware standards such as AMQP or JMS, other standards that facilitate communications among systems/components such as CORBA, and other such as RMI or RPC. Some of the aforementioned technologies had been eliminated once we chose Ruby as the language which the platform would be implemented in. This is because of their platform-specific nature, e.g. JMS requires the system to be written in Java.
 
     \item[\textbf{AMQP}] Being able to communicate in an asynchronous, more scalable and loosely coupled way between a cloud broker and different cloud instance managers representing cloud providers requires the usage of message-oriented middleware. In our case we decided to use \emph{Advanced Message Queuing Protocol} as this standard is mature and its support in Ruby is solid.
 
@@ -74,9 +74,9 @@ This section aims to give a brief outline of technologies that were used in this
 
   \item Auto-scaling subsystem
     \begin{asparaenum}
-    \item[\textbf{OpenNebula}] There was a need for a tool that would be used for efficient management of the resources of a data center. OpenNebula is an open source respond to this need -- first released in 2008, with good support from the community, seemed a good candidate for a tool. Our familiarity with it was an additional factor which influenced our final choice of OpenNebula as the tool for the job.
+    \item[\textbf{OpenNebula}] There was a need for a tool that would be used for efficient management of the resources of a data center. OpenNebula is an open source respond to this need -- first released in 2008, with good support from the community, seemed a good candidate for a tool. Our familiarity with it was an additional factor which influenced our final choice.
     \item[\textbf{Chef}] As manual virtual machines provisioning is a tedious and error-prone task, this is a perfect match for a tool that would automate the process. We chose \emph{Chef} as it is written in the language of the whole platform (i.e. Ruby), mature (initially released in 2009) and widely used tool. \footnote{According to the website of the product (\url{http://www.getchef.com/customers/}), it is used by such companies as Facebook, BlueKai or BookRenter. More can be found at the provided URL.}
-    \item[\textbf{OpenVZ (drivers)}] The significance of choosing linux containers as a virtualisation technology was fully described in the preceding chapters. However, the drivers for the OpenVZ are not supported by the OpenNebula maintainers, so we had to use our own-developed tool while taking a course at the university. This tools forms an official add-on for OpenNebula 3.8.
+    \item[\textbf{OpenVZ (drivers)}] The significance of choosing linux containers as a virtualisation technology was fully described in the preceding chapters. However, the drivers for the OpenVZ are not supported by the OpenNebula maintainers, so we had to use our own-developed drivers while taking a course at the university. They form an official add-on for OpenNebula 3.8.
     \end{asparaenum}
 \end{itemize}
 
@@ -97,24 +97,24 @@ This subsystem consists of components which are directly used by a client or act
   \begin{center}
     \includegraphics{chapter-implementation/csap-cloud-brokerage-deployment-diagram}
   \end{center}
-  \caption{Deployment diagram of a Cloud brokerage subsystem}
+   \caption{Deployment diagram of cloud brokerage subsystem}
   \label{fig:csap-cloud-brokerage-deployment-diagram}
 \end{figure}
 
 \subsection{Cloud client}
-The client is a command line application that allows a user to communicate with a cloud broker which will further process the message and act on behalf the user. By means of this application, the user is able to deploy a service by preparing its specification in a JSON format and request its deployment to the cloud broker. Listing \ref{lst:service-spec-test-deployment-time} is an example of a service description.
+The client is a command line application that allows a user to communicate with a cloud broker which will further process the message and act on the user behalf. By means of this application, the user is able to deploy a service by preparing its specification in a JSON format and request its deployment to the cloud broker. Listing \ref{lst:service-spec-test-deployment-time} is an example of a service description.
 
 The application is written purely in Ruby and uses http protocol for communication. 
 
 \subsection{Cloud broker}
 The cloud broker mediates between a client and cloud providers. Its main responsibility is to, during the deployment or scaling of a service, gather information and offers from cloud providers forming a cloud federation and choose the best, in terms of cost, providers and orders them the deployment of specific stacks comprising the service.
 
-The broker uses Advanced Message Queuing Protocol (AMQP) for communication between itself and cloud providers. It was considered the best choice for this purpose as it ensure asynchronous message processing and sending messages according to fan-out paradigm which is ideal for this use case.
+The broker uses Advanced Message Queuing Protocol (AMQP) for communication with cloud providers. It was considered the best choice for this purpose as it ensures asynchronous message processing and sending according to fan-out paradigm which is ideal for this use case.
 
 The message format is the same as in the case of a client application.
 
 \subsubsection{Cloud providers selection}
-One of the main responsibilities of the Cloud broker is to map the stacks of a given service to cloud providers. This happens when a service is to be deployed or horizontally scaled. As this implementation merely wants to be a minimal viable product, we took only the cost attribute into consideration when performing this function.
+One of the main responsibilities of the Cloud broker is to map the stacks of a given service to cloud providers. This happens when a service is to be deployed or horizontally scaled. As this implementation merely wants to be a minimal viable product, we took only the cost into consideration when performing this function.
 
 To formalize the previous statements, the problem is as follows: given a set whose elements (representing stacks) can take an non-negative values (they come from offers from cloud providers), find the mapping so as the overall sum of its elements (total cost) be minimal.
 
@@ -287,7 +287,7 @@ The types and formats of messages this component can process and send clearly re
 \item[\textbf{Offer request message}] The message sent by a cloud broker when it wants to retrieve the deployment capabilities of a cloud provider. It contains the attributes of the service to be deployed. They match those described in the \emph{deployment request message}.
 
   This manager creates an offer for a service that consists of the cost of each stack. This cost is not dynamically computed, but fetched from the configuration file that contains mapping between the stack and its cost. The offer is sent back to the cloud broker for further processing.
-\item[\textbf{Horizontal-scaling message}] This message is send when it is not possible to continue having deployed a stack on the given cloud instance by the lack of sufficient resources or violation of a policy. It contains the stack specification as the platform needs this information to redeploy the stack to another cloud instance.
+\item[\textbf{Horizontal-scaling message}] This message is send when it is not possible to continue scaling of deployed a stack on the given cloud instance due to the lack of sufficient resources or violation of a policy. It contains the stack specification as the platform needs this information to redeploy the stack to another cloud instance.
 \end{asparaenum}
 
 The behaviour required from the Cloud-SAP architecture regarding the control loop within the scope of \emph{monitoring} resources of a cloud provider is delegated to underlying components, stack and container managers. As this manager merely mediates between the cloud provider and broker, it does not employ any \emph{analysis} and \emph{plan} mechanisms. Conveying information forms the \emph{execute} attribute.

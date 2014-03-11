@@ -13,7 +13,7 @@ We carried out a number of tests which aim to prove the solution to be better th
 \end{enumerate}
 
 \subsection*{Hardware and virtual machines configuration}
-All tests that were carried out were run on the same hardware and/or used the same virtual machines so for clarity of presentation their parameters are presented not in a description of every test, but here in table \ref{tab:test-deployment-time-common-hardware-configuration}.
+All tests that were carried out were run on the same hardware and/or used the same virtual machines as presented in table \ref{tab:test-deployment-time-common-hardware-configuration}.
 
 \begin{table}
   \centering
@@ -34,7 +34,7 @@ All tests that were carried out were run on the same hardware and/or used the sa
 
 \section{Cost of service deployment}
 \subsection*{Description}
-The aim of this test case is to test the primary use case of the proposed solution -- deployment of a service with the emphasis of client's \textbf{cost}. It should show that the platform chooses the best mapping between the stacks and cloud providers so that the client's pays the \textbf{lowest} possible price.
+The aim of this test case is to test the primary use case of the proposed solution -- deployment of a service with the emphasis on client's \textbf{cost}. It should show that the platform chooses the best mapping between the stacks and cloud providers so that the client's pays the \textbf{lowest} possible price.
 
 \subsection*{Preconditions}
 Service specification (\ref{lst:service-spec-test-cost}) forms an input to the application. Its elements are different software stacks that are parts of the whole service. Each cloud provider has its own price for a given software stack which is shown in table \ref{tab:test-service-deployment-cost}. Diagram \ref{fig:deployment-cost-physical-nodes} illustrates the simplified environment setup.
@@ -143,12 +143,12 @@ To find the equation of a function that would satisfy the previously-mentioned r
   \label{fig:auto-scaling-1cp-cpu-usage-function}
 \end{figure}
 
-Because \emph{Carina} is capable of only horizontal scaling and \emph{Cloud-SAP} of both horizontal and vertical, one can question whether the descent in CPU usage can be actually the same in both cases. To answer this question we want to look into the description of the virtual machines comprising the deployed environment. It states that each VM can use up to 30\% power of the CPU of a host. Thus, we can be fairly sure that adding another virtual machine that uses 0.3 CPU capacity of its host is equivalent with changing the CPU usage settings of already deployed VM from 30 to 60\%.
+Because \emph{Carina} is capable of only horizontal scaling and \emph{Cloud-SAP} of both horizontal and vertical, one can question whether the descent in CPU usage can be actually the same in both cases. To answer this question we want to look into the description of the virtual machines comprising the deployed environment. It states that each VM can use up to 30\% power of a single host's CPU. Thus, we can be fairly sure that adding another virtual machine that uses 0.3 CPU capacity of its host is equivalent with changing the CPU usage settings of already deployed VM from 30 to 60\%.
 \subsection*{Preconditions}
 \subsubsection*{Environment specification}
 \begin{asparaenum}
   \item[\textbf{Auto-scaling policy specifications}] As it is shown in figure \ref{fig:auto-scaling-1cp-cpu-usage-function}, we set in both products the threshold values of CPU usage that trigger performing auto-scaling actions to 20 and 60 percent. To apply this setting, the auto-scaling part of service specification looks as follows: in Carina the user has to add the parameters of an auto-scaling policy in a hash that describes the environment under key \emph{:elasticy\_policy}. It is possible to specify the minimal and the maximal number of virtual machines that forms the environment and, what is most important, expressions whose evaluation results in scaling the application. The part responsible for this is shown in listing \ref{lst:auto-scaling-1cp-carina-service-spec}.\lstinputlisting[caption=Carina service specification used for testing auto-scaling with 1 cloud provider, label=lst:auto-scaling-1cp-carina-service-spec]{auto-scaling-1cp-carina-service-spec} In Cloud-SAP it is a matter of setting appropriate arguments to a specific policy. In this case the policy is \emph{threshold\_model} and values are 20 and 60 for lower and upper bound respectively. The auto-scaling part from service specification is shown in listing \ref{lst:auto-scaling-1cp-cloud-sap-service-spec}. \lstinputlisting[caption=Cloud-SAP service specification used for testing auto-scaling with 1 cloud provider, label=lst:auto-scaling-1cp-cloud-sap-service-spec]{auto-scaling-1cp-cloud-sap-service-spec}
-  \item[\textbf{OpenNebula/Carina/Cloud-SAP configuration}] Since Carina and Cloud-SAP used two different instances of OpenNebula installed on separate virtual machines, it is essential the configuration be the same on each of them. Listing \ref{lst:auto-scaling-1cp-one-config} shows the most important OpenNebula excerpt from settings file used in this test case -- polling interval specification, which was set to 30 seconds. To ensure that both products can actually use up-to-date data, they should figuate their policies every 30 seconds or longer. In Carina the user cannot specify this value, because it is hard-coded in source code to 60 seconds. In Cloud-SAP, however, this value was set in a configuration file and was equal to 60 seconds as well as in Carina. \lstinputlisting[caption=OpenNebula configuration excerpt -- information manager, label=lst:auto-scaling-1cp-one-config]{auto-scaling-1cp-one-config}. Vertical scaling mechanism in \emph{Cloud-SAP} is implemented in a way that causes exponential growth of CPU resources consumption. When there is a need to perform a scaling action on CPU usage, current value is taken and increased by 30\%.
+  \item[\textbf{OpenNebula/Carina/Cloud-SAP configuration}] Since Carina and Cloud-SAP used two different instances of OpenNebula installed on separate virtual machines, it is essential the configuration be the same on each of them. Listing \ref{lst:auto-scaling-1cp-one-config} shows the most important OpenNebula excerpt from settings file used in this test case -- polling interval specification, which was set to 30 seconds. To ensure that both products can actually use up-to-date data, they should figure their policies every 30 seconds or longer. In Carina the user cannot specify this value, because it is hard-coded in source code to 60 seconds. In Cloud-SAP, however, this value was set in a configuration file and was equal to 60 seconds as well as in Carina. \lstinputlisting[caption=OpenNebula configuration excerpt -- information manager, label=lst:auto-scaling-1cp-one-config]{auto-scaling-1cp-one-config}. Vertical scaling mechanism in \emph{Cloud-SAP} is implemented in a way that causes exponential growth of CPU resources consumption. When there is a need to perform a scaling action on CPU usage, current value is taken and increased by 30\%.
   \item[\textbf{Deployment diagrams}] Deployment diagrams show the placement of each component in both installations. They are shown in figures \ref{fig:auto-scaling-1cp-carina-deployment-diagram} and \ref{fig:auto-scaling-1cp-cloud-sap-deployment-diagram}.
 
   \begin{figure}[!ht]
@@ -174,7 +174,7 @@ Because \emph{Carina} is capable of only horizontal scaling and \emph{Cloud-SAP}
 All virtual machines were deployed onto \emph{Node1}, which uses \emph{OpenVZ} as a virtualization technology and whose hardware configuration can be found in table \ref{tab:test-deployment-time-common-hardware-configuration}. \emph{OpenNebula} was installed on a \emph{Frontend1} virtual machine and its configuration is in the same table. \emph{Carina} required the usage of 2 virtual machines which were deployed on \emph{Desktop} with KVM as a hypervisor and whose configuration is in table \ref{tab:test-auto-scaling-1cp-hardware-configuration}. Diagram \ref{fig:auto-scaling-1cp-physical-nodes} illustrates the physical setup of the test-case. 
 
 \subsubsection*{Test case duration}
-The test case lasts 25 minutes as the cpu usage is constant and equals 25\% after 21 minutes and 44 seconds.
+The test case lasts 25 minutes as the CPU usage is constant and equals 25\% after 21 minutes and 44 seconds.
 
 \begin{table}
   \centering
@@ -204,7 +204,7 @@ The test case lasts 25 minutes as the cpu usage is constant and equals 25\% afte
 \subsection*{Expectations}
 As auto-scaling behaviour of both products is determined by CPU usage of the deployed service, we can predict the outcome of the test by thorough analysis of the plot in figure \ref{fig:auto-scaling-1cp-cpu-usage-function}.
 
-The first conclusion is that all auto-scaling actions are performed after exceeding the upper threshold value of CPU usage, this is 60 percent in our case what happens about 5 minutes after the deployment of an environment is completed. CPU consumption remains high for about 2 minutes what enables both products to take appropriate, auto-scaling steps. We expect \emph{Carina} to deploy another virtual machine and \emph{Cloud-SAP} to scale vertically. Then it gradually goes down, which simulates that all taken actions have successfully completed. Then, for another several minutes, the cycle recurs, but this time we expect the proposed solution to scale horizontally. \emph{Carina} is expected to behave as in the previous cycle. Once the cycle has completed, after roughly 21 minutes, the value of CPU consumption remains constant at 25 percent and the test is completed.
+The first conclusion is that all auto-scaling actions are performed after exceeding the upper threshold value of CPU usage, this is 60 percent in our case what happens about 5 minutes after the deployment of an environment is completed. CPU consumption remains high for about 2 minutes what enables both products to take appropriate, auto-scaling steps. We expect \emph{Carina} to deploy another virtual machine and \emph{Cloud-SAP} to scale vertically. Then it gradually goes down, which simulates that all taken actions have successfully completed. Then, after another several minutes, the cycle recurs, but this time we expect the proposed solution to scale horizontally. \emph{Carina} is expected to behave as in the previous cycle. Once the cycle has completed, after roughly 21 minutes, the value of CPU consumption remains constant at 25 percent and the test is completed.
 \subsection*{Results}
   In the first place it is worth discussing the results of \emph{Carina} and \emph{Cloud-SAP} separately and then compare resource consumption of each solution and its influence on cost paid by the end-user.
 
@@ -220,7 +220,7 @@ Deployment finished at 15:25:45 and at this time we started the mock-cpu-usage w
 \end{asparaenum}
 
 \subsubsection*{Cost}
-In our scenario cost is roughly equivalent with the CPU usage, so the plot of a cost virtually presents the cpu usage. Figure \ref{fig:auto-scaling-1cp-cost-comparison} shows cpu usage by environment when deployed and configured by two competing products.
+In our scenario cost is roughly equivalent with the CPU usage, so the plot of a cost virtually presents the CPU usage. Figure \ref{fig:auto-scaling-1cp-cost-comparison} shows CPU usage by environment when deployed and configured by two competing products.
 \begin{figure}[!ht]
   \begin{center}
     \includegraphics{chapter-evaluation/auto-scaling-1cp-cost-comparison}
@@ -238,7 +238,7 @@ and in Cloud-SAP:
 \end{equation}
 
 \subsection*{Conclusion}
-The obtained results shows that the proposed solution has enormous potential in terms of better utilization of available resources of the cloud and reducing cost paid by cloud consumers.
+The obtained results shows that the proposed solution has enormous potential in terms of better utilisation of available resources of the cloud and reducing cost paid by cloud consumers.
 
 Judging by the plot of cost (figure \ref{fig:auto-scaling-1cp-cost-comparison}), we can be fairly sure that it is possible to obtain better results by proper tuning of the scaling vertical mechanism. In particular, one can consider changing the default CPU growth from 1.3 to other or apply a different strategy, for example a growth by a constant rate. What is more, in order to get the best results, the policy scaling interval must be chosen with a great care with the consideration of specific parameters of a given environment.
 
@@ -450,6 +450,6 @@ Obtained results are shown in table \ref{tab:test-service-deployment-time} and i
 \end{figure}
 
 \subsection*{Conclusion}
-As one can can notice, deployment of a java stack takes using \emph{Cloud-SAP} lasts longer than when using \emph{Carina} for the same purpose. Moreover, the more instances are in such stack, the greater difference is. This difference in provisioning time is mainly driven by the fact that \emph{Cloud-SAP} uses a great deal of components in comparison to \emph{Carina}, what is a direct consequence of chosen architecture. Specifically, the request from a client is passed to a broker, then the best provider is chosen and finally the deployment using the select provider and its \emph{Applfow} server takes place. Contrary, \emph{Carina} directly operates on \emph{OpenNebula} giving much simpler flow.
+As one can can notice, deployment of a java stack using \emph{Cloud-SAP} lasts longer than when using \emph{Carina} for the same purpose. Moreover, the more instances are in such stack, the greater difference is. This difference in provisioning time is mainly driven by the fact that \emph{Cloud-SAP} uses a great deal of components in comparison to \emph{Carina}, what is a direct consequence of chosen architecture. Specifically, the request from a client is passed to a broker, then the best provider is chosen and finally the deployment using the select provider and its \emph{Applfow} server takes place. Contrary, \emph{Carina} directly operates on \emph{OpenNebula} giving much simpler flow.
 
-Noticeably, deployment time never was a crucial issue for \emph{Cloud-SAP}, hence, this issue is of a little importance. What is actually important for \emph{Cloud-SAP} is deployment cost and service performance. In other words, slightly greater deployment time is a price that is paid to be sure that resources are deployed optimally and with Quality-of-Service guarantee.
+Noticeably, deployment time never was a crucial issue for \emph{Cloud-SAP}, hence, this matter is of a little importance. What is actually important for \emph{Cloud-SAP} is deployment cost and service performance. In other words, slightly greater deployment time is a price that is paid to be sure that resources are deployed optimally and with Quality-of-Service guarantee.

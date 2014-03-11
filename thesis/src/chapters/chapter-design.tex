@@ -6,7 +6,7 @@
 \section{Motivation}
 As one can see, latest advances in providing platform-as-a-service still do not yield a comprehensive solution that embraces a range of fine-grained actions relevant to a given situation in an environment, as it was summarised in the previous chapter. All of the presented solutions solely engage horizontal scaling, while other IT processes and corresponding actions such as vertical scaling, cloud bursting or application platform restart remains neglected. What is more, none of the investigated systems take proactive approach in enforcing given QoS.
 
-What has all of the above-mentioned features is a self-adaptive system that has a holistic approach to an application scaling. As \cite{brun2009engineering} advocates, one of the first architectures of a self-adaptive system was presented in IBM's blueprint for autonomic computing \cite{IBM06}. IBM's autonomic system is widely recognised and respected and hence we decided to leverage it as a foundation of our work. A concept of autonomic system is alluring due to its four crucial attributes:
+What has all of the above-mentioned features is a self-adaptive system that has a holistic approach to an application scaling. As \cite{brun2009engineering} advocates, one of the first architectures of a self-adaptive system was presented in IBM's blueprint for autonomic computing \cite{IBM06}. IBM's autonomic system is widely recognised and respected model, hence, we decided to leverage it as a foundation of our work. A concept of autonomic system is alluring due to its four crucial attributes:
 \begin{itemize}
  \item \emph{self-configuration} - dynamic adaptation to changing environment such as provisioning new application instances, application tuning, traffic delegation to an external provider
   \item \emph{self-healing} - discovering, diagnosing and reacting to environment disruption such as container outage
@@ -36,7 +36,7 @@ Successive sections define core layers of a Cloud-SAP and give insight into poss
 
 \section{Overview}
 The previous section dealt with all premises that led to a conclusion that the proposed architecture can rely heavily on the concept of an autonomic system. In this section the further elaboration on the solution is presented.
-Figure \ref{img:csap-usage-context} showed the context which the architecture applies to. As one can see, Cloud-SAP can be seen as a proxy between the user and cloud instances and as a coordinator of the latter. Although the cloud instance itself consists of a cloud manager and additional resources, in general, it is perfectly legitimate to consider it a resource as well. 
+Figure \ref{img:csap-usage-context} showed the context which the architecture applies to. As one can see, Cloud-SAP can be seen as a proxy between the user and cloud instances and as a coordinator of the latter. Although the cloud instance itself consists of a cloud manager and additional resources, in general, it is perfectly legitimate to consider it as a resource as well. 
 
 Before the more detailed diagram of the solution is presented, it is essential to introduce another indispensable function that lies in the heart of any self-adaptive entity -- its ability to detect an undesirable state and take appropriate actions. This is achieved by the presence of a \emph{control loop} which collects data about the environment, analyzes it and takes all needed steps to recover the system. Not only can the attributes introduced in the previous section be bound to a self-adaptive system, but they can also be thought of main and broad categories of a control loop \cite{IBM06}.
 
@@ -57,16 +57,16 @@ The building blocks of the architecture are:
   \item Orchestrating autonomic managers
   \item Knowledge source
 \end{itemize}
-As resources were identified on various levels of abstraction, starting from the application that is to be deployed and ending on a cloud instance that aggregates different applications and services, we can think of the last three layers (managed resources, touchpoints and touchpoint autonomic managers) as a one logical component which can aggregate and manage other components. This recursive definition applies to identified managed resources described in the next section, apart from application as we consider it the most fundamental and indivisible resource.
+As resources were identified on various levels of abstraction, starting from the application that is to be deployed and ending on a cloud instance that aggregates different applications and services, the last three layers (managed resources, touchpoints and touchpoint autonomic managers) can be perceived as one logical component which can aggregate and manage other components. This recursive definition applies to identified managed resources described in the next section, apart from application as we consider it the most fundamental and indivisible resource.
 
 \subsection{Managed resources}
 \emph{Managed resources} form the lowest layer of a stack. When it comes to application provisioning in a cloud environment we can think of the following resources:
 \begin{itemize}
-  \item \emph{Application} - application itself can be considered resources which can be managed by an external entity, e.g. by restarting/killing it. Interestingly, an application itself can be an autonomic component with an embedded control loop. However, such setting is completely transparent to Cloud-SAP and therefore cannot be managed by it.
+  \item \emph{Application} - application itself can be considered as a resource which can be managed by an external entity, e.g. by restarting/killing it. Interestingly, an application itself can be an autonomic component with an embedded control loop. However, such setting is completely transparent to Cloud-SAP and therefore cannot be managed by it.
   \item \emph{Execution environment of an application} forms an inherent part of an application lifecycle and its proper tuning can greatly influence its performance,
-  \item \emph{Container} -- an isolated and controlled environment in which applications are deployed,
+  \item \emph{Container} -- an isolated and controlled environment in which execution environments are deployed,
   \item \emph{Stack} -- every application has a technology stack associated with it; what is more, if we confine ourselves to map one instance of a container with only one application, we can think of stack as a composition of application (and its execution environment) and a container,
-  \item \emph{Service} -- more complex solutions/applications require interactions with various components that are not necessarily implemented using the same technology stack; service denotes a logical entity that consists of a list of stacks that should form one, indivisible component,
+  \item \emph{Service} -- more complex solutions/applications require interactions with various components that are not necessarily implemented using the same technology stack; service denotes a logical entity that consists of stacks that forms one, indivisible component,
   \item \emph{Cloud instance} -- an entity able to deploy \emph{services}
 \end{itemize}
 What is more, the listed resources are nested within one another and one's ability to work/run smoothly highly depends on the condition and state of the resource it forms part of. This is shown in figure \ref{img:managed-resources-aggregation}.
@@ -102,7 +102,7 @@ By means of manageability interface, external entities can control managed resou
 
 The actions executed by each control loop on the assigned managed resource are defined in a \emph{policy} that is associated with the given autonomic manager. Thus, there is a one-to-one mapping between managed resource and touchpoint, and touchpoint and autonomic manager.
 
-Each autonomic manager implements the control loop which can be split into four consecutive blocks, which share knowledge among one another. The output from one block forms an input to another. However, it is perfectly possible for a block to perform an action for obtaining side effects, e.g. an action can result in producing relevant information contained in log files, which, in turn, comprises a piece of shared knowledge. Each block implements different behaviour based on the abstraction level and resource they operate on (see figure \ref{img:csap-layered-structure}). Nevertheless it is possible to define their generic behaviour, which embraces the four phases: monitoring, analysis, planning and execution.
+Each autonomic manager implements the control loop which can be split into four consecutive blocks, which share knowledge among one another. The output from one block forms an input to another. Each block implements different behaviour based on the abstraction level and resource they operate on (see figure \ref{img:csap-layered-structure}). Nevertheless, it is possible to define their generic behaviour, which embraces the four phases: monitoring, analysis, planning and execution.
 
 \subsubsection{Monitoring}
 This function of autonomic manager is responsible for collecting and aggregating data about the resource it manages.  While Cloud-SAP does not have any specific requirements regarding underlying monitoring mechanism, there are a few aspects that should be taken into consideration:
@@ -165,13 +165,13 @@ What is more, an autonomic manager exposes \emph{sensor} and \emph{effector} man
 \end{figure}
 
 \subsection{Orchestrating autonomic manager}
-While an autonomic manager which manages a single resource may be satisfactory enough in many business cases, there are situations when additional coordination among managers is essential to attain the certain goal. This can result in incorporating autonomic behaviour within an entity in a system-wide scope.
+While an autonomic manager which manages a single resource may be satisfactory in many business cases, there are situations when additional coordination among managers is essential to attain the certain goal. This can result in incorporating autonomic behaviour within an entity in a system-wide scope.
 
 Such a coordination can be achieved by introducing another autonomic manager whose sole purpose is to harmonize the work of dependent ones by extensive use of their \emph{sensor} and \emph{effector} interfaces. These managers are called \emph{orchestrating managers}.
 
 When it comes to the complex task of ensuring the Quality of Service requirements for a client of a cloud computing environment, it is vital to ensure proper mechanisms that would allow seamless cooperation among different cloud providers. Such cooperation could result in a migration of an application between different clouds, market-driven choice of the cloud providers and so on.
 
-As the exemplary actions can be regarded complex ones, they cannot be associated with actions taken by autonomic managers of only one type. Thus, an orchestrating autonomic manager should coordinate other managers of any type -- an arbitrary mixture of self-healing, self-configuring, self-optimizing and self-protecting managers. Employment of these concepts in Cloud-SAP will be discussed later in detail.
+As the exemplary actions can be regarded as complex, they cannot be associated with actions taken by autonomic managers of only one type. Thus, an orchestrating autonomic manager should coordinate other managers of any type -- an arbitrary mixture of self-healing, self-configuring, self-optimizing and self-protecting managers. Employment of these concepts in Cloud-SAP will be discussed later in detail.
 
 \subsection{Knowledge source}
 \emph{Knowledge source} provides access to knowledge stored, for example, in a registry, dictionary or database. It is recommended that knowledge source share knowledge among multiple managers, consequently extending their capabilities by performing additional tasks: recognising particular symptoms or applying specified policies, for instance.
@@ -372,7 +372,7 @@ Stack autonomic controller executes actions such as:
 
 % radek
 \section{Autonomic cloud instance manager}
-The main responsibility of this manager is the management of a life cycle of resources of a given cloud provider. It could be thought of an autonomic entity which automates the process of managing resources of data centers that forms the services of a cloud instance. The cloud instance manager governs \emph{stacks} of the user-deployed services and its functions include
+The main responsibility of this manager is the management of resources' life cycle of a given cloud provider. It could be thought of an autonomic entity which automates the process of managing resources of data centers that forms the services of a cloud instance. The cloud instance manager governs \emph{stacks} of the user-deployed services and its functions include
 \begin{inparaenum}[a)]
 \item monitoring the state of cloud provider's infrastructure,
 \item providing prediction models in terms of resource utilization levels and possible violations of Service Level Agreements,
@@ -383,7 +383,7 @@ The main responsibility of this manager is the management of a life cycle of res
 Additionally, it exposes the manageability interface for taking request from the orchestrating manager.
 
 \subsection{Managed resource}
-The resources of a cloud provider can be associated with a data center comprising physical nodes, i.e. clusters, hosts, etc.
+The resources of a cloud provider associated with a data center comprising physical nodes, i.e. clusters, hosts, etc.
 
 \subsubsection*{Touchpoint}
 At this level of abstraction, operating system mechanisms and utilities are used to gather information about the state of a given host, e.g. its memory consumption, network throughput and usage statistics, forming the \emph{sensor} behaviour.  Additionally, they are means of performing any changes in the resource what makes them an \emph{effector}.  We want to stress that these features are entirely os-specific and are out of scope of this thesis. For example, there are completely different ways to measure memory usage in Unix/Linux and Windows\texttrademark    environments.
@@ -411,16 +411,16 @@ This function aims to solve the problem of an efficient mapping services to avai
 
 One of the approach to this problem is by implementing a Decentralized Online Clustering algorithm \cite{quiroz2009towards}. This solution is an aggregation of virtual machines' provisioning with a workload modeling technique called Quadrature Response Surface Model. It is based on an observation that requests made by a client can be inaccurate and may lead to over-provisioning. The model takes into account also application-specific QoS and SLA requirements.
 
-Constraint Programming can be another method that can be implemented \cite{nguyen2009autonomic} to tackle this problem. This is done by trying to optimize the global utility function of resource provisioning costs and application-specific requirements and constraints. In effect, the management of infrastructure is done in an automated fashion with the effort to reach the maximum performance of hosted applications, keeping the provider's cost at the minimum level at the same time.
+Constraint Programming is another method that can be implemented \cite{nguyen2009autonomic} to tackle this problem. This is done by trying to optimize the global utility function of resource provisioning costs and application-specific requirements and constraints. In effect, the management of infrastructure is done in an automated fashion with the effort to reach the maximum performance of hosted applications, keeping the provider's cost at the minimum level at the same time.
 
 \subsubsection{Execute}
 The function takes as an input the deployment scheme which has mapped every stack of a service with the given host, irrespective of the use case that triggered the action, i.e. scaling or deployment. The request is delegated to the appropriate stack managers which are responsible for its further processing.
 
 % radek
 \section{Autonomic cloud federation manager}
-\emph{Autonomic cloud federation manager} is a building block of the proposed architecture that forms the highest layer of its model (see figure \ref{img:csap-layered-structure}). Additionally, it is an element which directly cooperates with a client by capturing and handling their requests.
+\emph{Autonomic cloud federation manager} is a building block of the proposed architecture that forms the highest layer of its model (see figure \ref{img:csap-layered-structure}). Additionally, it is an element which directly cooperates with a client by capturing and handling his requests.
 
-This manager has two main responsibilities, which include
+This manager has two main responsibilities:
 \begin{inparaenum}[1)]
 \item handling deployment of a service requests from the clients and subsequent requests directly applied to that service (e.g. queries about its state), 
 \item scaling the previously-deployed service across different cloud vendors.
@@ -446,9 +446,9 @@ To be able to handle incoming requests, the manager exposes API a client communi
 \end{figure}
 
 \subsection{Managed resource}
-As it was stated in the previous sections and can be seen in figure \ref{img:orchestrating-autonomic-manager}, \emph{cloud instance autonomic managers} are managed resources of this manager. Each cloud instance is a deployment environment for a service or a stack, i.e. it is possible to span the service across different clouds by deploying stacks which make up the given service to different providers. Of course it is legitimate to deploy the whole service to only one provider.
+As it was stated in the previous sections and can be seen in figure \ref{img:orchestrating-autonomic-manager}, \emph{cloud instance autonomic managers} are managed resources. Each cloud instance is a deployment environment for a service or a stack, i.e. it is possible to span the service across different clouds by deploying stacks which make up the given service to different providers. Of course it is legitimate to deploy the whole service to only one provider.
 \subsubsection*{Touchpoints}
-As the cloud federation manager has to gain information about the state of a given cloud instance and be able to order the deployment of a stack or a service, the cloud instance exposes its manageability interface and its two types:
+As the cloud federation manager has to gain information about the state of a given cloud instance and be able to order the deployment of a stack or a service, the cloud instance exposes its manageability interface that consists of:
 \begin{asparaenum}
 \item[\textbf{Sensors}] -- set of attributes which forms the state of a given cloud instance. Attributes should include inter alia overall resources usage, pricing, geographical location. The more thorough elaboration will be held in the section devoted to \emph{plan and execution manager}.
 \item[\textbf{Effectors}] -- set of stack/service management operations, such as deploy, migrate or delete.
@@ -464,7 +464,7 @@ The aim of this function is to give a detailed plan for the action to be perform
   \item[\textbf{Problem description}]
 The problem of resource management in cloud computing environments is hard and complex. This is because of several aspects, but we will highlight only two reasons. 
 
-The first one is the characteristic of resources available in a cloud -- not only are they geographically distributed, but they can be under different administrative domains and can vary in accessibility. This places a heavy burden on cooperation possibilities across cloud providers, both in a technical and non-technical way as providers need to maintain the high level of trust in order to effectively  deliver its products. Additionally, different entities forms the resources -- starting from individual devices, through virtual machines and whole workstations, ending with clusters and data centers.
+The first one is the characteristic of resources available in a cloud -- not only are they geographically distributed, but they can be under different administrative domains and can vary in accessibility. This places a heavy burden on cooperation across cloud providers, both in a technical and non-technical way as providers need to maintain the high level of trust in order to effectively  deliver its products. Additionally, different entities forms the resources -- starting from individual devices, through virtual machines and whole workstations, ending with clusters and data centers.
 
 The second one are the increasing Quality-of-Service requirements from the clients. They want resources they use to be reliable, flexible (able to scale according to workload), fault-tolerant, energy-efficient and, of course, cheap. It is clear that clients and cloud vendors have different objectives and supply-and-demand patterns.
 
@@ -494,7 +494,7 @@ There are two main approaches to tackle the problem of effective resource manage
 
   \begin{asparaenum}
   \item[\textbf{Service deployment}] When the user wants to deploy a service on a cloud infrastructure, they have to prepare its detailed description containing technical (stacks) and Quality-of-Service requirements. Additionally, this component should have access to shared knowledge regarding the information about every cloud instance that forms the federation. This should include resource capacity and utilization rates.
-  \item[\textbf{Service scaling}] When an application needs to be scaled, there is available additional knowledge that this component should use of -- detailed information about service's performance up to that point, e.g. service resource utilization level (CPU, I/O), response time, its users profile including their geographical location and so on. This knowledge in a form of a prediction model should be passed to the component by the \emph{analyse} function.
+  \item[\textbf{Service scaling}] When an application needs to be scaled, there is  additional knowledge available that this component should use -- detailed information about service's performance up to that point, e.g. service resource utilization level (CPU, I/O), response time, its users profile including their geographical location and so on. This knowledge in a form of a prediction model should be passed to the component by the \emph{analyse} function.
   \end{asparaenum}
 
 \item[\textbf{Function output}] As it was stated in the introductory section, this function produces \emph{service deployment plan}. In the same section we conducted a quick survey of the most common approaches to the resource allocation and mapping problem. The proposed architecture places no restrictions on the chosen approach, as both paradigms can be fitted into it. In the case of \emph{conventional approach}, this component should be equipped with a matching function that takes as an input service description (and the information of its so far execution in the case of an auto-scaling action), offers from cloud providers and make a final decision based on these arguments.
@@ -506,14 +506,14 @@ This function takes either a query about the state of a service or a deployment 
 
 \subsection{Monitor and Analyse Autonomic Manager}
 \subsubsection*{Introduction}
-In many cases designers of applications cannot in advance foresee the detailed requirements of resources of their products, e.g. the number of virtual machines comprising it. This is especially true in case of \emph{start-ups} when it is not known whether the product will catch public attention and who exactly matches the target audience. In such circumstances the cloud provider should be able to quickly adapt to new conditions to prevent the service from being unable to work properly, e.g. take into account the geographical location of the application's users and deploy a service in close proximity to them so as to minimize the latency.
+In many cases designers of applications cannot in advance foresee the detailed requirements of resources of their products, e.g. the number of virtual machines comprising it. This is especially true in case of \emph{start-ups} when it is not known whether the product will catch public attention and who exactly matches the target audience. In such circumstances the cloud provider should be able to quickly adapt to new conditions to prevent the service from being unable to work properly, e.g. take into account the geographical location of the application's users and deploy a service in proximity to them so as to minimise the latency.
 
 As it was discussed in earlier chapters, the above-mentioned use case refers to \emph{scaling} capabilities of a cloud provider. However, even if a cloud provider has \emph{auto-scaling} mechanisms, there can be unacceptable delays in application response time because of the \emph{reactive} nature of the feature -- the system decides to scale the application based on the \emph{current} resource consumption and utilization rate. Since it involves instantiating and provisioning virtual machines there is always a time overhead associated with it. Hence, there is a need that a system could \emph{predict} demands and behaviours of a hosted service in a \emph{proactive} way. 
 
 The goal of this component is to gather data about current performance of a deployed service and based on it perform an in-depth analysis which results in a resource usage prediction model and auto-scaling schemes. This is the objective of the \emph{monitor} and \emph{analyse} functions, respectively.
 
 \subsubsection*{Prediction models}
-One way to divide prediction models into categories is to classify each one as a \emph{reactive} or a \emph{proactive} one. Since in the introductory section there were given reasons why the reactive approach is inefficient, here is a short overview of proactive approaches to the issue.
+One way to divide prediction models into categories is to classify each one as a \emph{reactive} or a \emph{proactive} one. Since in the introductory section there were given reasons why the reactive approach is inefficient, here is a short overview of proactive approaches.
 
 Using pattern-matching algorithms is one method to tackle the problem and this approach was presented in \cite{caron2010forecasting}. In their work, the algorithm analyses past usage data of an application and tries to identify the most similar patterns to current resource usage characteristics by using a pattern-matching algorithm. Then the obtained patterns are interpolated and the final prediction model is evaluated.
 
@@ -528,15 +528,15 @@ The main goal of this function is to collect all data regarding usage, performan
   \item[\textbf{Scaling of a deployed service}] When a service which had been hosted on a cloud needs to be scaled, the similar knowledge as in the previous case is required to be passed to \emph{analyse} function to perform the perfect match of a cloud instance.
 \end{asparaenum}
 
-The knowledge that the component obtains is about current \emph{topology} (which cloud instances make the cloud federation, what is their geographical location, how are they related, etc.) and \emph{policies} (data required to be compared against policies of deployed serviced). What is more, for the system to be able to perform auto-scaling, the gathered information can be classified as \emph{problem determination knowledge} \cite{IBM06}.
+The knowledge that the component obtains is about current \emph{topology} (which cloud instances make the cloud federation, what is their geographical location, how are they related, etc.) and \emph{policies} (data required to be compared against policies of deployed service). What is more, for the system to be able to perform auto-scaling, the gathered information can be classified as \emph{problem determination knowledge} \cite{IBM06}.
 
 We do not strive to list the data which is required to be collected by this component in a system that tries to conform to the proposed architecture as it completely depends on the system needs. We want to give an overview of possibilities instead and leave the decision to the implementers. The same applies to the components and technology of a persistence layer.
 
 \subsubsection{Analyse}
 This function takes knowledge about the cloud federation and a service as an input and outputs a \emph{prediction plan}, which should be helpful in choosing the cloud instance for an application.
 
-In the introductory section a brief overview of some possible techniques and algorithms that can be used in the analyse component was presented. We do not impose a particular method on this component -- it is up to the system complexity and design, which solution would be more suitable to the given needs.
+In the introductory section a brief overview of some possible techniques and algorithms that can be used in the analyse component was presented. We do not impose a particular method on this component -- it is up to the system design, which solution would be more suitable to the given needs.
 
 \section{Summary}
-Cloud-SAP fills the gap in existing platforms by providing a standardised approach to scaling applications using a fine-grained actions and operating on different platform levels: starting from an execution environment and ending on a cloud federation. It is based on a concept of an autonomic system, providing methodical but flexible foundation for its implementation. What is more, Cloud-SAP leverages core benefits of such a system: promise of a self-configuration, self-optimisation, self-health, self-protection. It is driven by a customer-defined policies and consequently ensures that customer is served with demanded Quality-of-Service and optimised costs.
+Cloud-SAP fills the gap in existing platforms by providing a standardised approach to scaling applications using a fine-grained actions achieved by operating on different platform levels: starting from an execution environment and ending on a cloud federation. It is based on a concept of an autonomic system, providing methodical but flexible foundation for its implementation. What is more, Cloud-SAP leverages core benefits of such system: promise of a self-configuration, self-optimisation, self-health, self-protection. It is driven by a customer-defined policies and consequently ensures that customer is served with demanded Quality-of-Service and optimised costs.
 
