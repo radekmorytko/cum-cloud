@@ -52,7 +52,7 @@ As one can see, our implementation is composed by following parts:
 With those information in mind, we can illustrate overall architecture, components and communication protocols on deployment diagram \ref{fig:hlo-deployment}. Successive sections portrays in detail specified elements.
 
 \section{Technology stack overview}
-This section aims to give a brief outline of technologies that were used in this implementation with an endeavour to justify our choice. The chosen solutions are grouped according to their presence in appropriate subsystems.
+This section aims to give a brief outline of technologies that were used in this implementation with an endeavour to justify our choice. The chosen solutions are grouped according to their presence in appropriate subsystems. An overview of used technologies is visualised in figure \ref{fig:csap-technology layers}.
 
 \begin{itemize}
   \item Cloud brokerage subsystem
@@ -79,6 +79,14 @@ This section aims to give a brief outline of technologies that were used in this
     \item[\textbf{OpenVZ (drivers)}] The significance of choosing linux containers as a virtualisation technology was fully described in the preceding chapters. However, the drivers for the OpenVZ are not supported by the OpenNebula maintainers, so we had to use our own-developed drivers while taking a course at the university. They form an official add-on for OpenNebula 3.8.
     \end{asparaenum}
 \end{itemize}
+
+\begin{figure}[!ht]
+  \begin{center}
+    \includegraphics[width=\textwidth]{chapter-implementation/csap-technology-layers}
+  \end{center}
+  \caption{Technology stack visualisation}
+  \label{fig:csap-technology layers}
+\end{figure}
 
 \begin{figure}[!ht]
   \begin{center}
