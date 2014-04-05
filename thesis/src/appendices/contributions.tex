@@ -11,75 +11,104 @@ Authors of this thesis contributed to it in different ways. Essentially:
 \end{asparaenum}
 
 
-Contributions per particular chapter are shown in table below.
+Contributions per particular chapter are shown in tables below (\ref{tab:contributions} and \ref{tab:contributions-part2}).
 
 \begin{table}
   \centering
-  \begin{tabular}{ l | l | c | c }
+  \begin{tabularx}{\textwidth}{ l | X | c | c }
 
 \specialrule{.1em}{.05em}{.05em} 
-\textbf{Part} & \textbf{Part name} & \textbf{D. Chrząścik} & \textbf{R. Morytko} \\
+\textbf{Section} & \textbf{Section name} & \textbf{D. Chrząścik} & \textbf{R. Morytko} \\
 \specialrule{.1em}{.05em}{.05em} 
 
 \textbf{Abstract} & & \checkmark & \checkmark \\ 
 \specialrule{.1em}{.05em}{.05em} 
 
 \textbf{Chapter 1} & &  &  \\ \hline
-\quad 1.1 & Motivation & \checkmark &  \\ \hline
-\quad 1.1 & Business potential &  & \checkmark \\ \hline
-\quad 1.2 - 1.4 & & \checkmark & \checkmark \\
+\quad 1.1 & Motivation (Introduction) & \checkmark &  \\ \hline
+\quad 1.1 & Motivation (Business potential) &  & \checkmark \\ \hline
+\quad 1.2 & Contributions & \checkmark & \checkmark \\ \hline
+\quad 1.3 & Impact & \checkmark & \checkmark \\ \hline
+\quad 1.4 & Thesis structure & \checkmark & \checkmark \\
 \specialrule{.1em}{.05em}{.05em} 
 
 
 \textbf{Chapter 2} & &  &  \\ \hline
-\quad 2.1 - 2.2 &  & \checkmark  &  \\ \hline
-\quad 2.3 & & &  \checkmark \\
+\quad 2.1 & Self-adaptive system & \checkmark  &  \\ \hline
+\quad 2.2 & Scaling applications & \checkmark  &  \\ \hline
+\quad 2.3 & Interoperability of clouds & &  \checkmark \\  \hline
+\quad 2.4 & Related work &   &  \\ \hline
+\quad \quad 2.4.1 & Requirements & \checkmark & \checkmark \\ \hline
+\quad \quad 2.4.2 & Carina &  & \checkmark \\ \hline
+\quad \quad 2.4.3 & OneFlow & \checkmark & \\ \hline
+\quad \quad 2.4.4 & OpenShift & \checkmark & \\ \hline
+\quad \quad 2.4.5 & CloudFoundry &  & \checkmark \\ \hline
+\quad \quad 2.4.6 & Providers comparison & \checkmark & \\ 
 \specialrule{.1em}{.05em}{.05em} 
 
 
-\textbf{Chapter 3} &  &  &  \\ \hline
-\quad 3.1 &  &  \checkmark & \checkmark \\ \hline
-\quad 3.2 &  &   & \checkmark \\ \hline
-\quad 3.3 - 3.4 &  & \checkmark &  \\ \hline
-\quad 3.5 &  &  &  \checkmark \\ \hline
-\quad 3.6 &  & \checkmark &  \\
+\textbf{Chapter 3} & & &  \\ \hline
+\quad 3.1 & Motivation & \checkmark &  \\ \hline
+\quad 3.2 & Overview &  & \checkmark \\ \hline
+\quad \quad 3.2.1 & Managed resources &  & \checkmark \\ \hline
+\quad \quad 3.2.2 & Touchpoints & \checkmark & \\ \hline
+\quad \quad 3.2.3 & Touchpoint autonomic manager (Overview) &  & \checkmark \\ \hline
+\quad \quad 3.2.3 & Touchpoint autonomic manager (Monitoring, Analysis, Planning) & \checkmark  & \\ \hline
+\quad \quad 3.2.4 & Orechestrating autonomic manager &  & \checkmark \\ \hline
+\quad \quad 3.2.5 & Knowledge source & \checkmark & \\ \hline
+\quad 3.3 & Autonomic execution environment manager & \checkmark &  \\ \hline
+\quad 3.4 & Autonomic container manager & \checkmark &  \\ \hline
+\quad 3.5 & Autonomic stack manager & \checkmark &  \\ \hline
+\quad 3.6 & Autonomic cloud instance manager & & \checkmark \\ \hline
+\quad 3.7 & Autonomic cloud federation manager & & \checkmark \\ \hline
+\quad 3.8 & Summary & \checkmark &  \\
+\specialrule{.1em}{.05em}{.05em} 
+
+\end{tabularx}
+  \caption{Contributions by author: part 1}
+\label{tab:contributions}
+\end{table}
+
+
+
+\begin{table}
+  \centering
+  \begin{tabularx}{\textwidth}{ l | X | c | c }
+  
+\specialrule{.1em}{.05em}{.05em} 
+\textbf{Section} & \textbf{Section name} & \textbf{D. Chrząścik} & \textbf{R. Morytko} \\
 \specialrule{.1em}{.05em}{.05em} 
 
 
 \textbf{Chapter 4} & & &  \\ \hline
-\quad 4.1 & & \checkmark &  \\ \hline
-\quad 4.2 & Managed resource, Orchestrating autonomic manager &  & \checkmark \\ \hline
-\quad \quad 4.2.3 &Touchpoint autonomic manager: overview &  & \checkmark \\ \hline
-\quad \quad 4.2.3 &Monitoring, Analysis, Planning & \checkmark &  \\ \hline
-\quad 4.2 & Touchpoint, Knowledge source & \checkmark &  \\ \hline
-\quad 4.3 - 4.5 &  & \checkmark &  \\ \hline
-\quad 4.6 - 4.7 &  & & \checkmark \\ \hline
-\quad 4.8 &  & \checkmark &  \\
+\quad 4.1 & Introduction & \checkmark &  \\ \hline
+\quad 4.2 & Overview & \checkmark &  \\ \hline
+\quad 4.3 & Technology stack overview  & & \checkmark \\ \hline
+\quad 4.4 & Cloud brokerage subsystem & & \checkmark \\ \hline
+\quad 4.5 & Auto-scaling subsystem & &  \\ \hline
+\quad \quad 4.5.1 & Introduction & \checkmark &  \\ \hline
+\quad \quad 4.5.2 & Container manager & \checkmark &  \\ \hline
+\quad \quad 4.5.3 & Stack manager & \checkmark &  \\ \hline
+\quad \quad 4.5.4 & Cloud instance manager & & \checkmark  \\ \hline
+\quad \quad 4.5.5 & Cloud provider client & \checkmark &  \\ \hline
+\quad 4.6 & Cloud provider & \checkmark &  \\ \hline
+\quad 4.7 & Exemplary scenarios & \checkmark &  \\ \hline
+\quad 4.8 & Summary & \checkmark &  \\ 
 \specialrule{.1em}{.05em}{.05em} 
 
 
 \textbf{Chapter 5} & & &  \\ \hline
-\quad 5.1 - 5.2 & & \checkmark &  \\ \hline
-\quad 5.3 & & & \checkmark \\ \hline
-\quad 5.4 & & & \checkmark \\ \hline
-\quad 5.5 & & &  \\ \hline
-\quad \quad 5.5.1 - 5.5.3 & & \checkmark &  \\ \hline
-\quad \quad 5.5.4 & & & \checkmark \\ \hline
-\quad \quad 5.5.5 & & \checkmark &  \\ \hline
-\quad 5.6 - 5.8 & & \checkmark &  \\ 
+\quad 5.1 & Introduction & & \checkmark \\ \hline
+\quad 5.2 & Cost of service deployment & & \checkmark \\ \hline
+\quad 5.3 & Auto-scaling – single-provider based & & \checkmark \\ \hline
+\quad 5.4 & Auto-scaling – multiple-provider based & \checkmark &  \\ \hline
+\quad 5.5 & Deployment time – solution comparison & & \checkmark \\
 \specialrule{.1em}{.05em}{.05em} 
 
-
-
-\textbf{Chapter 6} & & &  \\ \hline
-\quad 6.1 - 6.3 & & & \checkmark \\ \hline
-\quad 6.4 & & \checkmark &  \\ \hline
-\quad 6.5 & & & \checkmark \\
+\textbf{Chapter 6} & & \checkmark & \checkmark  \\
 \specialrule{.1em}{.05em}{.05em} 
 
-\textbf{Chapter 7} & & \checkmark & \checkmark  \\ \hline
-
-
-\end{tabular}
-\label{tab:contributions}
+\end{tabularx}
+\caption{Contributions by author: part 2}
+\label{tab:contributions-part2}
 \end{table}
