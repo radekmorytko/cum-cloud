@@ -32,76 +32,241 @@ Wydział Informatyki, Elektroniki i Telekomunikacji
  \end{frame}
 }
 
-%---------------------------------------------------------------------------
-
 
 \begin{frame}
-\frametitle{About us}
-
-\begin{block}{About the University}
-
-AGH University of Science and Technology continues the traditions of the Mining Academy established in Kielce by Stanisław Staszic. It serves the science, economy and society through educating students and the development of the scientific and research staff, as well as conducting scientific research.
-
-The highest authority of the University is Rector , who entrusts the coordination of the crucial areas of the University activities to Deputy Rectors (not more than five.)
-
-Rector is the President of the Senate , the highest collegial body of the University. 
-\end{block}
-\end{frame}
-
-%---------------------------------------------------------------------------
-
-\begin{frame}
-\frametitle{Some AGH-UST Faculties}
+\frametitle{Plan prezentacji}
 
 \begin{itemize}
-\item Faculty of Mining and Geoengineering
-\item Faculty of Metals Engineering and Industrial Computer Science
-\item Faculty of Electrical Engineering, Automatics, Computer Science and Electronics
-\item Faculty of Mechanical Engineering and Robotics
-\item Faculty of Geology, Geophysics and Environment Protection
-\item \dots
+	\item Problem
+	\item Cel pracy
+	\item Założenia
+	\item Istniejące rozwiązania
+	\item Propozycja rozwiązania
+	\item Implementacja
+	\item Ewaluacja
+	\item Wnioski
 \end{itemize}
 
 \end{frame}
 
-%---------------------------------------------------------------------------
 
 
 \begin{frame}
-\frametitle{Students}
+\frametitle{Problem}
 
-\begin{columns}
-\column{0.45\textwidth}
-\begin{block}{Courses}
-Over 34,000 full-time and extramural students and more than 500 doctoral students attend courses at 15 faculties and the Interfaculty School of Biomedical Engineering.
-\end{block}
-\column{0.45\textwidth}
-\begin{block}{Ph.D. Studies}
-14 faculties of AGH University of Science and Technology are authorised to confer the degree of doctor of science or doctor of philosophy.
-\end{block}
-\end{columns}
+\begin{itemize}
+\item Minimalizacja kosztów związanych z utrzymaniem aplikacji
+\item Zapewnienie odpowiedniej jakości usług dostarczanych przez aplikacje (QoS)
+\item Optymalne wykorzystanie zasobów
+\end{itemize}
 
 \end{frame}
 
-%---------------------------------------------------------------------------
+
+
 
 \begin{frame}
-\frametitle{Slide 4}
+\frametitle{Cel pracy}
 
+\begin{itemize}
+\item Opracowanie sposobu na optymalne wykorzystanie zasobów
 
+\item Stworzenie architektury referencyjnej
+\item Implementacja architekutury o charakterze \textit{proof-of-concept}
+\item Ewaluacja
+\end{itemize}
 
 \end{frame}
 
-%---------------------------------------------------------------------------
+
+
+
 
 \begin{frame}
-\frametitle{Slide 5}
+\frametitle{Założenia}
 
+\begin{itemize}
+\item Model chmury obliczeniowej
+	\begin{itemize}
+		\item udostępnianie środowisk wykonawczych dla aplikacji (\textit{PaaS})
+		\item współpraca między chmurami
+	\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{Istniejące rozwiązania}
+
+\begin{itemize}
+\item Carina
+\item CloudFoundry
+
+\item OneFlow
+\item OpenShift
+\end{itemize}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}
+\frametitle{Propozycja rozwiązania}
+\framesubtitle{Adresowane problemy}
+
+\begin{itemize}
+\item Nieadekwatność akcji podejmowanych przez system
+\item Zamknięcie na współprace z innymi chmurami obliczeniowymi
+\item Pasywne podejście do problemu skalowania aplikacji 
+\end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Propozycja rozwiązania}
+\framesubtitle{Adresowane problemy}
+
+\begin{itemize}
+\item Nieadekwatność akcji podejmowanych przez system
+		\begin{itemize}
+			\item dopasowanie akcji do zaobserwowanego problemu
+		\end{itemize}
+
+\item Zamknięcie na współprace z innymi chmurami obliczeniowymi
+		\begin{itemize}
+			\item kooperacja z innymi chmurami obliczeniowymi
+		\end{itemize}
+
+\item Pasywne podejście do problemu skalowania aplikacji 
+		\begin{itemize}
+			\item analiza skutków podejmowanych wcześniej akcji
+		\end{itemize}		
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Propozycja rozwiązania}
+
+\begin{itemize}
+	\item System adaptacyjny adresujący wspomniane problemy
+	\item System zbudowany w oparciu o model autonomicznego systemu autorstwa IBM
+\end{itemize}
 
 
 \end{frame}
 
-%---------------------------------------------------------------------------
+
+
+
+
+\begin{frame}
+\frametitle{Propozycja rozwiązania}
+\framesubtitle{Kontekst użycia systemu}
+\vspace{2 mm}
+\begin{center}
+
+\includegraphics[width=0.8\textwidth]{assets/csap-usage-context}
+\end{center}
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Propozycja rozwiązania}
+\framesubtitle{Model warstwowy systemu}
+\vspace{2 mm}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{assets/csap-layers}
+\end{center}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Implementacja}
+
+\vspace{2 mm}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{assets/hlo-implementation}
+\end{center}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Ewaluacja}
+\framesubtitle{Środowisko testowe}
+
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{Ewaluacja}
+\framesubtitle{Automatyczne skalowanie}
+
+\begin{center}
+\includegraphics[width=0.9\textwidth]{assets/auto-scaling-1cp-cost-comparison}
+\end{center}
+
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Ewaluacja}
+\framesubtitle{Automatyczne skalowanie: wielu dostawców}
+
+\begin{center}
+\includegraphics[width=0.9\textwidth]{assets/auto-scaling-2cp-tps-comparison}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Ewaluacja}
+\framesubtitle{Pozostałe przypadki testowe}
+
+\begin{itemize}
+	\item Koszt tworzenia środowiska wykonawczego aplikacji
+	\item Czas tworzenia środowiska wykonawczego aplikacji
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Wnioski}
+
+\begin{itemize}
+	\item Cele zostały osiągnięte
+	\item Dalsze prace
+		\begin{itemize}
+			\item rozszerzenie implementacji o bardziej zaawansowane mechanizmy
+			\item zainteresowanie społeczności open-source 
+		\end{itemize}
+\end{itemize}
+
+\end{frame}
+
+
+
+
 
 
 \end{document}
