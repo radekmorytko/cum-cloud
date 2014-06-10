@@ -145,7 +145,6 @@ set colorbox default
 set colorbox vertical origin screen 0.9, 0.2, 0 size screen 0.05, 0.6, 0 front bdefault
 set loadpath 
 set fontpath 
-unset key
 set fit noerrorvariables
 plot './auto-scaling-2cp-tps-comparison.data' i 0 w l t 'Cloud-SAP' lw 2 lc rgb "#1076c1" , '' i 1 w l t 'Carina' lt 2 lw 2 lc rgb "#2699D6", '' i 2 w l t 'Cloud Provider 1 limit' lt 4 lw 2 lc rgb "#ff0000"
 #    EOF
