@@ -30,6 +30,8 @@
 \usepackage{times}
 
 \setbeameroption{show notes}
+\setbeamertemplate{caption}{\insertcaption}
+\setbeamerfont{caption}{size=\tiny}
 
 \usetheme{AGH}
 
@@ -194,9 +196,12 @@ Wydział Informatyki, Elektroniki i Telekomunikacji
 \frametitle{Propozycja rozwiązania}
 \framesubtitle{Model warstwowy systemu}
 \vspace{2 mm}
-\begin{center}
-\includegraphics[width=0.8\textwidth]{assets/csap-layers}
-\end{center}
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=0.75\textwidth]{assets/csap-layers}
+    \caption{IBM. An architectural blueprint for autonomic computing}
+  \end{center}
+\end{figure}
 \end{frame}
 
 
